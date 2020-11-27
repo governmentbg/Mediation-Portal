@@ -1,0 +1,37 @@
+﻿@{
+    ViewBag.Title = "Информация";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<information inline-template ref="information">
+    <div>
+        <template v-if="loading">
+            <v-text-field color="primary"
+                          loading
+                          label="Зареждане..."
+                          readonly>
+            </v-text-field>
+        </template>
+        <template v-else>
+            <h2>{{SectionName}}</h2>
+            <br />
+            <v-row>
+                <v-col cols="12">
+                    <v-card>
+                        <v-card-title><h3>{{Title}}</h3></v-card-title>
+                        <v-card-subtitle>{{moment(DateCreated).format('DD.MM.YYYY')}}</v-card-subtitle>
+                        <v-card-text class="pt-10" v-html="HTMLContent">
+                        </v-card-text>
+                    </v-card>
+                </v-col>
+            </v-row>
+        </template>
+    </div>
+</information>
+
+@section Scripts {
+
+    @* Components *@
+    @Scripts.Render("~/Scripts/VueComponents/information.js")
+}

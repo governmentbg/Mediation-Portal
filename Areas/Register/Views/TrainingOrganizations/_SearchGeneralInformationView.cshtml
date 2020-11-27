@@ -1,0 +1,107 @@
+﻿<v-container>
+    <v-row class="px-4">
+        <v-col cols="12" md="4" sm="12">
+            <v-text-field append-icon="search"
+                          label="Име"
+                          v-model="OrganizationFilters.Name"
+                          clearable
+                          color="primary">
+            </v-text-field>
+        </v-col>
+        <v-col cols="12" md="4" sm="12">
+            <v-text-field append-icon="search"
+                          label="ЕИК"
+                          v-model="OrganizationFilters.EIK"
+                          clearable
+                          color="primary">
+            </v-text-field>
+        </v-col>
+        <template v-if="showRedirectOrganizationButtonAdmin">
+            <v-col cols="12" md="4" sm="12">
+                <v-autocomplete v-model="OrganizationFilters.Status"
+                                v-bind:items="trainingOrganizationStatuses"
+                                label="Статус на организация"
+                                no-data-text="Няма данни"
+                                item-text="Value"
+                                item-value="Key"
+                                placeholder="-- Статус организация --"
+                                clearable
+                                color="primary">
+                </v-autocomplete>
+            </v-col>
+        </template>
+    </v-row>
+    <v-row class="px-4">
+        <v-col cols="12" md="4" sm="12">
+            <v-text-field append-icon="search"
+                          label="Регистрационен номер"
+                          v-model="OrganizationFilters.RegistrationNumber"
+                          clearable
+                          color="primary">
+            </v-text-field>
+        </v-col>
+        <v-col cols="12" md="4" sm="12">
+            <v-menu v-bind:close-on-content-click="false"
+                    v-bind:nudge-right="40"
+                    transition="scale-transition"
+                    offset-y
+                    min-width="290px">
+                <template v-slot:activator="{ on }">
+                    <v-text-field autocomplete="off"
+                                  label="Регистрирана от"
+                                  prepend-icon="event"
+                                  v-on="on"
+                                  v-bind:value="formatDate(OrganizationFilters.DateCreatedFrom)"
+                                  @@click:clear="onClearDateCreatedFrom()"
+                                  clearable
+                                  color="primary">
+                    </v-text-field>
+                </template>
+                <v-date-picker v-model="OrganizationFilters.DateCreatedFrom"
+                               persistent-hint
+                               prepend-icon="event"
+                               header-color="primary"
+                               color="primary"
+                               no-title
+                               v-bind:first-day-of-week="1"
+                               locale="bg-bg">
+                </v-date-picker>
+        </v-col>
+        <v-col cols="12" md="4" sm="12">
+            <v-menu v-bind:close-on-content-click="false"
+                    v-bind:nudge-right="40"
+                    transition="scale-transition"
+                    offset-y
+                    min-width="290px">
+                <template v-slot:activator="{ on }">
+                    <v-text-field autocomplete="off"
+                                  label="Регистрирана до"
+                                  prepend-icon="event"
+                                  v-on="on"
+                                  v-bind:value="formatDate(OrganizationFilters.DateCreatedTo)"
+                                  @@click:clear="onClearDateCreatedTo()"
+                                  clearable
+                                  color="primary">
+                    </v-text-field>
+                </template>
+                <v-date-picker v-model="OrganizationFilters.DateCreatedTo"
+                               persistent-hint
+                               prepend-icon="event"
+                               header-color="primary"
+                               color="primary"
+                               no-title
+                               v-bind:first-day-of-week="1"
+                               locale="bg-bg">
+                </v-date-picker>
+        </v-col>
+    </v-row>
+    <v-row class="px-4">
+        <v-col cols="12">
+            <v-btn block color="primary"
+                   v-on:click="triggerSearch">
+                Търсене&nbsp;&nbsp;
+                <i class="fa fa-filter"></i>
+            </v-btn>
+        </v-col>
+    </v-row>
+</v-container>

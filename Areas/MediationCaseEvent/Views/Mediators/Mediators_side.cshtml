@@ -1,0 +1,19 @@
+﻿<case-mediators :is-mediator="false" inline-template ref="caseMediators">
+    <template>
+        <v-card hover outlined>
+            <v-row>
+                <v-col cols="12">
+                    <v-subheader class="subheader-border">Медиатори</v-subheader>
+                </v-col>
+            </v-row>
+            <v-card-text>
+                <v-row>
+                    <v-col cols="12">
+                        @Html.Partial("~/Areas/MediationCaseEvent/Views/Mediators/_MediatorsTable.cshtml")
+                    </v-col>
+                </v-row>
+            </v-card-text>
+            @Html.Partial("~/Areas/MediationCaseEvent/Views/Mediators/_MediatorsDialog.cshtml")
+        </v-card>
+    </template>
+</case-mediators>

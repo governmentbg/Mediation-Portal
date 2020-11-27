@@ -1,0 +1,41 @@
+﻿<v-card hover outlined>
+    <v-card-title>
+        <v-subheader class="subheader-border">Информация за извършено плащане</v-subheader>
+    </v-card-title>
+    <v-card-text>
+        <v-row>
+            <v-col cols="12" md="4" sm="12" class="py-0">
+                <v-checkbox v-model="Payment.IsPaid"
+                            label="Платено заявление"
+                            color="primary"
+                            class="px-4"
+                            :readonly="readonlyPayments"></v-checkbox>
+            </v-col>
+        </v-row>
+        <template v-if="Payment.IsPaid">
+            <v-row>
+                <v-col cols="12" md="12" sm="12" class="py-0">
+                    <v-textarea v-model="Payment.Description"
+                                label="Описание за плащане"
+                                :readonly="readonlyPayments"
+                                outlined
+                                rows="3"
+                                class="px-4"></v-textarea>
+                </v-col>
+            </v-row>
+        </template>
+        <v-card-actions class="py-0" v-if="showPaymentSaveBtn">
+            <v-row>
+                <v-col cols="12" md="2" offset-md="10" class="text-right py-0">
+                    <v-btn color="primary"
+                           block
+                           @@click="savePayment"
+                           readonly="readonlyPayments">
+                        <v-icon left>mdi-check</v-icon>
+                        Запази плащане
+                    </v-btn>
+                </v-col>
+            </v-row>
+        </v-card-actions>
+    </v-card-text>
+</v-card>

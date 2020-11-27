@@ -1,0 +1,69 @@
+﻿@{
+    ViewBag.Title = "Всички страници";
+}
+
+<h2>Всички страници</h2>
+<br />
+
+<v-app data-app>
+    <content-management-all-pages inline-template ref="contentManagementAllPages">
+        <template v-if="loading">
+            <v-text-field loading
+                          label="Зареждане..."
+                          disabled>
+            </v-text-field>
+        </template>
+        <template v-else>
+            <div>
+                <v-row>
+                    <v-col cols="12" class="text-right">
+                        <v-btn color="primary" href="/ContentManagement/Pages/Create">
+                            <v-icon left>mdi-plus</v-icon>
+                            Нова страница
+                        </v-btn>
+                    </v-col>
+                </v-row>
+                <v-row>
+                    <v-col cols="12">
+                        <v-card>
+                            <v-data-table :headers="headers"
+                                          :items="allPages"
+                                          item-key="url"
+                                          id="result-datatable"
+                                          class="elevation-1"
+                                          no-data-text="Няма намерени резултати"
+                                          :loading="loadingTableData"
+                                          loading-text="Зареждане на данни">
+                                <template v-slot:item="{ item, expand, isExpanded }">
+                                    <tr class="cursor-pointer">
+                                        <td>{{ item.MenuLabel }}</td>
+                                        <td>{{ item.URL }}</td>
+                                        <td>{{ item.Is_Active ? 'Активна' : 'Неактивна'}}</td>
+                                        <td>{{ item.LastModificationUTC }}</td>
+                                        <td align="right">
+                                            <v-btn small
+                                                   color="primary"
+                                                   @@click="redirectToModify(item.Id)">
+                                                <v-icon left>mdi-file-document-edit-outline</v-icon>
+                                                Преглед
+                                            </v-btn>
+                                        </td>
+                                    </tr>
+                                </template>
+                            </v-data-table>
+                        </v-card>
+                    </v-col>
+                </v-row>
+            </div>
+        </template>
+    </content-management-all-pages>
+</v-app>
+
+
+@section Scripts {
+
+    @* Models *@
+
+    @* Components *@
+    @Scripts.Render("~/Scripts/VueComponents/contentManagement_all_pages.js")
+}

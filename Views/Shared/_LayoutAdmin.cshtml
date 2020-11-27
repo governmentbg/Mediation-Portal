@@ -1,0 +1,138 @@
+﻿<!DOCTYPE html>
+
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>@ViewBag.Title</title>
+    @Styles.Render("~/Content/css")
+    @Styles.Render("~/Content/css/vuetify")
+    @Styles.Render("~/Content/css/custom-style-admin")
+    @Scripts.Render("~/bundles/modernizr")
+    @Styles.Render("~/Content/css/quill")
+    <script>
+        var appSettings = {
+            pageTitle: '@ViewBag.Title',
+            nomenclatureTabId: '@ViewBag.tabId'
+        }
+    </script>
+</head>
+<body>
+    <div id="app">
+        <v-app>
+            <template v-if="loading">
+                <v-text-field color="primary"
+                              loading
+                              label="Зареждане...">
+                </v-text-field>
+            </template>
+            <template v-else>
+                <v-navigation-drawer v-model="drawer"
+                                     disable-resize-watcher
+                                     app
+                                     clipped>
+                    <v-list dense>
+                        <template v-for="(item, i) in items">
+                            <nav-drop-down-menu v-if="item.dropdown === true" :menu="item" :key="i"></nav-drop-down-menu>
+                            <v-list-item-group :value="item.active ? item.activeId : ''"
+                                               color="primary"
+                                               v-else>
+                                <v-list-item :key="i"
+                                             :href="item.URL"
+                                             :value="item.activeId">
+                                    <v-list-item-action>
+                                        <v-icon>{{ item.icon }}</v-icon>
+                                    </v-list-item-action>
+                                    <v-list-item-content>{{ item.MenuLabel }} </v-list-item-content>
+                                </v-list-item>
+                            </v-list-item-group>
+                        </template>
+                    </v-list>
+                </v-navigation-drawer>
+
+                <v-app-bar app
+                           clipped-left
+                           dark
+                           dense>
+                    <v-app-bar-nav-icon @@click.stop="drawer = !drawer"></v-app-bar-nav-icon>
+                    <v-toolbar-title class="mr-12 align-center">
+                        <span class="title">{{ appTitle }}</span>
+                    </v-toolbar-title>
+                    <v-spacer></v-spacer>
+                    <v-row justify="end">
+                        <v-menu offset-y>
+                            <template v-slot:activator="{on}">
+                                <v-btn text v-on="on">
+                                    <v-icon left>mdi-account-circle-outline</v-icon>
+                                    <span>Моят профил</span>
+                                    <v-icon right>expand_more</v-icon>
+                                </v-btn>
+                            </template>
+                            <v-list>
+                                <v-list-item href="/">
+                                    <v-list-item-title>
+                                        Към портала
+                                    </v-list-item-title>
+                                </v-list-item>
+                                <v-list-item href="/Account/LogOff">
+                                    <v-list-item-title>
+                                        Изход
+                                    </v-list-item-title>
+                                </v-list-item>
+                            </v-list>
+                        </v-menu>
+                    </v-row>
+                </v-app-bar>
+
+                <v-content>
+                    <v-container fluid class="pa-12">
+                        <v-row>
+                            <v-col cols="12">
+                                @RenderBody()
+                            </v-col>
+                        </v-row>
+                    </v-container>
+                </v-content>
+            </template>
+        </v-app>
+    </div>
+
+    @*@Scripts.Render("~/bundles/jquery")
+        @Scripts.Render("~/bundles/bootstrap")
+        @Scripts.Render("~/bundles/vue")
+        @Scripts.Render("~/bundles/global")*@
+
+
+    <script src="~/Scripts/jquery-3.3.1.js"></script>
+    <script src="~/Scripts/bootstrap.js"></script>
+    <script src="~/Scripts/vue.js"></script>
+    <script src="~/Scripts/vuetify.js"></script>
+    <script src="~/Scripts/iziModal.min.js"></script>
+    <script src="~/Scripts/iziToast.min.js"></script>
+    <script src="~/Scripts/moment.min.js"></script>
+    <script src="~/Scripts/axios.min.js"></script>
+    <script src="~/Scripts/jquery.loadingModal.min.js"></script>
+    <script src="~/Scripts/global.js"></script>
+    <script src="~/Scripts/quill.min.js"></script>
+    <script src="~/Scripts/vue-quill-editor.js"></script>
+    <script src="~/Scripts/quill.htmlEditButton.min.js"></script>
+
+    <script>
+        window.vuetify = Vuetify;
+    </script>
+    @RenderSection("scripts", required: false)
+
+
+    <script src="~/Scripts/VueComponents/navigationDropDown.js"></script>
+    <script src="~/Scripts/VueComponents/adminLayout.js"></script>
+    <style>
+        a:hover, a:focus {
+            text-decoration: none !important;
+        }
+
+        .v-app-bar > div.v-toolbar__content {
+            padding: 4px 16px;
+        }
+    </style>
+</body>
+</html>

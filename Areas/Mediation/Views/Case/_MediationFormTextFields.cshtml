@@ -1,0 +1,109 @@
+﻿<template v-if="showRequestTerminationApplicantTextField">
+    <v-row>
+        <v-col cols="12">
+            <v-textarea class="px-4"
+                        label="Причина за прекратяване на процедурата по медиация"
+                        color="primary"
+                        v-model="applicantRequestTerminationMessage"
+                        rows="1"
+                        outlined
+                        auto-grow
+                        clearable>
+            </v-textarea>
+        </v-col>
+    </v-row>
+</template>
+<template v-if="showRequestTerminationRespondingPartyTextField">
+    <v-row>
+        <v-col cols="12">
+            <v-textarea class="px-4"
+                        label="Причина за прекратяване на процедурата по медиация"
+                        color="primary"
+                        v-model="respondingPartyRequestTerminationMessage"
+                        rows="1"
+                        outlined
+                        auto-grow
+                        clearable>
+            </v-textarea>
+        </v-col>
+    </v-row>
+</template>
+<template v-if="showMediatorTerminateTextField">
+    <v-row>
+        <v-col cols="12">
+            <v-textarea class="px-4"
+                        label="Причина за прекратяване на процедурата по медиация"
+                        color="primary"
+                        v-model="mediatorTerminationMessage"
+                        rows="1"
+                        outlined
+                        auto-grow
+                        clearable>
+            </v-textarea>
+        </v-col>
+    </v-row>
+</template>
+@*<template v-if="showMediatorFurtherClarificationsRequestedTextField">
+        <v-row>
+            <v-col cols="12">
+                <v-textarea class="px-4"
+                            label="Допълнителни разяснения към ищеца"
+                            color="primary"
+                            v-model="furtherClarificationsRequestedMessage"
+                            rows="1"
+                            outlined
+                            auto-grow
+                            clearable>
+                </v-textarea>
+            </v-col>
+        </v-row>
+    </template>*@
+
+@*<template v-if="false">
+        <v-row>
+            <v-col cols="12">
+                <v-textarea class="px-4"
+                            label="Такси по медиация са договорени"
+                            color="primary"
+                            v-model="taxes agreed model"
+                            rows="1"
+                            outlined
+                            readobly>
+                </v-textarea>
+            </v-col>
+        </v-row>
+    </template>
+
+<template v-if="showPrivacyDeclarationInfo">
+    <v-row>
+        <v-col cols="12">
+            <v-textarea label="Декларация за поверителност е подписана. Изберете за преглед"
+                        color="primary"
+                        readonly
+                        v-on:focus="asd"
+                        rows="1"
+                        auto-grow>
+            </v-textarea>
+        </v-col>
+    </v-row>
+</template>
+
+    <template v-if="showMediatorFeesNotes">
+        <v-checkbox v-model="feesAgreed"
+                    color="primary"
+                    label="Договорени такси"
+                    readonly>
+        </v-checkbox>
+        <v-row>
+            <v-col cols="12">
+                <v-textarea label="Записки"
+                            color="primary"
+                            rows="1"
+                            auto-grow
+                            v-model="Form.MediatorFeesNotes"
+                            @@keydown="saveFeesNotes($event)">
+                </v-textarea>
+            </v-col>
+        </v-row>
+        <b>*За да запазите записката натиснете "Ctrl+S"</b>
+    </template>*@

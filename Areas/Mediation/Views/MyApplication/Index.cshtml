@@ -1,0 +1,60 @@
+﻿<my-mediation-applications inline-template ref="myMediationApplications">
+    <template v-if="loading">
+        <v-text-field color="primary"
+                      loading
+                      label="Зареждане..."
+                      readonly>
+        </v-text-field>
+    </template>
+    <template v-else>
+        <v-card width="100%">
+            <v-card-title>
+                <v-spacer></v-spacer>
+                <v-text-field v-model="search"
+                              append-icon="mdi-magnify"
+                              label="Търсене"
+                              single-line
+                              hide-details></v-text-field>
+            </v-card-title>
+            <v-data-table :headers="headers"
+                          :items="applications"
+                          item-key="GUID"
+                          class="elevation-1"
+                          no-data-text="Няма намерени резултати"
+                          :disable-sort="true"
+                          :loading="loadingTableData"
+                          loading-text="Зареждане на данни"
+                          :search="search"
+                          :footer-props="{itemsPerPageText: 'Редове на страница'}">
+                <template v-slot:item="props">
+                    <tr class="cursor-pointer">
+                        <td @@click="props.expanded = !props.expanded">{{ props.item.CaseNumber }}</td>
+                        <td @@click="props.expanded = !props.expanded">{{ props.item.DateCreated }}</td>
+                        <td @@click="props.expanded = !props.expanded">{{ props.item.CaseStatusName }}</td>
+                        <td @@click="props.expanded = !props.expanded">{{ props.item.RespondingPartyUserName }}</td>
+                        <td @@click="props.expanded = !props.expanded">{{ props.item.SubjectDispute}}</td>
+                        <td align="center">
+                            <div class="my-2">
+                                <v-btn rounded
+                                       small
+                                       :href="'/Mediation/Case/Edit/' + props.item.GUID"
+                                       target="_blank">
+                                    Към Заявление&nbsp;
+                                    <i class="fa fa-external-link-alt"></i>
+                                </v-btn>
+                            </div>
+                        </td>
+                    </tr>
+                </template>
+            </v-data-table>
+        </v-card>
+    </template>
+</my-mediation-applications>
+
+@section Scripts {
+
+    @* Models  *@
+
+    @* Scripts *@
+    @Scripts.Render("~/Scripts/VueComponents/myMediationApplications.js")
+}

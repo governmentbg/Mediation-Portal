@@ -1,0 +1,186 @@
+﻿@{
+    ViewBag.Title = "Покана за представляване на лице в медиация";
+}
+
+    <representative-party-confirmation inline-template ref="representativePartyConfirmation">
+        <template v-if="loading">
+            <v-text-field color="primary"
+                          loading
+                          label="Зареждане..."
+                          readonly>
+            </v-text-field>
+        </template>
+        <template v-else>
+            <div class="application-form">
+                <template v-if="!noAccess">
+                    <v-row>
+                        <v-col cols="12" md="4" sm="12">
+                            <v-autocomplete attached="true"
+                                            class="pl-4"
+                                            v-bind:items="disputeSubjects"
+                                            v-model="Form.SubjectDisputeGUID"
+                                            color="primary"
+                                            :no-data-text="noDataText.disputeSubjects"
+                                            item-text="Value"
+                                            item-value="Key"
+                                            v-bind:clearable="!inReadonlyMode"
+                                            v-bind:readonly="inReadonlyMode"
+                                            label="Предмет на спора">
+                            </v-autocomplete>
+                        </v-col>
+                    </v-row>
+                    <v-row>
+                        <v-col cols="12" md="12" sm="12">
+                            <v-textarea class="pl-4"
+                                        auto-grow
+                                        v-model="Form.SubjectDisputeDescription"
+                                        color="primary"
+                                        label="Описание"
+                                        rows="1"
+                                        v-bind:readonly="inReadonlyMode">
+                            </v-textarea>
+                        </v-col>
+                    </v-row>
+                    <v-alert type="info"
+                             color="primary"
+                             dense>
+                        <v-col cols="12" md="4" sm="12" class="pa-0">
+                            Статус: <b>{{Form.CaseStatusName ? Form.CaseStatusName : 'Чернова'}}</b>
+                        </v-col>
+                        <v-col cols="12" md="4" sm="12" class="pa-0">
+                            Входящ номер: <b>{{Form.CaseNumber? Form.CaseNumber : 'след входиране'}}</b>
+                        </v-col>
+                    </v-alert>
+                    <template>
+                        <v-tabs align-with-title grow slider-size="5">
+                            <v-tabs-slider color="brown lighten-1"></v-tabs-slider>
+                            <v-tab ripple centered class="blue-grey--text text--darken-3 subtitle-1 font-weight-bold ml-0">
+                                СТРАНА 1
+                            </v-tab>
+                            <v-tab ripple centered class="blue-grey--text text--darken-3 subtitle-1 font-weight-bold">
+                                СТРАНА 2
+                            </v-tab>
+                            <template v-if="inCreateMode">
+                                <v-tab ripple centered class="blue-grey--text text--darken-3 subtitle-1 font-weight-bold">
+                                    Медиатор
+                                </v-tab>
+                            </template>
+                            @* Applicant *@
+                            <v-tab-item>
+                                @Html.Partial("~/Areas/Mediation/Views/Case/_ApplicantInformation.cshtml")
+                            </v-tab-item>
+                            @* Responding party *@
+                            <v-tab-item>
+                                @Html.Partial("~/Areas/Mediation/Views/Case/_RespondingPartyInformation.cshtml")
+                            </v-tab-item>
+                        </v-tabs>
+
+                        <template v-if="true">
+                            <v-card hover outlined>
+                                <v-row>
+                                    <v-col cols="12">
+                                        <v-subheader class="subheader-border">Покана за представляване на лице в медиация</v-subheader>
+                                    </v-col>
+                                </v-row>
+                                <v-card-text>
+                                    <p>Получихте покана да представлявате едно от лицата в онлайн медиация. Моля потвърдете или откажете Вашето участие.</p>
+                                </v-card-text>
+                                <v-card-actions>
+                                    <v-row>
+                                        <v-col cols="12" md="6" sm="12">
+                                            <v-btn block color="success"
+                                                   :loading="actionButtons.loading"
+                                                   v-show="showButton"
+                                                   @@click="confirmParticipation">
+                                                <v-icon left>mdi-check</v-icon>
+                                                Приеми
+                                            </v-btn>
+                                        </v-col>
+                                        <v-col cols="12" md="6" sm="12">
+                                            <v-btn block color="error"
+                                                   :loading="actionButtons.loading"
+                                                   v-show="showButton"
+                                                   @@click="refuseRepresentativePartyParticipation">
+                                                <v-icon left>mdi-close</v-icon>
+                                                Откажи
+                                            </v-btn>
+                                        </v-col>
+                                    </v-row>
+                                </v-card-actions>
+                            </v-card>
+                        </template>
+                        <template>
+                            @Html.Partial("~/Views/SharedDialogs/LoginDialog.cshtml")
+                        </template>
+                    </template>
+                </template>
+                <template v-if="noAccess">
+                    <v-alert border="left"
+                             type="error"
+                             text
+                             class="elevation-2 py-5"
+                             dense>
+                        Нямате достъп до посочената медиация.
+                    </v-alert>
+                </template>
+                <v-dialog v-model="representativePartyApproveMediation.open" scrollable persistent max-width="60%">
+                    <v-card>
+                        <v-card-title class="headline primary white--text"
+                                      primary-title>
+                            {{representativePartyApproveMediation.privacyDeclaration.Name}}
+                        </v-card-title>
+
+                        <v-card-text class="pt-5">
+                            <template v-if="representativePartyApproveMediation.loadingDeclaration">
+                                <v-text-field color="primary"
+                                              loading
+                                              label="Зареждане..."
+                                              readonly>
+                                </v-text-field>
+                            </template>
+                            <template v-else>
+                                <v-col cols="12" v-html="representativePartyApproveMediation.privacyDeclaration.HTMLContent"></v-col>
+                            </template>
+                        </v-card-text>
+
+                        <v-divider></v-divider>
+
+                        <v-card-actions>
+                            <v-spacer></v-spacer>
+                            <v-btn color="success"
+                                   @@click="confirmRepresentativePartyParticipation">
+                                <v-icon left>mdi-check</v-icon>
+                                Приемам
+                            </v-btn>
+                            <v-btn @@click="representativePartyApproveMediation.open = !representativePartyApproveMediation.open">
+                                Затвори
+                            </v-btn>
+                        </v-card-actions>
+                    </v-card>
+                </v-dialog>
+            </div>
+        </template>
+    </representative-party-confirmation>
+
+
+@section Scripts {
+
+    @* Models *@
+    @Scripts.Render("~/JSModels/FormFilingClasses/RepresentativePerson.js")
+    @Scripts.Render("~/JSModels/FormFilingClasses/Person.js")
+    @Scripts.Render("~/JSModels/FormFilingClasses/Contact.js")
+    @Scripts.Render("~/JSModels/FormFilingClasses/FullAddress.js")
+    @Scripts.Render("~/JSModels/MediationClasses/LegalEntity.js")
+    @Scripts.Render("~/JSModels/MediationClasses/MediationForm.js")
+    @Scripts.Render("~/JSModels/Account/Login.js")
+
+
+    @* Scripts *@
+    @Scripts.Render("~/Scripts/Custom/load-nomenclatures.js")
+    @Scripts.Render("~/Scripts/VueComponents/representativePartyConfirmation.js")
+
+    @Scripts.Render("~/Scripts/VueComponents/digitalSignature.js")
+    @Scripts.Render("~/Scripts/scs/scs.js")
+    @Scripts.Render("~/Scripts/scs/scs.helpers.js")
+    @Scripts.Render("~/Scripts/VueComponents/loginDialog.js")
+}

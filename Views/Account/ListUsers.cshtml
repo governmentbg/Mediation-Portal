@@ -1,0 +1,193 @@
+﻿@model IEnumerable<MediationPortal.Web.Models.RegisterViewModel>
+
+@{
+    /**/
+
+    ViewBag.Title = "Потребители";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<h2>Потребители</h2>
+<br />
+
+<list-users-form inline-template>
+    <div>
+
+        <template v-if="loading">
+            <v-text-field color="primary"
+                          loading
+                          label="Зареждане..."
+                          readonly>
+            </v-text-field>
+        </template>
+
+        <template v-else>
+            <template>
+                <v-row>
+                    <v-col cols="12" align="right">
+                        <v-btn color="primary"
+                               :href="'/Account/Register/'">
+                            <v-icon left>mdi-plus</v-icon>
+                            Добавяне на потребител
+                        </v-btn>
+                    </v-col>
+                </v-row>
+                <v-row>
+                    <v-col cols="12">
+                        <v-card width="100%" class="mt-5">
+                            <v-card-title>
+                                <v-row class="mb-6">
+                                    <v-col cols="12" md="3">
+                                        <v-text-field label="Име"
+                                                      v-model="filters.Name">
+                                        </v-text-field>
+                                    </v-col>
+                                    <v-col cols="12" md="3">
+                                        <v-text-field label="Потребителско име"
+                                                      v-model="filters.Username">
+                                        </v-text-field>
+                                    </v-col>
+                                    <v-col cols="12" md="2">
+                                        <v-select label="Роля"
+                                                  v-model="filters.Role"
+                                                  :items="roles"
+                                                  item-text="Label"
+                                                  item-value="Value"
+                                                  :menu-props="{ offsetY: true }">
+                                        </v-select>
+                                    </v-col>
+                                    <v-col cols="12" md="2">
+                                        <v-btn color="primary lighten-1"
+                                               class="mt-2"
+                                               block
+                                               @@click="triggerSearch">
+                                            <v-icon left>mdi-magnify</v-icon>
+                                            Търси
+                                        </v-btn>
+                                    </v-col>
+                                    <v-col cols="12" md="2">
+                                        <v-btn color="blue-grey darken-3"
+                                               class="mt-2"
+                                               block
+                                               dark
+                                               @@click="removeSearch"
+                                               v-if="isFilterApplied">
+                                            <v-icon left>mdi-close</v-icon>
+                                            Изчисти филтъра
+                                        </v-btn>
+                                    </v-col>
+                                </v-row>
+                            </v-card-title>
+                            <v-card-text>
+                                <v-row>
+                                    <v-col cols="12">
+                                        <v-data-table :headers="items"
+                                                      :items="users"
+                                                      item-key="Id"
+                                                      class="elevation-1"
+                                                      hide-default-footer
+                                                      no-data-text="Няма намерени резултати"
+                                                      :disable-sort="true"
+                                                      :loading="loadingTableData"
+                                                      loading-text="Зареждане на данни"
+                                                      :items-per-page="selectedItemsPerPage">
+                                            <template v-slot:item="props">
+                                                <tr>
+                                                    <td @@click="props.expanded = !props.expanded">{{ props.item.FirstName }}</td>
+                                                    <td @@click="props.expanded = !props.expanded">{{ props.item.LastName }}</td>
+                                                    <td @@click="props.expanded = !props.expanded">{{ props.item.Email }}</td>
+                                                    <td @@click="props.expanded = !props.expanded">{{ props.item.UserName }}</td>
+                                                    <td @@click="props.expanded = !props.expanded">{{ props.item.Roles }}</td>
+                                                    <td align="right">
+                                                        <v-btn small
+                                                               color="primary"
+                                                               :href="'/Account/EditUser/' + props.item.Id">
+                                                            <v-icon left>mdi-file-document-edit-outline</v-icon>
+                                                            Преглед
+                                                        </v-btn>
+
+                                                        <v-tooltip top color="blue-grey darken-4">
+                                                            <template v-slot:activator="{ on }">
+                                                                <v-btn small
+                                                                       dark
+                                                                       v-on="on"
+                                                                       color="red darken-3"
+                                                                       @@click="deleteUser(props.item.Id)">
+                                                                    <v-icon>mdi-trash-can-outline</v-icon>
+                                                                </v-btn>
+                                                            </template>
+                                                            <span>Изтриване на потребител</span>
+                                                        </v-tooltip>
+                                                    </td>
+                                                </tr>
+                                            </template>
+                                        </v-data-table>
+                                    </v-col>
+                                </v-row>
+                                <v-row class="mt-4">
+                                    <v-col cols="2" align="right">
+                                        <v-select :items="itemsPerPage"
+                                                  v-model="selectedItemsPerPage"
+                                                  item-text="Value"
+                                                  item-value="Key"
+                                                  placeholder="-- Избери --"
+                                                  label="Редове на страница"
+                                                  color="primary"
+                                                  @@change="setRows(selectedItemsPerPage)">
+                                        </v-select>
+                                    </v-col>
+                                    <v-col cols="10" align="right">
+                                        <v-pagination v-model="pagination.page"
+                                                      total-visible="10"
+                                                      :length="pagination.totalPages"
+                                                      color="primary"
+                                                      @@input="next(pagination.page)"
+                                                      style="justify-content: flex-end;">
+                                        </v-pagination>
+                                    </v-col>
+                                </v-row>
+                            </v-card-text>
+                        </v-card>
+                    </v-col>
+                </v-row>
+                <v-dialog v-model="deleteDialog.open"
+                          persistent
+                          width="25%">
+                    <v-card>
+                        <v-card-title>Потвърждение</v-card-title>
+                        <v-card-text>
+                            <h3 class="title">
+                                Сигурни ли сте, че искате да изтриете избраният потребител?
+                            </h3>
+                            <h3 class="subtitle-1">
+                                Имайте предвид, че не може да бъде изтрит потребител, който има подадено заявление.
+                            </h3>
+                        </v-card-text>
+                        <v-card-actions>
+                            <v-col cols="12" align="right">
+                                <v-btn color="red darken-3"
+                                       dark
+                                       @@click="confirmDeleteUser()">
+                                    <h5>Да</h5>
+                                </v-btn>
+                                <v-btn color="grey" dark
+                                       @@click="deleteDialog.open = !deleteDialog.open">
+                                    <h5>Не</h5>
+                                </v-btn>
+                            </v-col>
+                        </v-card-actions>
+                    </v-card>
+                </v-dialog>
+            </template>
+        </template>
+    </div>
+</list-users-form>
+
+@section Scripts{
+
+    @* Models *@
+    @Scripts.Render("~/JSModels/SearchUsers/UserFilters.js")
+
+    @* Scripts *@
+    @Scripts.Render("~/Scripts/VueComponents/listUsersForm.js")
+}

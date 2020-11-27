@@ -1,0 +1,50 @@
+﻿<v-data-table :headers="events.tableHeader"
+              :items="events.data"
+              item-key="url"
+              id="result-datatable"
+              class="elevation-1"
+              no-data-text="Няма намерени резултати"
+              :loading="events.loading"
+              loading-text="Зареждане на данни"
+              :items-per-page="events.selectedItemsPerPage"
+              :footer-props="footer">
+    <template v-slot:item="{ item }">
+        <tr class="cursor-pointer">
+            <td>{{ item.CaseEventName }}</td>
+            <td>{{ item.Description }}</td>
+            @*<td>{{ item.Notes }}</td>*@
+            <td>{{ item.CaseEventStatusName }}</td>
+            <td>
+                <template v-if="item.currentUserParticipatingStatus === 0">
+                    <span class="orange--text darken-4">Непотвърден</span>
+                </template>
+                <template v-if="item.currentUserParticipatingStatus === 1">
+                    <span class="green--text darken-4">Потвърден</span>
+                </template>
+                <template v-if="item.currentUserParticipatingStatus === 2">
+                    <span class="red--text darken-4">Отказано</span>
+                </template>
+                <template v-if="item.currentUserParticipatingStatus === -1">
+                    <span> — </span>
+                </template>
+            </td>
+            <td>{{ moment(item.StartDate).format("DD.MM.YYYYг. HH:mmч.") }}</td>
+            <td align="right">
+                <div class="my-2">
+                    <v-btn v-if="showGoToEventButton(item)"
+                           small
+                           color="primary"
+                           class="mr-2"
+                           @@click="goToEvent(item.GUID)">
+                        Вход
+                    </v-btn>
+                    <v-btn :loading="events.loading"
+                           small
+                           @@click="previewEvent(item.GUID)">
+                        Преглед
+                    </v-btn>
+                </div>
+            </td>
+        </tr>
+    </template>
+</v-data-table>

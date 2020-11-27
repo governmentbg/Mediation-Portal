@@ -1,0 +1,306 @@
+﻿
+<v-card hover outlined>
+    <v-row>
+        <v-col cols="12">
+            <v-subheader class="subheader-border">Основна информация</v-subheader>
+        </v-col>
+    </v-row>
+    <v-card-text>
+        <v-row>
+            <v-col cols="12" md="4" sm="12">
+                <v-text-field class="px-4"
+                              v-model="Form.PersonInfo.FirstName"
+                              label="Име*"
+                              color="primary"
+                              v-bind:readonly="inReadonlyMode"></v-text-field>
+            </v-col>
+            <v-col cols="12" md="4" sm="12">
+                <v-text-field class="px-4"
+                              v-model="Form.PersonInfo.MiddleName"
+                              label="Презиме*"
+                              color="primary"
+                              v-bind:readonly="inReadonlyMode"></v-text-field>
+            </v-col>
+            <v-col cols="12" md="4" sm="12">
+                <v-text-field class="px-4"
+                              v-model="Form.PersonInfo.LastName"
+                              label="Фамилия*"
+                              color="primary"
+                              v-bind:readonly="inReadonlyMode"></v-text-field>
+            </v-col>
+        </v-row>
+        <v-row>
+            <v-col cols="12" md="4" sm="12">
+                <v-text-field class="px-4"
+                              v-model="Form.PersonInfo.EGN"
+                              label="ЕГН/ЛНЧ*"
+                              color="primary"
+                              v-bind:readonly="inReadonlyMode"></v-text-field>
+            </v-col>
+            <v-col cols="12" md="4" sm="12">
+                <v-autocomplete class="px-4"
+                          v-model="Form.Citizenships"
+                          v-bind:items="citizenships"
+                          item-text="Value"
+                          item-value="Key"
+                          label="Гражданство(ва)*"
+                          color="primary"
+                          :menu-props="{ offsetY: true }"
+                          :no-data-text="noDataText.citizenships"
+                          multiple
+                          v-bind:clearable="!inReadonlyMode"
+                          v-bind:readonly="inReadonlyMode"></v-autocomplete>
+            </v-col>
+        </v-row>
+        <v-row>
+            <v-col cols="12" md="4" sm="12">
+                <v-text-field class="px-4"
+                              v-model="Form.ContactInfo.LandlinePhone"
+                              label="Стац. телефон"
+                              color="primary"
+                              v-bind:readonly="inReadonlyMode"></v-text-field>
+            </v-col>
+            <v-col cols="12" md="4" sm="12">
+                <v-text-field class="px-4"
+                              v-model="Form.ContactInfo.MobilePhone"
+                              label="Моб. телефон*"
+                              color="primary"
+                              v-bind:readonly="inReadonlyMode"></v-text-field>
+            </v-col>
+            <v-col cols="12" md="4" sm="12">
+                <v-text-field class="px-4"
+                              v-model="Form.ContactInfo.Email"
+                              label="Електронна поща*"
+                              color="primary"
+                              v-bind:readonly="inReadonlyMode"></v-text-field>
+            </v-col>
+        </v-row>
+    </v-card-text>
+</v-card>
+<v-card hover outlined>
+    <v-row>
+        <v-col cols="12">
+            <v-subheader class="subheader-border">Постоянен адрес</v-subheader>
+        </v-col>
+    </v-row>
+    <v-card-text>
+        <v-row>
+            <v-col cols="12" md="3" sm="12">
+                <v-select class="px-4"
+                          v-model="Form.PermanentAddress.CountryGUID"
+                          v-bind:items="PermanentAddress.countries"
+                          item-text="Value"
+                          item-value="Key"
+                          label="Държава*"
+                          color="primary"
+                          :menu-props="{ offsetY: true }"
+                          :no-data-text="noDataText.countries"
+                          v-bind:clearable="!inReadonlyMode"
+                          v-bind:readonly="inReadonlyMode"
+                          v-on:change="onCountryChange(Form.PermanentAddress, Form.PermanentAddress.CountryGUID, $event)"></v-select>
+            </v-col>
+            <v-col cols="12" md="3" sm="12">
+                <v-select class="px-4"
+                          v-model="Form.PermanentAddress.DistrictGUID"
+                          v-bind:items="PermanentAddress.districts"
+                          item-text="Value"
+                          item-value="Key"
+                          label="Област*"
+                          color="primary"
+                          :menu-props="{ offsetY: true }"
+                          :no-data-text="noDataText.districts"
+                          v-bind:clearable="!inReadonlyMode"
+                          v-bind:readonly="inReadonlyMode"
+                          v-on:change="onDistrictChange(Form.PermanentAddress, PermanentAddress)"
+                          v-if="Form.PermanentAddress.CountryGUID == BG_GUID"></v-select>
+            </v-col>
+            <v-col cols="12" md="3" sm="12">
+                <v-select class="px-4"
+                          v-model="Form.PermanentAddress.MunicipalityGUID"
+                          v-bind:items="PermanentAddress.municipalities"
+                          item-text="Value"
+                          item-value="Key"
+                          label="Община*"
+                          color="primary"
+                          :menu-props="{ offsetY: true }"
+                          :no-data-text="noDataText.municipalities"
+                          v-bind:clearable="!inReadonlyMode"
+                          v-bind:readonly="inReadonlyMode"
+                          v-on:change="onMunicipalityChange(Form.PermanentAddress, PermanentAddress)"
+                          v-if="Form.PermanentAddress.CountryGUID == BG_GUID"></v-select>
+            </v-col>
+            <v-col cols="12" md="3" sm="12">
+                <v-select class="px-4"
+                          v-model="Form.PermanentAddress.SettlementGUID"
+                          v-bind:items="PermanentAddress.settlements"
+                          item-text="Value"
+                          item-value="Key"
+                          label="Населено място*"
+                          color="primary"
+                          :menu-props="{ offsetY: true }"
+                          :no-data-text="noDataText.settlements"
+                          v-bind:clearable="!inReadonlyMode"
+                          v-bind:readonly="inReadonlyMode"
+                          v-if="Form.PermanentAddress.CountryGUID == BG_GUID"></v-select>
+            </v-col>
+            <v-col cols="12" md="12" sm="12">
+                <v-text-field class="px-4"
+                              v-model="Form.PermanentAddress.Address"
+                              label="Адрес*"
+                              color="primary"
+                              v-bind:readonly="inReadonlyMode"></v-text-field>
+            </v-col>
+        </v-row>
+    </v-card-text>
+</v-card>
+<v-card hover outlined>
+    <v-row>
+        <v-col cols="12">
+            <v-subheader class="subheader-border">Настоящ адрес</v-subheader>
+        </v-col>
+    </v-row>
+    <v-card-text>
+        <v-row>
+            <v-col cols="12" md="3" sm="12">
+                <v-select class="px-4"
+                          v-model="Form.CurrentAddress.CountryGUID"
+                          v-bind:items="CurrentAddress.countries"
+                          item-text="Value"
+                          item-value="Key"
+                          label="Държава*"
+                          color="primary"
+                          :menu-props="{ offsetY: true }"
+                          :no-data-text="noDataText.countries"
+                          v-bind:clearable="!inReadonlyMode"
+                          v-bind:readonly="inReadonlyMode"
+                          v-on:change="onCountryChange(Form.CurrentAddress, Form.CurrentAddress.CountryGUID, $event)"></v-select>
+            </v-col>
+            <v-col cols="12" md="3" sm="12">
+                <v-select class="px-4"
+                          v-model="Form.CurrentAddress.DistrictGUID"
+                          v-bind:items="CurrentAddress.districts"
+                          item-text="Value"
+                          item-value="Key"
+                          label="Област*"
+                          color="primary"
+                          :menu-props="{ offsetY: true }"
+                          :no-data-text="noDataText.districts"
+                          v-bind:clearable="!inReadonlyMode"
+                          v-bind:readonly="inReadonlyMode"
+                          v-on:change="onDistrictChange(Form.CurrentAddress, CurrentAddress)"
+                          v-if="Form.CurrentAddress.CountryGUID == BG_GUID"></v-select>
+            </v-col>
+            <v-col cols="12" md="3" sm="12">
+                <v-select class="px-4"
+                          v-model="Form.CurrentAddress.MunicipalityGUID"
+                          v-bind:items="CurrentAddress.municipalities"
+                          item-text="Value"
+                          item-value="Key"
+                          label="Община"
+                          color="primary"
+                          :menu-props="{ offsetY: true }"
+                          :no-data-text="noDataText.municipalities"
+                          v-bind:clearable="!inReadonlyMode"
+                          v-bind:readonly="inReadonlyMode"
+                          v-on:change="onMunicipalityChange(Form.CurrentAddress, CurrentAddress)"
+                          v-if="Form.CurrentAddress.CountryGUID == BG_GUID"></v-select>
+            </v-col>
+            <v-col cols="12" md="3" sm="12">
+                <v-select class="px-4"
+                          v-model="Form.CurrentAddress.SettlementGUID"
+                          v-bind:items="CurrentAddress.settlements"
+                          item-text="Value"
+                          item-value="Key"
+                          label="Населено място*"
+                          color="primary"
+                          :menu-props="{ offsetY: true }"
+                          :no-data-text="noDataText.settlements"
+                          v-bind:clearable="!inReadonlyMode"
+                          v-bind:readonly="inReadonlyMode"
+                          v-if="Form.CurrentAddress.CountryGUID == BG_GUID"></v-select>
+            </v-col>
+            <v-col cols="12" md="12" sm="12">
+                <v-text-field class="px-4"
+                              v-model="Form.CurrentAddress.Address"
+                              label="Адрес*"
+                              color="primary"
+                              v-bind:readonly="inReadonlyMode"></v-text-field>
+            </v-col>
+        </v-row>
+    </v-card-text>
+</v-card>
+<v-card hover>
+    <v-row>
+        <v-col cols="12">
+            <v-subheader class="subheader-border">Адрес за кореспонденция</v-subheader>
+        </v-col>
+    </v-row>
+    <v-card-text>
+        <v-row>
+            <v-col cols="12" md="3" sm="12">
+                <v-select class="px-4"
+                          v-model="Form.MailingAddress.CountryGUID"
+                          v-bind:items="MailingAddress.countries"
+                          item-text="Value"
+                          item-value="Key"
+                          label="Държава*"
+                          color="primary"
+                          :menu-props="{ offsetY: true }"
+                          :no-data-text="noDataText.countries"
+                          v-bind:clearable="!inReadonlyMode"
+                          v-bind:readonly="inReadonlyMode"
+                          v-on:change="onCountryChange(Form.MailingAddress, Form.MailingAddress.CountryGUID, $event)"></v-select>
+            </v-col>
+            <v-col cols="12" md="3" sm="12">
+                <v-select class="px-4"
+                          v-model="Form.MailingAddress.DistrictGUID"
+                          v-bind:items="MailingAddress.districts"
+                          item-text="Value"
+                          item-value="Key"
+                          label="Област*"
+                          color="primary"
+                          :menu-props="{ offsetY: true }"
+                          :no-data-text="noDataText.districts"
+                          v-bind:clearable="!inReadonlyMode"
+                          v-bind:readonly="inReadonlyMode"
+                          v-on:change="onDistrictChange(Form.MailingAddress, MailingAddress)"
+                          v-if="Form.MailingAddress.CountryGUID == BG_GUID"></v-select>
+            </v-col>
+            <v-col cols="12" md="3" sm="12">
+                <v-select class="px-4"
+                          v-model="Form.MailingAddress.MunicipalityGUID"
+                          v-bind:items="MailingAddress.municipalities"
+                          item-text="Value"
+                          item-value="Key"
+                          label="Община"
+                          color="primary"
+                          :menu-props="{ offsetY: true }"
+                          :no-data-text="noDataText.municipalities"
+                          v-bind:clearable="!inReadonlyMode"
+                          v-bind:readonly="inReadonlyMode"
+                          v-on:change="onMunicipalityChange(Form.MailingAddress, MailingAddress)"
+                          v-if="Form.MailingAddress.CountryGUID == BG_GUID"></v-select>
+            </v-col>
+            <v-col cols="12" md="3" sm="12">
+                <v-select class="px-4"
+                          v-model="Form.MailingAddress.SettlementGUID"
+                          v-bind:items="MailingAddress.settlements"
+                          item-text="Value"
+                          item-value="Key"
+                          label="Населено място*"
+                          color="primary"
+                          :menu-props="{ offsetY: true }"
+                          :no-data-text="noDataText.settlements"
+                          v-bind:clearable="!inReadonlyMode"
+                          v-bind:readonly="inReadonlyMode"></v-select>
+            </v-col>
+            <v-col cols="12" md="12" sm="12">
+                <v-text-field class="px-4"
+                              v-model="Form.MailingAddress.Address"
+                              label="Адрес*"
+                              color="primary"
+                              v-bind:readonly="inReadonlyMode"></v-text-field>
+            </v-col>
+        </v-row>
+    </v-card-text>
+</v-card>

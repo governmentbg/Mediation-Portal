@@ -1,0 +1,37 @@
+﻿<v-card class="elevation-12">
+    <v-card-text>
+        <v-container>
+            <v-form ref="loginForm"
+                    v-model="valid"
+                    lazy-validation>
+                <v-text-field v-model="LogInForm.UserName"
+                              :counter="20"
+                              label="Потребителско име"
+                              :rules="[validationRules.requiredField]"
+                              autocomplete="off"
+                              readonly></v-text-field>
+
+                <v-text-field v-model="LogInForm.Password"
+                              :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
+                              :type="showPassword ? 'text' : 'password'"
+                              label="Парола"
+                              counter
+                              :rules="[validationRules.requiredField, validationRules.minlenght]"
+                              autocomplete="off"
+                              @@click:append="showPassword = !showPassword"></v-text-field>
+                <v-checkbox v-model="LogInForm.RememberMe"
+                            label="Запомни ме!"
+                            color="primary"></v-checkbox>
+                <br />
+            </v-form>
+        </v-container>
+    </v-card-text>
+    <v-card-actions>
+        <v-btn color="primary"
+               class="ml-4"
+               @@click="submitLogInForm">
+            Влизане
+        </v-btn>
+        <v-spacer></v-spacer>
+    </v-card-actions>
+</v-card>

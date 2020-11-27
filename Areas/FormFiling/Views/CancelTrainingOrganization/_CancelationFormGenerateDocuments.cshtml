@@ -1,0 +1,52 @@
+﻿<v-card class="mx-auto card-cursor-default"
+        hover>
+    <v-row>
+        <v-col cols="12">
+            <v-subheader class="subheader-border">
+                Генерирани документи
+                <v-spacer></v-spacer>
+            </v-subheader>
+        </v-col>
+    </v-row>
+
+    <v-card-text>
+        <v-row>
+            <v-col cols="12" md="3">
+                <v-btn color="indigo darken-1"
+                       dark
+                       block
+                       @@click="downloadMinistersOrder">
+                    <v-icon left>mdi-file-document-outline</v-icon>
+                    Заповед на министър
+                </v-btn>
+            </v-col>
+            <v-col cols="12" md="3">
+                <v-btn color="light-blue darken-2"
+                       dark
+                       block
+                       @@click="downloadDetailedNote">
+                    <v-icon left>mdi-file-document-outline</v-icon>
+                    Докладна записка
+                </v-btn>
+            </v-col>
+            <v-col cols="12" md="3">
+                <v-btn color="green darken-2"
+                       dark
+                       block
+                       @@click="downloadCertificate">
+                    <v-icon left>mdi-file-document-outline</v-icon>
+                    Удостоверение
+                </v-btn>
+            </v-col>
+            <v-col cols="12" md="3">
+                <v-btn color="primary"
+                       dark
+                       block
+                       @@click="downloadApplication">
+                    <v-icon left>mdi-file-document-outline</v-icon>
+                    Заявление
+                </v-btn>
+            </v-col>
+        </v-row>
+    </v-card-text>
+</v-card>

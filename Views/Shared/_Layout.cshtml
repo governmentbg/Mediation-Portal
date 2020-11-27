@@ -1,0 +1,186 @@
+﻿@using MediationPortal.Web.Helpers
+
+@{
+    //@using System.Security.Claims;
+    Dictionary<eBreadcrumb, Breadcrumb> Breadcrumbs = ViewBag.Breadcrumbs != null ? ViewBag.Breadcrumbs : new Dictionary<eBreadcrumb, Breadcrumb>();
+    // eUserActivity[] AllowedActions = ums.GetUserAllowedActions(CustomAppContext.Current.UserId).ToArray();
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title — Единен Регистър на Медиаторите</title>
+    @Styles.Render("~/Content/css")
+    @Styles.Render("~/Content/css/vuetify")
+    @Styles.Render("~/Content/css/custom-style")
+    @Scripts.Render("~/bundles/modernizr")
+    <script>var pageTitle = '@ViewBag.Title';</script>
+</head>
+<body>
+    <div id="app">
+        <v-app>
+            <template v-if="loading">
+                <v-text-field color="amber"
+                              loading
+                              label="Зареждане...">
+                </v-text-field>
+            </template>
+            <template v-else>
+                <v-navigation-drawer v-model="drawer"
+                                     disable-resize-watcher
+                                     app width="290">
+                    <v-list dense>
+                        <template v-for="(item, i) in items">
+                            <v-list-item-group :value="item.activeId" color="primary">
+                                <nav-drop-down-menu v-if="item.dropdown === true" :menu="item" :key="i"></nav-drop-down-menu>
+
+                                <v-list-item :key="i"
+                                             :href="item.URL"
+                                             :value="item.activeId"
+                                             v-else>
+                                    <v-list-item-action v-if="item.icon && item.icon.length">
+                                        <v-icon>{{ item.icon }}</v-icon>
+                                    </v-list-item-action>
+                                    <v-list-item-content>{{ item.MenuLabel }}</v-list-item-content>
+                                </v-list-item>
+
+                            </v-list-item-group>
+                        </template>
+                    </v-list>
+                </v-navigation-drawer>
+
+                <v-app-bar app elevation="10" height="200" src="~/Content/Images/mega-header-bgr.jpg" dark fixed shrink-on-scroll :style="{background: $vuetify.theme.themes.dark.background}">
+                    <v-system-bar absolute dark color="primary" class="hidden-sm-and-down">
+                        {{ companyName }}
+                        <v-spacer></v-spacer>
+                        <v-btn href="https://www.justice.government.bg/home/index/contacts?top=1" text target="_blank">КОНТАКТИ</v-btn>
+                    </v-system-bar>
+                    <v-row class="align-center fill-height">
+                        <svg id="dis-logo" class="icon icon-lion-form"><use xlink:href="~/Content/Images/symbol-defs.svg#icon-lion-form"></use></svg>
+                        <span id="appTitle" class="ml-2">{{ appTitle }}</span>
+                        <v-spacer></v-spacer>
+                        <div class="hidden-sm-and-down">
+                            <template v-for="(item, i) in items">
+
+                                <drop-down-menu v-if="item.dropdown === true" :menu="item" :key="i"></drop-down-menu>
+
+
+
+
+                                <v-btn v-if="(!item.hasOwnProperty('dropdown') || !item.dropdown  ) && (!item.hasOwnProperty('group') && !item.hasOwnProperty('divider'))" text :key="i" :href="item.URL">
+                                    <v-icon v-if="item.icon" class="mr-1"> {{ item.icon }} </v-icon>
+                                    {{ item.MenuLabel }}
+                                </v-btn>
+                            </template>
+                        </div>
+                        <div class="hidden-md-and-up">
+                            <v-row>
+                                <v-col cols="12">
+                                    <v-app-bar-nav-icon @@click="drawer = !drawer"></v-app-bar-nav-icon>
+                                </v-col>
+                            </v-row>
+                        </div>
+                        <v-menu class="hidden-md-and-up">
+                            <v-list>
+                                <v-list-item v-for="(item, i) in items" :key="i">
+                                    <v-list-item-content>
+                                        <v-list-item-title>{{ item.MenuLabel }}</v-list-item-title>
+                                    </v-list-item-content>
+                                </v-list-item>
+                            </v-list>
+                        </v-menu>
+                    </v-row>
+                </v-app-bar>
+
+                <v-content class="pb-10">
+                    @*
+        <!--Breadcrumbs-->
+        <div v-if="pageTitle !== 'Начало'" id="breadcrumb" class="container-fluid pa-0">
+            <div class="breadcrumb-bgr">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb container-fluid container--xl">
+                        <li class="breadcrumb-item">
+                            <a href="/" title="Начало">
+                                Начало
+                            </a>
+                        </li>
+                        @foreach (Breadcrumb bc in Breadcrumbs.Select(x => x.Value))
+                            {
+                                <li class="breadcrumb-item"><a @Html.Raw(bc.Href != null ? "href='" + bc.Href + "'" : "")>@bc.Name </a></li>
+                            }
+                    </ol>
+                </nav>
+            </div>
+        </div>
+                    *@
+
+                    <template v-if="currentUser">
+                        <div id="breadcrumb" class="container-fluid pa-0">
+                            <div class="breadcrumb-bgr">
+                                <nav aria-label="breadcrumb">
+                                    <ol class="breadcrumb container-fluid container--xl">
+                                        <li class="breadcrumb-item">
+                                            Потребител: <strong>{{ currentUser.FirstName + (currentUser.MiddleName ? " "+currentUser.MiddleName : "")+ " " +currentUser.LastName }}</strong>
+                                        </li>
+                                        <li class="breadcrumb-item">
+                                            ЕГН: <strong>{{ currentUser.EGN }}</strong>
+                                        </li>
+                                    </ol>
+                                </nav>
+                            </div>
+                        </div>
+                    </template>
+                    <v-container fill-height class="d-block">
+                        <v-row class="ma-0">
+                            <v-col>
+                                <template v-if="PageHeader">
+                                    <h2>{{PageHeader}}</h2>
+                                    <br />
+                                </template>
+                                <template v-if="HTMLContent">
+                                    <v-row>
+                                        <v-col cols="12" v-html="HTMLContent">
+                                        </v-col>
+                                    </v-row>
+                                </template>
+                                @RenderBody()
+                            </v-col>
+                        </v-row>
+                    </v-container>
+                </v-content>
+                <v-footer>
+                    <v-row class="py-1">
+                        <v-col cols="12" md="2" sm="12" align="center">
+                            <v-img src="/Content/Images/prog-flag1.png" class="prog-img"></v-img>
+                        </v-col>
+                        <v-col cols="12" md="8" sm="12" align="center">
+                            <p>Този портал е създаден в рамките на договор № BG05SFOP001-3.001-0014-C01/03.10.2017г. по проект: „Насърчаване използването на медиацията като алтернативен способ за решаване на спорове“, финансиран от Оперативна програма „Добро управление”, чрез Европейския социален фонд </p>
+                        </v-col>
+                        <v-col cols="12" md="2" sm="12" align="center">
+                            <v-img src="/Content/Images/prog-flag2.png" class="prog-img"></v-img>
+                        </v-col>
+                    </v-row>
+                </v-footer>
+            </template>
+        </v-app>
+    </div>
+
+
+    <!-- iziModal element init-->
+    <div id="modal" data-iziModal-zindex="1001"></div>
+
+    @Scripts.Render("~/bundles/polyfill")
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+    @Scripts.Render("~/bundles/vue")
+    @Scripts.Render("~/bundles/global")
+
+    @RenderSection("scripts", required: false)
+
+    @Scripts.Render("~/Scripts/VueComponents/navigationDropDown.js")
+    @Scripts.Render("~/Scripts/VueComponents/dropDownMenu.js")
+    @Scripts.Render("~/Scripts/VueComponents/layout.js")
+</body>
+</html>

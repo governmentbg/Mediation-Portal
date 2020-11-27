@@ -1,0 +1,10 @@
+﻿
+@{
+    //ViewBag.Title = "GetPage";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    string content = ViewBag.GetPageContent;
+}
+
+@MvcHtmlString.Create(content);
+

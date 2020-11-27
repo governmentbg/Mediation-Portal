@@ -1,0 +1,51 @@
+﻿@{
+    ViewBag.Title = "Всички услуги";
+}
+
+<h2>Всички услуги</h2>
+<br />
+
+<v-app data-app>
+    <content-management-all-services inline-template ref="contentManagementAllServices">
+        <div>
+            <v-row>
+                <v-col cols="12">
+                    <v-card>
+                        <v-data-table :headers="headers"
+                                      :items="allServices"
+                                      item-key="url"
+                                      id="result-datatable"
+                                      class="elevation-1"
+                                      no-data-text="Няма намерени резултати"
+                                      :loading="loadingTableData"
+                                      loading-text="Зареждане на данни"
+                                      :footer-props="footer">
+                            <template v-slot:item="{ item, expand, isExpanded }">
+                                <tr class="cursor-pointer">
+                                    <td>{{ item.Name }}</td>
+                                    <td align="right">
+                                        <v-btn small
+                                               color="primary"
+                                               :href="'/ContentManagement/Services/Edit/' + item.GUID">
+                                            <v-icon left>mdi-file-document-edit-outline</v-icon>
+                                            Преглед
+                                        </v-btn>
+                                    </td>
+                                </tr>
+                            </template>
+                        </v-data-table>
+                    </v-card>
+                </v-col>
+            </v-row>
+        </div>
+    </content-management-all-services>
+</v-app>
+
+
+@section Scripts {
+
+    @* Models *@
+
+    @* Components *@
+    @Scripts.Render("~/Scripts/VueComponents/contentManagement_all_services.js")
+}

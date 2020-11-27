@@ -1,0 +1,15 @@
+﻿
+<v-card hover outlined>
+    <v-row>
+        <v-col cols="12">
+            <v-subheader class="subheader-border">Променени данни или обстоятелства</v-subheader>
+        </v-col>
+    </v-row>
+    <v-card-text>
+        <v-row v-for="(msg, index) in CompareMsg" :key="index">
+            <v-col>
+                <span v-html="msg"></span>
+            </v-col>
+        </v-row>
+    </v-card-text>
+</v-card>

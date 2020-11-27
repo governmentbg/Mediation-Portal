@@ -1,0 +1,75 @@
+﻿<v-card class="elevation-12">
+    <v-card-text>
+        <v-container>
+            <v-form ref="registrationForm"
+                    v-model="valid"
+                    lazy-validation>
+                <v-text-field v-model="RegisterForm.FirstName"
+                              :counter="10"
+                              :rules="[validationRules.requiredField]"
+                              label="Име"
+                              v-bind:readonly="inReadonlyModeRegister"
+                              autocomplete="off"></v-text-field>
+                <v-text-field v-model="RegisterForm.LastName"
+                              :counter="10"
+                              :rules="[validationRules.requiredField]"
+                              label="Фамилия"
+                              v-bind:readonly="inReadonlyModeRegister"
+                              autocomplete="off"></v-text-field>
+
+                <v-text-field v-model="RegisterForm.UserName"
+                              :counter="20"
+                              :rules="[validationRules.requiredField]"
+                              label="Потребителско име"
+                              v-bind:readonly="inReadonlyModeRegister"
+                              autocomplete="off"></v-text-field>
+
+
+                <v-text-field v-model="RegisterForm.Email"
+                              :rules="emailRules"
+                              label="Имейл"
+                              readonly
+                              autocomplete="off"
+                              hint="Имейлът Ви е предварително зададен от Медиатора"
+                              persistent-hint></v-text-field>
+
+
+                <v-text-field v-model="RegisterForm.Password"
+                              :rules="[validationRules.requiredField, validationRules.minlenght]"
+                              :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
+                              :type="showPassword ? 'text' : 'password'"
+                              label="Парола"
+                              counter
+                              autocomplete="off"
+                              v-bind:readonly="inReadonlyModeRegister"
+                              @@click:append="showPassword = !showPassword"></v-text-field>
+
+                <v-text-field v-model="RegisterForm.ConfirmPassword"
+                              :rules="[validationRules.requiredField, passwordMatch]"
+                              :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
+                              :type="showPassword ? 'text' : 'password'"
+                              label="Потвърждение на парола"
+                              counter
+                              autocomplete="off"
+                              v-bind:readonly="inReadonlyModeRegister"
+                              @@click:append="showPassword = !showPassword"></v-text-field>
+                <br />
+            </v-form>
+        </v-container>
+    </v-card-text>
+    <v-card-actions>
+        <v-btn color="primary"
+               class="ml-4"
+               v-bind:readonly="inReadonlyModeRegister"
+               @@click="submitRegisterForm">
+            Регистрация
+        </v-btn>
+        <v-spacer></v-spacer>
+    </v-card-actions>
+    <v-card-actions>
+        <v-flex class="ml-4" @@click="changeTab">
+            Ако имате регистрация натистнете
+            <strong style="text-decoration: underline"><a href="#">Тук</a></strong>.
+        </v-flex>
+    </v-card-actions>
+</v-card>

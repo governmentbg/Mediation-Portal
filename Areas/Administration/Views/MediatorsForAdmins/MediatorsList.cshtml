@@ -1,0 +1,69 @@
+﻿@{
+    ViewBag.Title = "Медиатори";
+}
+<v-app>
+    <admin-mediators-list inline-template v-bind:for-mediation="false" ref="adminMediatorsList">
+        <div id="searchmediator">
+            <template v-if="loading">
+                <v-text-field loading
+                              label="Зареждане..."
+                              disabled>
+                </v-text-field>
+            </template>
+            <template v-else>
+                <v-container>
+                    <v-row>
+                        <v-col cols="12">
+                            <v-sheet elevation="3">
+                                <v-tabs align-with-title :show-arrows="true">
+                                    <v-tabs-slider color="primary"></v-tabs-slider>
+                                    <v-tab ripple centered class="black--text">
+                                        Основна информация
+                                    </v-tab>
+                                    <v-tab ripple centered class="black--text">
+                                        Контакти
+                                    </v-tab>
+                                    <v-tab ripple centered class="black--text">
+                                        Образование
+                                    </v-tab>
+
+                                    @* By General Information *@
+                                    <v-tab-item>
+                                        @Html.Partial("_SearchBasicInformation")
+                                    </v-tab-item>
+                                    @* By Contacts *@
+                                    <v-tab-item>
+                                        @Html.Partial("~/Areas/Register/Views/Mediators/_SearchByContactsView.cshtml")
+                                    </v-tab-item>
+                                    @* By Education *@
+                                    <v-tab-item>
+                                        @Html.Partial("~/Areas/Register/Views/Mediators/_SearchByEducationView.cshtml")
+                                    </v-tab-item>
+                                </v-tabs>
+                            </v-sheet>
+                        </v-col>
+                    </v-row>
+                    <template>
+                        <v-row>
+                            <v-col cols="12">
+                                @Html.Partial("_SearchResultDataTableView")
+                            </v-col>
+                        </v-row>
+                    </template>
+                </v-container>
+            </template>
+        </div>
+    </admin-mediators-list>
+</v-app>
+
+@section Scripts {
+
+    @* Models *@
+    @Scripts.Render("~/JSModels/FormFilingClasses/FullAddress.js")
+    @Scripts.Render("~/JSModels/FormFilingClasses/Contact.js")
+    @Scripts.Render("~/JSModels/FormFilingClasses/Education.js")
+    @Scripts.Render("~/JSModels/SearchMediators/MediatorFiltersByAdmin.js")
+
+    @* Components *@
+    @Scripts.Render("~/Scripts/VueComponents/admin_mediators.js")
+}

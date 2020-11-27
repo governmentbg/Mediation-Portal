@@ -1,0 +1,123 @@
+﻿
+
+<case-event-audio-call-form inline-template ref="caseEventAudioCallForm">
+    <template v-if="loading">
+        <v-text-field loading
+                        label="Зареждане..."
+                        disabled>
+        </v-text-field>
+    </template>
+    <template v-else>
+        <v-container justify-center>
+            <template v-if="hasEventIsEnded === false">
+                <v-row>
+                    <v-col cols="12">
+                        <v-alert type="info" border="bottom" color="primary">
+                            ТЕМА НА СРЕЩАТА: <strong>{{ EventForm.Description }}</strong>
+                        </v-alert>
+                    </v-col>
+                </v-row>
+            </template>
+            <template v-if="isMediator === true && !EventForm.EndDate">
+                <v-row>
+                    <v-col cols="12" md="6" offset-md="3" sm="12">
+                        <v-btn color="error"
+                                block
+                                @@click="onEndEvent">
+                            Край на събитието
+                        </v-btn>
+                    </v-col>
+                </v-row>
+                <v-row>
+                    <v-col cols="12" md="3" sm="12" class="pa-4">
+                        <v-card height="800px"
+                                class="elevation-12">
+                            <v-card-title>
+                                <h2>Бележки</h2>
+                            </v-card-title>
+                            <v-card-text>
+                                {{ EventForm.Notes }}
+                            </v-card-text>
+                        </v-card>
+                    </v-col>
+                    <v-col cols="12" md="6" sm="12" class="pa-4">
+                        <v-card height="800px"
+                                class="elevation-12">
+                            <v-card-title>
+                                <h2>Стая за Медиация</h2>
+                            </v-card-title>
+                            <iframe allow="microphone; camera;" style="width:100%; height:78%; border: none;" v-bind:src="roomURL"></iframe>
+                        </v-card>
+                    </v-col>
+                    <v-col cols="12" md="3" sm="12" class="pa-4">
+                        <v-card height="800px"
+                                class="elevation-12">
+                            <v-card-title>
+                                <h2>
+                                    Записки
+                                    <v-tooltip top>
+                                        <template v-slot:activator="{ on }">
+                                            <v-btn icon v-on="on">
+                                                <v-icon color="grey lighten-1">mdi-information-outline</v-icon>
+                                            </v-btn>
+                                        </template>
+                                        <span>На всяка една минута Вашите записки ще бъдат запазвани.</span>
+                                    </v-tooltip>
+                                </h2>
+                            </v-card-title>
+                            <v-textarea rows="36"
+                                        v-model="EventForm.EventNotes"
+                                        outlined></v-textarea>
+                        </v-card>
+                    </v-col>
+                </v-row>
+            </template>
+            <template v-if="isMediator === false">
+                <v-row>
+                    <v-col cols="12" class="pa-4">
+                        <template v-if="hasEventIsEnded === false">
+                            <v-card height="800px"
+                                    class="elevation-12">
+                                <v-card-title>
+                                    <h2>Стая за Медиация</h2>
+                                </v-card-title>
+                                <iframe allow="microphone; camera" style="width:100%; height:78%; border: none;" v-bind:src="roomURL"></iframe>
+                            </v-card>
+                        </template>
+                    </v-col>
+                </v-row>
+            </template>
+            <template v-if="hasEventIsEnded === true">
+                <v-card class="elevation-12">
+                    <v-alert type="error"
+                                color="error"
+                                border="left"
+                                prominent>
+                        <h3 class="headline my-0">Събитието е приключило или е отказано</h3>
+                    </v-alert>
+                </v-card>
+                <v-row class="mt-10">
+                    <v-col cols="12" md="4" offset-md="4">
+                        <v-btn :href="'/Mediation/Case/Preview/'+caseGuid"
+                                block
+                                large
+                                color="primary">
+                            <v-icon left>mdi-redo-variant</v-icon>
+                            Към медиацията
+                        </v-btn>
+                    </v-col>
+                </v-row>
+            </template>
+        </v-container>
+    </template>
+</case-event-audio-call-form>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/Vue")
+    @Scripts.Render("~/JSModels/ContentManagement/CaseEventFormModel.js")
+    @Scripts.Render("~/JSModels/MediationClasses/MediationForm.js")
+
+
+    @* Scripts *@
+    @Scripts.Render("~/Scripts/VueComponents/caseEventAudioCallForm.js")
+}

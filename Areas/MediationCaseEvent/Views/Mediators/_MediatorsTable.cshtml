@@ -1,0 +1,67 @@
+﻿<v-data-table :headers="mediators.tableHeader"
+              :items="mediators.data"
+              item-key="url"
+              id="result-datatable"
+              multi-sort
+              class="elevation-1"
+              no-data-text="Няма намерени резултати"
+              :loading="mediators.loading"
+              loading-text="Зареждане на данни"
+              hide-default-footer
+              :items-per-page="mediators.selectedItemsPerPage"
+              @*:footer-props="footer" *@>
+    <template v-slot:item="{ item }">
+        <tr class="cursor-pointer">
+            <td>{{ item.FirstName + ' ' + item.LastName }}</td>
+            <td>{{ item.RegistrationNumber }}</td>
+            <td class="pt-1"><v-chip label small color="primary" class="mr-1 mb-1" v-for="lang in item.ForeignLanguages" :key="lang">{{ lang }}</v-chip></td>
+            <td class="pt-1"><v-chip label small color="primary" class="mr-1 mb-1" v-for="edu in item.Professions" :key="edu">{{ edu }}</v-chip></td>
+            <td class="py-1"><v-chip label small color="primary" class="mr-1 mb-1" v-for="prof in item.AdditionalQualifications" :key="prof">{{ prof }}</v-chip></td>
+            <td>{{ item.StatusName }}</td>
+            @*<td><span :class="getStatusColor(item.status)">{{ getStatusLabel(item.status) }}</span></td>*@
+            <td class="text-center">
+                <template v-if="item.IsPrimaryMediator">
+                    <v-icon color="success">mdi-check</v-icon>
+                </template>
+            </td>
+            <td align="center">
+                <div class="my-2">
+                    <v-btn rounded
+                           small
+                           :href="'/Register/Mediators/Details/' + item.MediatorGUID"
+                           target="_blank">
+                        Преглед&nbsp;
+                        <i class="fa fa-external-link-alt"></i>
+                    </v-btn>
+                </div>
+            </td>
+        </tr>
+    </template>
+</v-data-table>
+<template v-if="false">
+    <v-footer style="background-color: white !important" class="px-0">
+        <v-col cols="12" md="2" sm="12" class="px-0">
+            <v-select :items="mediators.itemsPerPage"
+                      v-model="mediators.selectedItemsPerPage"
+                      item-text="Value"
+                      item-value="Key"
+                      placeholder="-- Избери --"
+                      label="Редове на страница"
+                      color="primary"
+                      @@change="setRows(mediators.selectedItemsPerPage)">
+            </v-select>
+        </v-col>
+        <v-col cols="12" md="10" sm="12" class="px-0">
+            <v-pagination style="justify-content: flex-end;"
+                          v-model="mediators.pagination.page"
+                          :length="mediators.pagination.totalPages"
+                          color="primary"
+                          @@input="next(mediators.pagination.page)">
+            </v-pagination>
+        </v-col>
+    </v-footer>
+    <template>
+        <div class="text-xs-center pa-4">
+        </div>
+    </template>
+</template>

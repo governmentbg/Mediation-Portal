@@ -1,0 +1,68 @@
+﻿<v-card hover outlined>
+    <v-row>
+        <v-col cols="12">
+            <v-subheader class="subheader-border">Споразумение (спогодба)</v-subheader>
+        </v-col>
+    </v-row>
+    <v-card-text>
+        <template v-if="isCurrentUserMediator && !Form.isProcedureFinalizeAgreementSent">
+            <v-row>
+                <v-col cols="12" md="12" sm="12" class="py-0">
+                    <quill-editor label="Споразумение - спогодба"
+                                    style="height:500px"
+                                    v-model="Form.ProcedureAgreementContent"
+                                    :readonly="!isCurrentUserMediator"
+                                    :options="quillOptionsFinalize">
+                    </quill-editor>
+                </v-col>
+            </v-row>
+            <v-row>
+                <v-col cols="12" class="pt-0 text-right" v-if="!isMediationTerminated">
+                    <v-btn color="info" @@click="sendProcedureFinalizeAgreementToSides">
+                        <v-icon left>mdi-send</v-icon>
+                        Изпратете до двете страни
+                    </v-btn>
+                </v-col>
+            </v-row>
+        </template>
+
+        <template v-if="!isCurrentUserMediator && !Form.isProcedureFinalizeAgreementSent">
+            <v-row>
+                <v-col cols="12">
+                    <h4>Няма изпратено споразумение за започване на медиация от медиатора към момента.</h4>
+                </v-col>
+            </v-row>
+        </template>
+
+        <template v-if="Form.isProcedureFinalizeAgreementSent">
+            <v-row>
+                <v-col cols="12" class="pt-0 mb-5">
+                    <v-btn color="primary" large @@click="showFinalizingAgreement">
+                        <v-icon left>mdi-file-document-outline</v-icon>
+                        Преглед на споразумение
+                    </v-btn>
+                </v-col>
+            </v-row>
+            <v-row>
+                <v-col cols="12" class="py-0">
+                    Страна 1:
+                    <template v-if="Form.ApplicantSignedClosing === false">
+                        <span class="red--text text--darken-4 font-weight-bold">Изчаква приемане</span>
+                    </template>
+                    <template v-else>
+                        <span class="green--text text--darken-4 font-weight-bold">Подписано на {{ moment(Form.ApplicantSignedClosingTimestamp).format("DD.MM.YYYYг. HH:mmч.")}}</span>
+                    </template>
+                </v-col>
+                <v-col cols="12">
+                    Страна 2:
+                    <template v-if="Form.RespondingPartySignedClosing === false">
+                        <span class="red--text text--darken-4 font-weight-bold">Изчаква приемане</span>
+                    </template>
+                    <template v-else>
+                        <span class="green--text text--darken-4 font-weight-bold">Подписано на {{ moment(Form.RespondingPartySignedClosingTimestamp).format("DD.MM.YYYYг. HH:mmч.")}}</span>
+                    </template>
+                </v-col>
+            </v-row>
+        </template>
+    </v-card-text>
+</v-card>

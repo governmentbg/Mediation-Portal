@@ -1,0 +1,130 @@
+﻿<v-card hover>
+    <v-row>
+        <v-col cols="12">
+            <v-subheader class="subheader-border">
+                Образование и квалификации
+                <v-spacer></v-spacer>
+            </v-subheader>
+        </v-col>
+    </v-row>
+    <v-card-text>
+        <div v-for="(education, index) in Form.Educations" :key="index">
+            <v-row>
+                <v-col cols="12" md="4" sm="12" class="pt-4">
+                    <v-autocomplete class="px-4 py-2"
+                                    v-model="education.EducationDegreeGUID"
+                                    v-bind:items="educationDegrees"
+                                    item-text="Value"
+                                    item-value="Key"
+                                    label="Образователно квалификационна степен*"
+                                    color="primary"
+                                    :menu-props="{ offsetY: true }"
+                                    v-bind:readonly="inReadonlyMode"></v-autocomplete>
+                </v-col>
+                <v-col cols="12" md="4" sm="12" class="pt-4">
+                    <v-autocomplete class="px-4 py-2"
+                                    v-model="education.EducationFieldGUID"
+                                    v-bind:items="educationFields"
+                                    item-text="Value"
+                                    item-value="Key"
+                                    label="Област на висше образование*"
+                                    @@change="loadProfessionalDirections(education.EducationFieldGUID, education.TrackGuid)"
+                                    color="primary"
+                                    :menu-props="{ offsetY: true }"
+                                    v-bind:readonly="inReadonlyMode"></v-autocomplete>
+                </v-col>
+                <v-col cols="12" md="4" sm="12" class="pt-4">
+                    <v-autocomplete class="px-4 py-2"
+                                    v-model="education.ProfessionalDirectionGUID"
+                                    v-bind:items="professionalDirectionsGlobal[education.TrackGuid]"
+                                    item-text="Value"
+                                    item-value="Key"
+                                    label="Професионално направление*"
+                                    color="primary"
+                                    :menu-props="{ offsetY: true }"
+                                    v-bind:readonly="inReadonlyMode"></v-autocomplete>
+                </v-col>
+            </v-row>
+            <v-row>
+                <v-col cols="12" class="py-0">
+                    <hr class="my-0" />
+                </v-col>
+            </v-row>
+        </div>
+        <v-row>
+            <v-col cols="12" md="6" sm="12">
+                <v-autocomplete class="px-4"
+                                v-model="Form.Professions"
+                                v-bind:items="professions"
+                                item-text="Value"
+                                item-value="Key"
+                                label="Професия"
+                                color="primary"
+                                :menu-props="{ offsetY: true }"
+                                :no-data-text="noDataText.professions"
+                                multiple
+                                chips
+                                v-bind:readonly="inReadonlyMode"></v-autocomplete>
+            </v-col>
+            <v-col cols="12" md="6" sm="12">
+                <v-autocomplete class="px-4"
+                                v-model="Form.ForeignLanguages"
+                                v-bind:items="foreignLanguages"
+                                item-text="Value"
+                                item-value="Key"
+                                label="Чужди езици"
+                                color="primary"
+                                :menu-props="{ offsetY: true }"
+                                :no-data-text="noDataText.languages"
+                                multiple
+                                chips
+                                v-bind:readonly="inReadonlyMode"></v-autocomplete>
+            </v-col>
+            <v-col cols="12" md="6" sm="12">
+                <v-autocomplete class="px-4"
+                                v-model="Form.TrainingOrganizationGUID"
+                                v-bind:items="organizations"
+                                item-text="Value"
+                                item-value="Key"
+                                label="Обучителна организация"
+                                color="primary"
+                                :menu-props="{ offsetY: true }"
+                                :no-data-text="noDataText.organizations"
+                                v-bind:readonly="inReadonlyMode"></v-autocomplete>
+            </v-col>
+            <v-col cols="12" md="6" xs="12">
+                <v-combobox class="px-4"
+                            v-model="Form.OrganizationMemberships"
+                            label="Членство в организации"
+                            color="primary"
+                            :menu-props="{ offsetY: true }"
+                            multiple
+                            messages="Натиснете 'Enter' след като въведете текст"
+                            chips
+                            v-bind:readonly="inReadonlyMode"></v-combobox>
+            </v-col>
+            <v-col cols="12" md="6" xs="12">
+                <v-autocomplete class="px-4"
+                                v-model="Form.Specializations"
+                                v-bind:items="specializations"
+                                item-text="Value"
+                                item-value="Key"
+                                label="Допълнителна специализация в областта на медиацията"
+                                color="primary"
+                                v-bind:readonly="inReadonlyMode"
+                                multiple></v-autocomplete>
+            </v-col>
+            <v-col cols="12" md="6" xs="12">
+                <v-combobox class="px-4"
+                            v-model="Form.AdditionalQualifications"
+                            label="Допълнителна квалификация"
+                            color="primary"
+                            multiple
+                            messages="Натиснете 'Enter' след като въведете текст"
+                            chips
+                            v-bind:readonly="inReadonlyMode"></v-combobox>
+            </v-col>
+        </v-row>
+    </v-card-text>
+</v-card>
+

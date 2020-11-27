@@ -1,0 +1,102 @@
+﻿<v-toolbar flat color="white">
+    <v-toolbar-title></v-toolbar-title>
+    <v-spacer></v-spacer>
+    <v-dialog v-model="addInfoDialog"
+              hide-overlay
+              transition="dialog-bottom-transition"
+              scrollable>
+        <template v-slot:activator="{ on }">
+        </template>
+        <v-card>
+            <v-toolbar flat dark color="primary">
+                <v-toolbar-title><span class="headline">Допълнителна информация за справка - @Model.ReportDefinitionProperties.ReportName </span></v-toolbar-title>
+                <v-spacer></v-spacer>
+                <v-btn icon dark @@click="addInfoDialog = false;">
+                    <v-icon>close</v-icon>
+                </v-btn>
+            </v-toolbar>
+            <v-card-text>
+                <v-container>
+
+                    <v-layout row wrap justify-space-between>
+                        <v-flex xs4 sm8 md11>
+                            <p class="text-justify">
+                                {{reportDescription}}
+                            </p>
+                        </v-flex>
+                    </v-layout>
+                    <hr />
+                    @*Tabs Section *@
+                    <v-tabs flat color="primary" grow>
+                        <v-tabs-slider color="#b69779"></v-tabs-slider>
+                        <v-tab ripple centered class="black--text">
+                            Филтри
+                        </v-tab>
+                        <v-tab ripple centered class="black--text">
+                            Колони
+                        </v-tab>
+                        <v-tab-item>
+                            <v-container>
+                                <v-layout row wrap xs12>
+                                    <v-flex xs12 md12 pa-2>
+                                        <v-data-table :headers="[{ text: 'Пореден Номер', value: 'index', align: 'left', sortable: true }, { text: 'Име на филтър', value: 'FilterTitleName', align: 'left', sortable: false }, { text: 'Описание', value:'FilterDescription', align: 'left', sortable: false }]"
+                                                      :items="reportFilterDescriptions"
+                                                      class="elevation-1"
+                                                      no-data-text="Няма съществуващи филтри"
+                                                      hide-default-footer>
+                                            <template v-slot:items="props">
+                                                <tr>
+                                                    <td class="text-xs-left">
+                                                        {{ props.item.index }}
+                                                    </td>
+                                                    <td class="text-xs-left">
+                                                        {{ props.item.FilterTitleName }}
+                                                    </td>
+                                                    <td class="text-xs-left">
+                                                        {{ props.item.ReportDescription }}
+                                                    </td>
+                                                </tr>
+                                            </template>
+                                        </v-data-table>
+                                    </v-flex>
+                                </v-layout>
+                            </v-container>
+                        </v-tab-item>
+                        <v-tab-item>
+                            <v-container>
+                                <v-layout row wrap xs12>
+                                    <v-flex xs12 md12 pa-2>
+                                        <v-data-table :headers="[{ text: 'Номер', value: 'index', align: 'left', sortable: true }, { text: 'Име на колона', value:'ColumnName', align: 'left', sortable: true },
+                                                                    {text: 'Описание', value: 'ColumnDescription', align: 'left', sortable: false }]"
+                                                      :items="reportColumnDescriptions"
+                                                      class="elevation-1"
+                                                      show-expand
+                                                      hide-default-footer>
+                                            <template v-slot:items="props">
+                                                <tr>
+                                                    <td class="text-xs-left">
+                                                        {{ props.item.index }}
+                                                    </td>
+                                                    <td class="text-xs-left">
+                                                        {{ props.item.ColumnName }}
+                                                    </td>
+                                                    <td class="text-xs-left">
+                                                        {{ props.item.ColumnDescription }}
+                                                    </td>
+                                                </tr>
+                                            </template>
+
+                                        </v-data-table>
+                                    </v-flex>
+                                </v-layout>
+                            </v-container>
+                        </v-tab-item>
+                    </v-tabs>
+                    @*End Tabs Section *@
+                </v-container>
+            </v-card-text>
+        </v-card>
+    </v-dialog>
+</v-toolbar>
+
+

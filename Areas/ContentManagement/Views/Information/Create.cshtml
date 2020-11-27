@@ -1,0 +1,161 @@
+﻿@{
+    ViewBag.Title = "Създаване на Информация";
+}
+
+<h2>Създаване на Информация</h2>
+<br />
+
+<content-management-create-information inline-template ref="contentManagementCreateInformation">
+    <template v-if="loading">
+        <v-text-field loading
+                      label="Зареждане..."
+                      disabled>
+        </v-text-field>
+    </template>
+    <template v-else>
+        <div>
+            <v-row>
+                <v-col cols="12" class="text-right">
+                    <v-btn color="primary"
+                           @@click="submitInfo">
+                        <v-icon left>mdi-check</v-icon>
+                        Запази
+                    </v-btn>
+                </v-col>
+            </v-row>
+            <v-row>
+                <v-col cols="12">
+                    <v-card hover outlined>
+                        <v-row>
+                            <v-col cols="12">
+                                <v-subheader class="subheader-border">Информация</v-subheader>
+                            </v-col>
+                        </v-row>
+                        <v-card-text>
+                            <v-row>
+                                <v-col cols="12" md="4" sm="12">
+                                    <v-text-field class="px-4"
+                                                  v-model="Info.Title"
+                                                  label="Име*"
+                                                  color="primary"></v-text-field>
+                                </v-col>
+                                <v-col cols="12" md="4" sm="12">
+                                    <v-text-field class="px-4"
+                                                  v-model="Info.URL"
+                                                  label="URL*"
+                                                  color="primary"></v-text-field>
+                                </v-col>
+                                <v-col cols="12" md="2" sm="12">
+                                    <v-autocomplete class="px-4"
+                                                    v-bind:items="noms.sections"
+                                                    v-model="Info.SectionGUID"
+                                                    item-text="Value"
+                                                    item-value="Key"
+                                                    no-data-text="Няма данни"
+                                                    placeholder="-- Избери --"
+                                                    label="Секция*"
+                                                    :menu-props="{offsetY: true }"
+                                                    color="primary"
+                                                    clearable></v-autocomplete>
+                                </v-col>
+                                <v-col cols="12" md="2" sm="12">
+                                    <v-select class="px-4"
+                                              :items="noms.status"
+                                              v-model="Info.IsActive"
+                                              label="Активност*"
+                                              :menu-props="{offsetY: true }"
+                                              color="primary"></v-select>
+                                </v-col>
+                            </v-row>
+                            <v-row>
+                                <v-col cols="12">
+                                    <v-textarea v-model="Info.Description"
+                                                label="Кратко описание"
+                                                class="px-4"
+                                                outlined></v-textarea>
+                                </v-col>
+                            </v-row>
+                            <v-row>
+                                <v-col cols="12">
+                                    <label class="px-4">СЪДЪРЖАНИЕ</label>
+                                    <quill-editor class="px-4"
+                                                  label="Съдържание"
+                                                  style="height:500px"
+                                                  v-model="Info.HTMLContent"
+                                                  :options="editorOption">
+
+                                    </quill-editor>
+                                </v-col>
+                            </v-row>
+                            <v-row>
+                                <v-col cols="12">
+                                    <v-file-input v-model="files"
+                                                  placeholder="Прикачете файлове, които ще използвате в страницата"
+                                                  label="Файлове"
+                                                  multiple
+                                                  prepend-icon="mdi-paperclip"
+                                                  v-on:change="onFileChange($event)"
+                                                  class="px-4">
+                                        <template v-slot:selection="{ text }">
+                                            <v-chip small
+                                                    label
+                                                    color="primary">
+                                                {{ text }}
+                                            </v-chip>
+                                        </template>
+                                    </v-file-input>
+                                </v-col>
+                            </v-row>
+                            <v-row>
+                                <v-col cols="12" class="px-7">
+                                    <v-data-table :headers="table.headers"
+                                                  :items="filesInfo"
+                                                  item-key="url"
+                                                  id="result-datatable"
+                                                  class="elevation-1 px-4"
+                                                  no-data-text="Няма намерени резултати"
+                                                  :loading="table.loading"
+                                                  loading-text="Зареждане на данни">
+                                        <template v-slot:item="{ item, expand, isExpanded }">
+                                            <tr class="cursor-pointer">
+                                                <td>{{ item.FileName }}</td>
+                                                <td>{{ item.FileSize }}</td>
+                                                <td>{{ item.DateCreated}}</td>
+                                                <td>{{ item.UserName }}</td>
+                                                <td class="text-right">
+                                                    <v-btn icon
+                                                           text color="blue darken-1"
+                                                           title="Копирай линк"
+                                                           @@click="copyFileLink(item.GUID)">
+                                                        <v-icon>mdi-link-variant</v-icon>
+                                                    </v-btn>
+                                                    <v-btn icon
+                                                           text color="error"
+                                                           title="Изтрий"
+                                                           @@click="removeFile(item.GUID)">
+                                                        <v-icon>mdi-trash-can-outline</v-icon>
+                                                    </v-btn>
+                                                </td>
+                                            </tr>
+                                        </template>
+                                    </v-data-table>
+                                </v-col>
+                            </v-row>
+                        </v-card-text>
+                    </v-card>
+                </v-col>
+            </v-row>
+        </div>
+    </template>
+</content-management-create-information>
+
+
+
+@section Scripts {
+
+    @* Models *@
+    @Scripts.Render("~/JSModels/ContentManagement/Information.js")
+
+    @* Components *@
+    @Scripts.Render("~/Scripts/VueComponents/contentManagement_create_information.js")
+}

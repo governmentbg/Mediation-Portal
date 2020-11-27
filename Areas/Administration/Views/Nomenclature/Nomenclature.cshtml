@@ -1,0 +1,265 @@
+﻿@{
+    ViewBag.Title = "Номенклатури";
+}
+
+<h2>Номенклатури</h2>
+<br />
+
+<v-app>
+    <nomenclature-tabs inline-template ref="nomenclatureTabs">
+        <template v-if="loading">
+            <v-text-field color="primary"
+                          loading
+                          label="Зареждане..."
+                          disabled>
+            </v-text-field>
+        </template>
+        <template v-else>
+            <div class="application-form">
+                <v-tabs color="primary" v-model="currentTab" center-active>
+                    <v-tabs-slider color="primary"></v-tabs-slider>
+
+                    @* Forms and documents Tab *@
+                    <v-tab ripple centered @@click="currentTab = 0">
+                        @* <-- Custom non-generic tab *@
+                        Форми и документи
+                    </v-tab>
+                    @* Professional directions *@
+                    <v-tab ripple centered @@click="currentTab = 1">
+                        @* <-- Custom non-generic tab *@
+                        Професионални направления
+                    </v-tab>
+                    @* Professional directions *@
+                    <v-tab ripple centered @@click="currentTab = 2">
+                        @* <-- Custom non-generic tab *@
+                        Секция
+                    </v-tab>
+                    @* Dynamic Tabs *@
+                    <v-tab v-for="(h, index) in nomenclatureHeaders" :key="index+2" ripple centered @@click="currentTab = index+3">
+                        @* <-- Generic tabs generated from DB *@
+                        {{h.TitleToBeDisplayed}}
+                    </v-tab>
+                </v-tabs>
+                <v-tabs-items v-model="currentTab">
+
+                    @* Tabs content *@
+                    <v-tab-item :key="0">
+                        @* <-- Custom non-generic tab content *@
+                        <required-form-attachment-type inline-template ref="requiredFormAttachmentType">
+                            <v-container>
+                                <template v-if="loadingItems">
+                                    <v-text-field color="primary"
+                                                  loading
+                                                  label="Зареждане..."
+                                                  disabled>
+                                    </v-text-field>
+                                </template>
+                                <template v-else>
+                                    <v-row>
+                                        <v-col cols="12" md="6" xs="12">
+                                            <v-text-field label="Форма"
+                                                          disabled>
+                                            </v-text-field>
+                                        </v-col>
+                                        <v-col cols="12" md="6" xs="12">
+                                            <v-text-field label="Документи"
+                                                          disabled>
+                                            </v-text-field>
+                                        </v-col>
+                                    </v-row>
+                                    <hr />
+                                    <v-row row wrap v-for="(model, index) in container" :key="index">
+                                        <v-col cols="12" md="6" xs="12">
+                                            <v-textarea v-model="model.FormTypeName"
+                                                        readonly
+                                                        rows="1"
+                                                        auto-grow>
+                                            </v-textarea>
+                                        </v-col>
+                                        <v-col cols="12" md="6" xs="12">
+                                            <v-autocomplete class="px-4"
+                                                            v-bind:items="attachedDocumentTypes"
+                                                            v-model="model.RequiredDocuments"
+                                                            item-text="Value"
+                                                            item-value="Key"
+                                                            color="primary"
+                                                            :menu-props="{ offsetY: true }"
+                                                            no-data-text="Няма данни"
+                                                            multiple
+                                                            chips
+                                                            clearable>
+                                                <template slot="selection" slot-scope="data">
+                                                    <v-chip close
+                                                            @@click:close="removeFromMultipleDropdown(model.RequiredDocuments, data.item.Key)">
+                                                        <v-list-item-content>
+                                                            <v-list-item-title v-html="data.item.Value"></v-list-item-title>
+                                                        </v-list-item-content>
+                                                    </v-chip>
+                                                </template>
+                                                <template slot="item" slot-scope="data">
+                                                    <v-list-item-content>
+                                                        <v-list-item-title v-html="data.item.Value"></v-list-item-title>
+                                                    </v-list-item-content>
+                                                </template>
+                                            </v-autocomplete>
+                                        </v-col>
+                                    </v-row>
+                                    <v-row>
+                                        <v-col cols="12">
+                                            <v-btn color="primary"
+                                                   block
+                                                   v-on:click="saveChanges">
+                                                <i class="fa fa-save"></i>&nbsp;
+                                                Запази промените
+                                            </v-btn>
+                                        </v-col>
+                                    </v-row>
+                                </template>
+                            </v-container>
+                        </required-form-attachment-type>
+                    </v-tab-item>
+
+                    @* Tabs content *@
+                    <v-tab-item :key="1">
+                        <professional-directions inline-template ref="professionalDirections">
+                            <v-container>
+                                <template v-if="loadingItems">
+                                    <v-text-field color="primary"
+                                                  loading
+                                                  label="Зареждане..."
+                                                  disabled>
+                                    </v-text-field>
+                                </template>
+                                <template v-else>
+                                    <v-row>
+                                        <v-col cols="12" md="4">
+                                            <v-text-field label="Наименование"
+                                                          disabled>
+                                            </v-text-field>
+                                        </v-col>
+                                        <v-col cols="12" md="4">
+                                            <v-text-field label="Област на образование"
+                                                          disabled>
+                                            </v-text-field>
+                                        </v-col>
+                                        <v-col cols="12" md="4" class="text-right">
+                                            <v-btn v-on:click="onCreate" color="primary" dark class="mb-2"><v-icon small>fa fa-plus</v-icon>&nbsp;Добави</v-btn>
+                                        </v-col>
+                                    </v-row>
+                                    <hr />
+                                    <div v-for="(item, index) in items" :key="index+1">
+                                        <template v-if="item.InEditMode">
+                                            @Html.Partial("_EditProfessionalDirection")
+                                        </template>
+                                        <template v-else>
+                                            @Html.Partial("_ViewProfessionalDirection")
+                                        </template>
+                                    </div>
+                                </template>
+                            </v-container>
+                        </professional-directions>
+                    </v-tab-item>
+
+                    @* Tabs content *@
+                    <v-tab-item :key="2">
+                        <sections inline-template ref="sections">
+                            <v-container>
+                                <template v-if="loadingItems">
+                                    <v-text-field color="primary"
+                                                  loading
+                                                  label="Зареждане..."
+                                                  disabled>
+                                    </v-text-field>
+                                </template>
+                                <template v-else>
+                                    <v-row>
+                                        <v-col cols="12" md="4">
+                                            <v-text-field label="Наименование"
+                                                          disabled>
+                                            </v-text-field>
+                                        </v-col>
+                                        <v-col cols="12" md="4">
+                                            <v-text-field label="URL"
+                                                          disabled>
+                                            </v-text-field>
+                                        </v-col>
+                                        <v-col cols="12" md="4" class="text-right">
+                                            <v-btn v-on:click="onCreate" color="primary" dark class="mb-2"><v-icon small>fa fa-plus</v-icon>&nbsp;Добави</v-btn>
+                                        </v-col>
+                                    </v-row>
+                                    <hr />
+                                    <div v-for="(item, index) in items" :key="index+1">
+                                        <template v-if="item.InEditMode">
+                                            @Html.Partial("_EditSection")
+                                        </template>
+                                        <template v-else>
+                                            @Html.Partial("_ViewSection")
+                                        </template>
+                                    </div>
+                                </template>
+                            </v-container>
+                        </sections>
+                    </v-tab-item>
+
+                    <v-tab-item v-for="(nom, index) in nomenclatureHeaders" :key="index+3">
+                        @* <-- Generic tabs generated from DB (Content) *@
+                        <nomenclature inline-template :guid="nom.GUID" :has-code="nom.HasCodeColumn">
+                            <v-container>
+                                <template v-if="loadingItems">
+                                    <v-text-field color="primary"
+                                                  loading
+                                                  label="Зареждане..."
+                                                  disabled>
+                                    </v-text-field>
+                                </template>
+                                <template v-else>
+                                    <v-row>
+                                        <v-col cols="12" md="4">
+                                            <v-text-field label="Наименование"
+                                                          disabled>
+                                            </v-text-field>
+                                        </v-col>
+                                        <v-col cols="12" md="4">
+                                            <v-text-field v-show="hasCode"
+                                                          label="Код"
+                                                          disabled>
+                                            </v-text-field>
+                                        </v-col>
+                                        <v-col cols="12" md="4" class="text-right">
+                                            <v-btn v-on:click="onCreateNomenclature" color="primary" dark class="mb-2"><v-icon small>fa fa-plus</v-icon>&nbsp;Добави</v-btn>
+                                        </v-col>
+                                    </v-row>
+                                    <hr />
+                                    <div v-for="(item, index) in nomenclatureItems" :key="index+1">
+                                        <template v-if="item.InEditMode">
+                                            @Html.Partial("_EditNomenclature")
+                                        </template>
+                                        <template v-else>
+                                            @Html.Partial("_ViewNomenclature")
+                                        </template>
+                                    </div>
+                                </template>
+                            </v-container>
+                        </nomenclature>
+                    </v-tab-item>
+                </v-tabs-items>
+            </div>
+        </template>
+    </nomenclature-tabs>
+</v-app>
+
+@section Scripts {
+
+    @* Models *@
+    @Scripts.Render("~/JSModels/Nomenclatures/ProfessionalDirectionModel.js")
+    @Scripts.Render("~/JSModels/Nomenclatures/Section.js")
+    @Scripts.Render("~/JSModels/Nomenclatures/Nomenclature.js")
+
+    @* Components *@
+    @Scripts.Render("~/Scripts/Custom/load-nomenclatures.js")
+    @Scripts.Render("~/Scripts/VueComponents/sections.js")
+    @Scripts.Render("~/Scripts/VueComponents/professionalDirections.js")
+    @Scripts.Render("~/Scripts/VueComponents/requiredFormAttachmentType.js")
+    @Scripts.Render("~/Scripts/VueComponents/nomenclature.js")
+    @Scripts.Render("~/Scripts/VueComponents/nomenclatureTabs.js")
+}

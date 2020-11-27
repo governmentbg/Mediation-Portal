@@ -1,0 +1,127 @@
+﻿@using MediationPortal.Services.Helpers
+@{
+    ViewBag.Title = "Начало";
+}
+
+
+@TempData["ErrorMsg"]
+<home inline-template>
+    <template>
+        <v-row>
+            <v-col cols="12" md="8" sm="12">
+                <template v-if="loading">
+                    <v-col cols="12" id="home_loading">
+                        <v-text-field color="primary"
+                                      loading
+                                      label="Зареждане..."
+                                      readonly>
+                        </v-text-field>
+                    </v-col>
+                </template>
+                <template v-else>
+                    <v-col cols="12" class="py-0">
+                        <h2 class="title mt-0">{{Content.PageHeader}}</h2>
+                        <v-col cols="12" v-html="Content.HTMLContent" class="body-1 mt-5 px-0"></v-col>
+                    </v-col>
+                    <v-col id="news_section" cols="12" class="mt-3">
+                        <h2 class="title">Последни новини</h2>
+                        <template v-for="(info, i) in LatestArticles">
+                            <v-col cols="12" class="px-0 py-1">
+                                <v-card hover class="my-5">
+                                    <v-card-title>{{info.Title}}</v-card-title>
+                                    <v-card-subtitle>{{moment(info.DateCreated).format('DD.MM.YYYY')}}</v-card-subtitle>
+                                    <v-card-text class="pb-0">
+                                        {{info.Description}}
+                                    </v-card-text>
+                                    <v-card-actions>
+                                        <v-col cols="12" md="2" offset-md="10" sm="12" align="right">
+                                            <v-btn color="primary"
+                                                   block
+                                                   small
+                                                   :href="'/Informations/novini/'+info.URL">
+                                                Преглед
+                                            </v-btn>
+                                        </v-col>
+                                    </v-card-actions>
+                                </v-card>
+                            </v-col>
+                        </template>
+                    </v-col>
+                </template>
+            </v-col>
+            <v-col cols="12" md="4" sm="12">
+                <v-alert id="sections_list"
+                         outlined
+                         prominent>
+                    <div class="title primary--text">Секции</div>
+                    <template v-if="loading">
+                        <v-text-field color="primary" loading disabled></v-text-field>
+                    </template>
+                    <template v-else>
+                        <v-list two-line>
+                            <template v-for="(section, index) in Sections">
+                                <v-list-item :key="section.Name" :href="'/Informations/'+section.URL" style="min-height: 40px;">
+                                    <v-list-item-content>
+                                        <v-list-item-title v-html="section.Name"></v-list-item-title>
+                                    </v-list-item-content>
+                                </v-list-item>
+                                <v-divider class="ma-0"></v-divider>
+                            </template>
+                        </v-list>
+                    </template>
+                </v-alert>
+
+                <v-btn id="online_mediation"
+                       color="primary"
+                       :loading="loading"
+                       :href="EServices.Mediation.URL"
+                       block
+                       class="mt-5"
+                       style="height:80px">
+                    <v-icon left large class="mr-3">mdi-scale-balance</v-icon>
+                    {{EServices.Mediation.Name}}
+                </v-btn>
+
+                <v-alert id="eServices_list"
+                         outlined
+                         prominent
+                         class="mt-5">
+                    <template v-if="loading">
+                        <v-text-field color="primary" loading disabled></v-text-field>
+                    </template>
+                    <template v-else>
+                        <div class="title primary--text">Електронни услуги - медиатори</div>
+                        <v-list two-line>
+                            <template v-for="(service, index) in EServices.Mediators">
+                                <v-list-item :key="service.Name" :href="service.URL" style="min-height: 40px;">
+                                    <v-list-item-content>
+                                        <v-list-item-title v-html="service.Name"></v-list-item-title>
+                                    </v-list-item-content>
+                                </v-list-item>
+                                <v-divider class="ma-0"></v-divider>
+                            </template>
+                        </v-list>
+                        <div class="title primary--text mt-3">Електронни услуги - организации</div>
+                        <v-list two-line>
+                            <template v-for="(org, index) in EServices.Organizations">
+                                <v-list-item :key="org.Name" :href="org.URL" style="min-height: 40px;">
+                                    <v-list-item-content>
+                                        <v-list-item-title v-html="org.Name"></v-list-item-title>
+                                    </v-list-item-content>
+                                </v-list-item>
+                                <v-divider class="ma-0"></v-divider>
+                            </template>
+                        </v-list>
+                    </template>
+                </v-alert>
+            </v-col>
+        </v-row>
+    </template>
+</home>
+
+
+
+@section Scripts {
+    @Scripts.Render("~/Scripts/VueComponents/home.js")
+}
+

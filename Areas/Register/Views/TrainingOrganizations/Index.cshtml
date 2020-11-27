@@ -1,0 +1,65 @@
+﻿@{
+    ViewBag.Title = "SearchTrainingOrganizations";
+}
+
+@*<h2>Търсене на Обучителни организации</h2>*@
+<br />
+
+<v-app>
+    <searchtrainingorganizations inline-template>
+        <div id="searchtrainingorganizations">
+            <template v-if="loading">
+                <v-text-field loading
+                              label="Зареждане..."
+                              disabled>
+                </v-text-field>
+            </template>
+            <template v-else>
+                <v-container>
+                    <v-row>
+                        <v-col cols="12">
+                            <v-sheet elevation="3">
+                                <v-tabs align-with-title :show-arrows="true">
+                                    <v-tabs-slider color="primary"></v-tabs-slider>
+                                    <v-tab ripple centered color="primary">
+                                        Основна информация
+                                    </v-tab>
+                                    <v-tab ripple centered class="black--text">
+                                        Контакти
+                                    </v-tab>
+
+                                    @* General information *@
+                                    <v-tab-item>
+                                        @Html.Partial("_SearchGeneralInformationView")
+                                    </v-tab-item>
+                                    @* Contacts *@
+                                    <v-tab-item>
+                                        @Html.Partial("_SearchContactsView")
+                                    </v-tab-item>
+                                </v-tabs>
+                            </v-sheet>
+                        </v-col>
+                    </v-row>
+                    <template>
+                        <v-row>
+                            <v-col cols="12">
+                                @Html.Partial("_SearchResultDataTableView")
+                            </v-col>
+                        </v-row>
+                    </template>
+                </v-container>
+            </template>
+        </div>
+    </searchtrainingorganizations>
+</v-app>
+
+@section Scripts {
+
+    @* Models *@
+    @Scripts.Render("~/JSModels/FormFilingClasses/FullAddress.js")
+    @Scripts.Render("~/JSModels/SearchTrainingOrganizations/OrganizationFilters.js")
+
+    @* Components *@
+    @Scripts.Render("~/Scripts/Custom/load-nomenclatures.js")
+    @Scripts.Render("~/Scripts/VueComponents/searchTrainingOrganizations.js")
+}

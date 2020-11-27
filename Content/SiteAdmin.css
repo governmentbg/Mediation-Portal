@@ -1,0 +1,258 @@
+﻿a:hover {
+    text-decoration: none;
+}
+
+h2 {
+    position: relative;
+    margin-bottom: 40px;
+}
+
+    h2::before {
+        content: "";
+        position: absolute;
+        bottom: -20px;
+        left: 0;
+        width: 130px;
+        border-bottom: 7px solid #dadada;
+    }
+
+/* Set padding to keep content from hitting the edges */
+.body-content {
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+/* Override the default bootstrap behavior where horizontal description lists 
+   will truncate terms that are too long to fit in the left column 
+*/
+.dl-horizontal dt {
+    white-space: normal;
+}
+
+/* Set width on the form input elements since they're 100% wide by default */
+
+textarea {
+    background-color: white;
+}
+
+.v-btn:not(.v-btn--text):not(.v-btn--outlined):hover:before {
+    opacity: 0.18;
+}
+
+/* app-bar */
+
+.v-app-bar > div.v-toolbar__content {
+    padding: 0px 5%;
+}
+
+    .v-app-bar > div.v-toolbar__content > .v-system-bar {
+        height: 34px !important;
+        background-color: #ffffff00 !important;
+        background-image: linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.6)) !important;
+    }
+
+.v-app-bar--is-scrolled > div.v-toolbar__content > .v-system-bar {
+    display: none;
+}
+
+
+.v-app-bar--shrink-on-scroll > div.v-toolbar__content > .row > #dis-logo {
+    width: 60px;
+    height: 75px;
+    fill: rgb(255, 255, 255);
+}
+
+.v-app-bar--is-scrolled > div.v-toolbar__content > .row > #dis-logo {
+    width: 55px;
+    height: 40px;
+    fill: rgb(255, 255, 255);
+}
+
+.v-app-bar .v-toolbar__image {
+    background-color: rgb(41, 41, 41);
+}
+
+    .v-app-bar .v-toolbar__image .v-image {
+        opacity: 0.4;
+    }
+
+        .v-app-bar .v-toolbar__image .v-image > .v-image__image {
+            background-position: 0% 0% !important;
+        }
+/* ---------- end app-bar */
+
+/* navigation drawer */
+
+
+/* main content */
+main.v-content > div.v-content__wrap > div.ccontainer {
+    margin-top: 50px;
+}
+
+/* ---------- end main content*/
+
+
+/* breadcrumb */
+
+.breadcrumb-bgr {
+    background-color: rgb(233, 236, 239);
+    height: inherit;
+}
+
+    .breadcrumb-bgr > nav {
+        height: inherit;
+    }
+
+#breadcrumb {
+    height: 46px;
+}
+
+.breadcrumb {
+    display: flex;
+    flex-wrap: wrap;
+    padding: 0.75rem 1rem !important;
+    margin-bottom: 1rem;
+    list-style: none;
+    background-color: #e9ecef;
+    border-radius: 0.25rem;
+    height: inherit;
+}
+
+ol.breadcrumb li.breadcrumb-item {
+    font-size: 14px;
+    font-family: 'UniNeueBook';
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    min-width: 50px;
+}
+
+.breadcrumb-item + .breadcrumb-item::before {
+    display: inline-block;
+    padding-right: 0.5rem;
+    color: #6c757d;
+    content: "/";
+}
+
+.container--xl {
+    max-width: 1385px;
+}
+
+/* ---------- end breadcrumb*/
+
+
+/* V-CARDS */
+
+.application-form .v-card {
+    margin-bottom: 20px;
+}
+
+/* ---------- end v-cards */
+
+
+/* V-LIST */
+
+.v-application--is-ltr .v-list-group--no-action > .v-list-group__items > div > .v-list-item {
+    padding-left: 30px !important;
+}
+
+.v-application--is-ltr .v-list-item__action:first-child,
+.v-application--is-ltr .v-list-item__icon:first-child {
+    margin-right: 10px !important;
+}
+
+/* ---------- end v-list */
+
+
+/* V-TABS */
+
+.v-expansion-panel-header {
+    text-transform: uppercase;
+}
+
+/* ---------- end v-tabs*/
+
+
+/* select & chips */
+
+.v-chip.v-size--default {
+    height: 23px;
+}
+
+.v-select.v-select--chips .v-select__selections {
+    min-height: initial;
+}
+
+.v-list-item {
+    min-height: 41px;
+}
+
+.v-list-item__title {
+    align-self: center;
+    font-size: 0.97rem;
+}
+
+.v-list-item__content {
+    padding: 12px 0;
+}
+
+.v-list-item__action {
+    margin: 9px 0;
+}
+
+/* ---------- end select & chips */
+
+/* HELPERS */
+.text-uppercase {
+    text-transform: uppercase !important;
+}
+
+.subheader-border {
+    position: relative;
+    margin-bottom: 20px;
+    font-weight: 900;
+    font-style: italic;
+    text-transform: uppercase;
+    font-size: 16px;
+}
+
+    .subheader-border::before {
+        content: "";
+        position: absolute;
+        bottom: -10px;
+        left: 16px;
+        width: 130px;
+        border-bottom: 4px solid #b69779;
+    }
+/* -------- end helpers*/
+
+/*Make the disabled chips look more like none disabled one*/
+.v-chip--disabled {
+    opacity: 1 !important;
+}
+
+.theme--light.v-label--is-disabled {
+    color: rgba(0,0,0,.83) !important;
+}
+
+/*remove multiselect down arrow it is used when in readonly mode*/
+div.v-input--is-readonly > div.v-input__control > div.v-input__slot > div.v-select__slot > div.v-input__append-inner > div {
+    display: none !important;
+}
+
+/* remove bottom margin from label in switch*/
+.v-input--switch label,
+.v-radio label {
+    margin-bottom: 0px;
+}
+
+.ql-container {
+    height: 79% !important;
+}
+.ql-snow > span.ql-formats > button {
+    display: flex;
+}
+
+.v-text-field--outlined fieldset {
+    z-index: 10;
+}

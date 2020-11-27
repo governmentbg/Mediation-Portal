@@ -1,0 +1,223 @@
+﻿@{
+    ViewBag.Title = "Заявление за вписване на организации";
+}
+
+@*<h2>Заявление за одобряване на организации за обучение на медиатори</h2>*@
+<br />
+
+<register-training-organization-form inline-template ref="registerTrainingOrganizationForm">
+    <template v-if="loading">
+        <v-text-field color="primary"
+                      loading
+                      label="Зареждане..."
+                      disabled>
+        </v-text-field>
+    </template>
+    <template v-else>
+        <div class="application-form">
+            <template v-if="showApplication">
+                <template v-if="isEmployeePreview">
+                    @Html.Partial("_RegixCheckerSection")
+                </template>
+                <v-alert type="info"
+                         color="primary"
+                         dense>
+                    <v-col cols="12" md="10">
+                        <v-col cols="12" md="4" sm="12" class="pa-0">
+                            Статус: <b>{{Form.FormStatusName ?  Form.FormStatusName : 'Чернова'}}</b>
+                        </v-col>
+                        <v-col cols="12" md="4" sm="12" class="pa-0">
+                            Уникален номер: <b>{{Form.InternalNumber ? Form.InternalNumber : 'след запазване'}}</b>
+                        </v-col>
+                        <v-col cols="12" md="4" sm="12" class="pa-0">
+                            <template v-if="!isEmployee">
+                                Входящ номер:
+                                <b>{{Form.IncomingNumber? Form.IncomingNumber : 'след входиране'}}</b>
+                            </template>
+                            <template v-else>
+                                <v-col cols="12" md="5" sm="12" class="pa-0">
+                                    Входящ номер:
+                                </v-col>
+                                <v-col cols="12" md="7" sm="12" class="pa-0" id="incommingNumber">
+                                    <v-text-field v-model="Form.IncomingNumber"
+                                                  color="white"
+                                                  v-bind:readonly="inReadonlyMode"
+                                                  class="mt-0 pt-0"></v-text-field>
+                                </v-col>
+                            </template>
+                        </v-col>
+                        <v-col cols="12" md="4" sm="12" class="pa-0">
+                            Платено: <b>{{Form.IsPaid ?  'Да' : 'Не'}}</b>
+                        </v-col>
+                        <v-col cols="12" md="4" sm="12" class="pa-0" v-if="Form.CorrectiveToApplicationFormInternalNumber">
+                            <a :href="'/FormFiling/RegisterTrainingOrganization/Preview/' + Form.CorrectiveToApplicationFormGUID"
+                               target="_blank"
+                               style="color:white">
+
+                                (Коригиращо на:<b>{{Form.CorrectiveToApplicationFormInternalNumber}}</b>)
+                            </a>
+                        </v-col>
+                        <template v-if="applicantUser">
+                            <v-col cols="12" md="4" sm="12" class="pa-0">
+                                Име на заявител: <b>{{applicantUser}}</b>
+                            </v-col>
+                        </template>
+                        <template v-if="applicantUserEGN">
+                            <v-col cols="12" md="4" sm="12" class="pa-0">
+                                ЕГН на заявител: <b>{{applicantUserEGN}}</b>
+                            </v-col>
+                        </template>
+                    </v-col>
+                    <v-col cols="12" md="2" sm="12" class="float-right">
+                        @Html.Partial("_LogNavigation")
+                    </v-col>
+                </v-alert>
+                <v-alert v-if="pendingPayment && !isEmployeePreview"
+                         border="top"
+                         icon="mdi-cash-multiple"
+                         prominent
+                         type="warning">
+                    <v-row align="center">
+                        <v-col class="grow">Заявлението е със статус <strong>Очаква плащане</strong>. За да бъде регистрирано в системата, трябва да се заплати такса.</v-col>
+                        <v-col class="shrink">
+                            <v-btn color="white"
+                                   light
+                                   :href="'/FormFiling/PaymentInstructions/RegisterTrainingOrganization/'+Form.GUID">
+                                Заплати такса
+                            </v-btn>
+                        </v-col>
+                    </v-row>
+                </v-alert>
+                <template v-if="showLog">
+                    <div>
+                        @Html.Partial("_ApplicationFormLog")
+
+                        @Html.Partial("_RevisionDialogOrganization")
+                    </div>
+                </template>
+                <template v-else>
+                    <template v-if="formlogMessage">
+                        <v-card color="orange darken-3"
+                                dark>
+                            <v-card-title class="title">
+                                <v-icon left>mdi-alert-outline</v-icon>
+                                ПОИСКАНИ КОРЕКЦИИ ОТ СЛУЖИТЕЛ
+                            </v-card-title>
+                            <v-card-text class="body-1 white--text">{{formlogMessage}}</v-card-text>
+                        </v-card>
+                    </template>
+                    <br />
+
+                    <template v-if="showPaymentInformation">
+                        @Html.Partial("_PaymentCardEmployee")
+                        <br />
+                    </template>
+
+                    <template v-if="!employeeRequestModifications">
+                        @Html.Partial("_RegistrationFormInformation")
+                    </template>
+                    <template v-else>
+                        @Html.Partial("_RegistrationFormInformationEmployee")
+                    </template>
+
+                    <br />
+                    @Html.Partial("_RegistrationFormDocuments")
+                    <br />
+                    <template v-if="showGenerateDocuments">
+                        @Html.Partial("_RegistrationFormGenerateDocuments")
+                        <br />
+                    </template>
+                    <v-row>
+                        <v-col cols="12" class="subtitle-2 text-right pt-0">
+                            <span>Всички полета отбелязани със звезда (*) са задължителни!</span>
+                        </v-col>
+                        <v-col cols="12" class="title text-right">
+                            <b>
+                                Моля да издадете заповед за одобряването на <b>{{ Form.OrganizationName ? Form.OrganizationName : " ---- " }}</b> като организация, която ще провежда обучение на медиатори!
+                            </b>
+                        </v-col>
+                    </v-row>
+
+                    <template v-if="showEmployeeeApproveBtn">
+                        <v-row>
+                            <v-col>
+                                <v-textarea v-model="actionMessage"
+                                            label="Коментар / Нужни коригиращи действия"
+                                            rows="1"
+                                            outlined
+                                            auto-grow>
+                                </v-textarea>
+                            </v-col>
+                        </v-row>
+                    </template>
+                    <template v-if="showMinisterApproveBtn">
+                        <v-row>
+                            <v-col>
+                                <v-textarea v-model="actionMessage"
+                                            label="Номер на заповедта за вписване / Причина за отказ от вписване"
+                                            rows="1"
+                                            outlined
+                                            auto-grow>
+                                </v-textarea>
+                            </v-col>
+                        </v-row>
+                    </template>
+                    <template v-if="showApprovedByEmployeeWithModificationBtn">
+                        <v-row>
+                            <v-col>
+                                <v-textarea v-model="actionMessage"
+                                            label="Коментар"
+                                            rows="1"
+                                            outlined
+                                            auto-grow>
+                                </v-textarea>
+                            </v-col>
+                        </v-row>
+                    </template>
+                    <template v-if="showCancelProcedureBtn">
+                        <v-row>
+                            <v-col>
+                                <v-textarea v-model="actionMessage"
+                                            label="Причина за прекратяване на производство"
+                                            rows="1"
+                                            outlined
+                                            auto-grow>
+                                </v-textarea>
+                            </v-col>
+                        </v-row>
+                    </template>
+
+                    @Html.Partial("_RegistrationFormButtons")
+
+                </template>
+            </template>
+            <template v-else>
+                @Html.Partial("_ServiceConfirmation")
+            </template>
+            <template>
+                @Html.Partial("~/Views/SharedDialogs/LoginDialog.cshtml")
+            </template>
+        </div>
+    </template>
+</register-training-organization-form>
+
+@section Scripts {
+
+    @* Models *@
+    @Scripts.Render("~/JSModels/FormFilingClasses/RegisterOrganizationForm.js")
+    @Scripts.Render("~/JSModels/FormFilingClasses/Person.js")
+    @Scripts.Render("~/JSModels/FormFilingClasses/Contact.js")
+    @Scripts.Render("~/JSModels/FormFilingClasses/AttachedDocument.js")
+    @Scripts.Render("~/JSModels/FormFilingClasses/FullAddress.js")
+    @Scripts.Render("~/JSModels/Account/Login.js")
+
+    @* Scripts *@
+    @Scripts.Render("~/Scripts/VueComponents/registerOrganizationForm.js")
+    @Scripts.Render("~/Scripts/Custom/file-attachments.js")
+    @Scripts.Render("~/Scripts/Custom/load-nomenclatures.js")
+
+    @Scripts.Render("~/Scripts/VueComponents/digitalSignature.js")
+    @Scripts.Render("~/Scripts/scs/scs.js")
+    @Scripts.Render("~/Scripts/scs/scs.helpers.js")
+    @Scripts.Render("~/Scripts/VueComponents/loginDialog.js")
+}

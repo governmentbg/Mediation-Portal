@@ -1,0 +1,66 @@
+﻿@{
+    ViewBag.Title = "Информационна секция";
+}
+
+<h2>Информационен бюлетин</h2>
+<br />
+
+
+<content-management-all-informations inline-template ref="contentManagementAllInformations">
+    <template v-if="loading">
+        <v-text-field color="primary"
+                      loading
+                      label="Зареждане..."
+                      disabled>
+        </v-text-field>
+    </template>
+    <template v-else>
+        <v-row>
+            <v-col cols="12" align="right">
+                <v-btn color="primary"
+                       href="/ContentManagement/Information/Create">
+                    <v-icon left>mdi-plus</v-icon>
+                    Нова информация
+                </v-btn>
+            </v-col>
+            <v-col cols="12">
+                <v-data-table :headers="table.headers"
+                              :items="table.data"
+                              item-key="GUID"
+                              id="result-datatable"
+                              class="elevation-1"
+                              no-data-text="Няма намерени резултати"
+                              :loading="table.loading"
+                              loading-text="Зареждане на данни"
+                              hide-default-footer>
+                    <template v-slot:item="{ item }">
+                        <tr class="cursor-pointer">
+                            <td>{{ item.Title }}</td>
+                            <td>{{ item.SectionName }}</td>
+                            <td>{{ item.IsActive ? 'Активна' : 'Неактивна' }}</td>
+                            <td>{{ moment(item.DateCreated.match(/\d+/)[0] * 1).format("DD.MM.YYYY") }}</td>
+                            <td align="right">
+                                <v-btn :loading="table.loading"
+                                       color="primary"
+                                       small
+                                       :href="'/ContentManagement/Information/Edit/'+item.GUID">
+                                    <v-icon left>mdi-file-document-edit-outline</v-icon>
+                                    Преглед
+                                </v-btn>
+                            </td>
+                        </tr>
+                    </template>
+                </v-data-table>
+            </v-col>
+        </v-row>
+    </template>
+</content-management-all-informations>
+
+@section Scripts {
+
+    @* Models *@
+    @Scripts.Render("~/JSModels/ContentManagement/InformationFilters.js")
+
+    @* Components *@
+    @Scripts.Render("~/Scripts/VueComponents/contentManagement_all_informations.js")
+}

@@ -1,0 +1,163 @@
+﻿@model IEnumerable<MediationPortal.Services.Models.ContentManagement.ServicesViewModel>
+@{
+    ViewBag.Title = "Редакция на услуга";
+}
+
+<h2>Редакция на услуга</h2>
+<br />
+
+<v-app data-app>
+    <content-management-edit-service inline-template ref="contentManagementEditService">
+        <template v-if="loading">
+            <v-text-field loading
+                          label="Зареждане..."
+                          disabled>
+            </v-text-field>
+        </template>
+        <template v-else>
+            <div>
+                <v-row>
+                    <v-col cols="12" class="text-right">
+                        <v-btn color="primary"
+                               type="submit"
+                               @@click="submitService()">
+                            <v-icon left>mdi-content-save-all-outline</v-icon>
+                            Запази
+                        </v-btn>
+                    </v-col>
+                </v-row>
+                <v-row>
+                    <v-col cols="12">
+                        <v-card hover outlined
+                                :items="Service"
+                                item-key="url">
+                            <v-row>
+                                <v-col cols="12">
+                                    <v-subheader class="subheader-border">Информация за услугата</v-subheader>
+                                </v-col>
+                            </v-row>
+                            <v-card-text>
+                                <v-row>
+                                    <v-col cols="12">
+                                        <v-text-field class="px-4"
+                                                      v-model="Service.Name"
+                                                      label="Име*"
+                                                      color="primary"></v-text-field>
+                                    </v-col>
+                                </v-row>
+                                <v-row>
+                                    <v-col cols="12">
+                                        <label class="px-4">СЪДЪРЖАНИЕ</label>
+                                        <quill-editor class="px-4"
+                                                      label="Съдържание"
+                                                      style="height:500px"
+                                                      v-model="Service.HTMLContent"
+                                                      :options="editorOption">
+                                        </quill-editor>
+                                    </v-col>
+                                </v-row>
+                                <v-row>
+                                    <v-col cols="12">
+                                        <v-file-input v-model="files"
+                                                      placeholder="Прикачете файлове, които ще използвате в съдържанието"
+                                                      label="Файлове"
+                                                      multiple
+                                                      prepend-icon="mdi-paperclip"
+                                                      v-on:change="onFileChange($event)">
+                                            <template v-slot:selection="{ text }">
+                                                <v-chip small
+                                                        label
+                                                        color="primary">
+                                                    {{ text }}
+                                                </v-chip>
+                                            </template>
+                                        </v-file-input>
+                                    </v-col>
+                                </v-row>
+                                <v-row>
+                                    <v-col cols="12">
+                                        <v-data-table :headers="headers"
+                                                      :items="filesInfo"
+                                                      item-key="url"
+                                                      id="result-datatable"
+                                                      class="elevation-1"
+                                                      no-data-text="Няма намерени резултати"
+                                                      :loading="loadingTableData"
+                                                      loading-text="Зареждане на данни"
+                                                      :sort-by="['DateCreated']"
+                                                      :sort-desc="[true]">
+                                            <template v-slot:item="{ item, expand, isExpanded }">
+                                                <tr class="cursor-pointer">
+                                                    <td>{{ item.FileName }}</td>
+                                                    <td>{{ item.FileSize }}</td>
+                                                    <td>{{ item.DateCreated}}</td>
+                                                    <td>{{ item.UserName }}</td>
+                                                    <td class="text-right">
+                                                        <v-btn icon
+                                                               text
+                                                               color="blue-grey darken-1"
+                                                               title="Свали файл"
+                                                               :href="'/AttachedDocument/DownloadFile/'+item.GUID"
+                                                               target="_blank">
+                                                            <v-icon>mdi-download</v-icon>
+                                                        </v-btn>
+                                                        <v-btn icon
+                                                               text color="blue darken-1"
+                                                               title="Копирай линк"
+                                                               @@click="copyFileLink(item.GUID)">
+                                                            <v-icon>mdi-link-variant</v-icon>
+                                                        </v-btn>
+                                                        <v-btn icon
+                                                               text color="error"
+                                                               title="Изтрий"
+                                                               @@click="removeFile(item.GUID)">
+                                                            <v-icon>mdi-trash-can-outline</v-icon>
+                                                        </v-btn>
+                                                    </td>
+                                                </tr>
+                                            </template>
+                                        </v-data-table>
+                                    </v-col>
+                                </v-row>
+                            </v-card-text>
+                        </v-card>
+                    </v-col>
+                </v-row>
+                <v-dialog v-model="deleteDialog.open"
+                          persistent
+                          width="25%">
+                    <v-card>
+                        <v-card-title>Потвърждение</v-card-title>
+                        <v-card-text>
+                            <h3>Сигурни ли сте, че искате да изтриете избраният файл?</h3>
+                        </v-card-text>
+                        <v-card-actions>
+                            <v-col cols="12" align="right">
+                                <v-btn color="red darken-3"
+                                       dark
+                                       :loading="deleteDialog.loading"
+                                       @@click="confirmRemoveFile()">
+                                    <h5>Да</h5>
+                                </v-btn>
+                                <v-btn color="grey" dark
+                                       :loading="deleteDialog.loading"
+                                       @@click="deleteDialog.open = !deleteDialog.open">
+                                    <h5>Не</h5>
+                                </v-btn>
+                            </v-col>
+                        </v-card-actions>
+                    </v-card>
+                </v-dialog>
+            </div>
+        </template>
+    </content-management-edit-service>
+</v-app>
+
+
+@section Scripts {
+    @* Models *@
+    @Scripts.Render("~/JSModels/ContentManagement/Service.js")
+
+    @* Components *@
+    @Scripts.Render("~/Scripts/VueComponents/contentManagement_edit_service.js")
+}

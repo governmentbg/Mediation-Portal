@@ -1,0 +1,121 @@
+﻿<v-card hover outlined>
+    <v-row>
+        <v-col cols="12">
+            <v-subheader class="subheader-border">Предмет на спора</v-subheader>
+        </v-col>
+    </v-row>
+    <v-card-text>
+        <v-row>
+            <v-col cols="4" md="4" sm="4">
+                <v-autocomplete attached="true"
+                                class="pl-4"
+                                v-bind:items="disputeSubjects"
+                                v-model="Form.SubjectDisputeGUID"
+                                color="primary"
+                                :no-data-text="noDataText.disputeSubjects"
+                                item-text="Value"
+                                item-value="Key"
+                                v-bind:clearable="!inReadonlyMode"
+                                v-bind:readonly="inReadonlyMode"
+                                label="Предмет на спора">
+                </v-autocomplete>
+            </v-col>
+        </v-row>
+        <v-row>
+            <v-col cols="12" md="12" sm="12">
+                <v-textarea class="pl-4"
+                            auto-grow
+                            v-model="Form.SubjectDisputeDescription"
+                            color="primary"
+                            label="Описание"
+                            rows="3">
+                </v-textarea>
+            </v-col>
+        </v-row>
+        <v-row>
+            <v-col cols="12">
+                <v-subheader class="subheader-border">Избор на медиатор</v-subheader>
+            </v-col>
+        </v-row>
+        <template vocab="chosenMediatorMessage">
+            <template v-if="chosenMediatorMessage">
+                <v-row>
+                    <v-col cols="12">
+                        <v-alert border="left"
+                                 type="success"
+                                 dark
+                                 class="mx-2">
+                            <h3 class="ma-0">{{chosenMediatorMessage ? chosenMediatorMessage : 'Няма избран медиатор'}}</h3>
+                        </v-alert>
+                    </v-col>
+                </v-row>
+            </template>
+        </template>
+        <v-row>
+            <v-col cols="12">
+                <searchmediator v-bind:for-mediation="true" inline-template ref="searchMediator" :func="chooseMediator">
+                    <div id="searchmediator">
+                        <template v-if="loading">
+                            <v-text-field loading
+                                          label="Зареждане..."
+                                          disabled>
+                            </v-text-field>
+                        </template>
+                        <template v-else>
+                            <v-container>
+                                <v-row>
+                                    <v-col cols="12">
+                                        <v-sheet elevation="3">
+                                            <v-tabs align-with-title :show-arrows="true">
+                                                <v-tabs-slider color="primary"></v-tabs-slider>
+                                                <v-tab ripple centered class="black--text">
+                                                    Основна информация
+                                                </v-tab>
+                                                <v-tab ripple centered class="black--text">
+                                                    Контакти
+                                                </v-tab>
+                                                <v-tab ripple centered class="black--text">
+                                                    Образование
+                                                </v-tab>
+
+                                                @* By General Information *@
+                                                <v-tab-item>
+                                                    @Html.Partial("~/Areas/Register/Views/Mediators/_SearchByDefaultView.cshtml")
+                                                </v-tab-item>
+                                                @* By Contacts *@
+                                                <v-tab-item>
+                                                    @Html.Partial("~/Areas/Register/Views/Mediators/_SearchByContactsView.cshtml")
+                                                </v-tab-item>
+                                                @* By Education *@
+                                                <v-tab-item>
+                                                    @Html.Partial("~/Areas/Register/Views/Mediators/_SearchByEducationView.cshtml")
+                                                </v-tab-item>
+                                            </v-tabs>
+                                        </v-sheet>
+                                    </v-col>
+                                </v-row>
+                                <template v-if="!mediators.length">
+                                    <v-row>
+                                        <v-col cols="12">
+                                            <v-alert type="info"
+                                                     border="left"
+                                                     color="deep-orange lighten-2">
+                                                Въведете критерии за търсене на медиатори и натиснете бутона "ТЪРСЕНЕ"
+                                            </v-alert>
+                                        </v-col>
+                                    </v-row>
+                                </template>
+                                <template>
+                                    <v-row>
+                                        <v-col cols="12">
+                                            @Html.Partial("~/Areas/Register/Views/Mediators/_SearchResultDataTableView.cshtml")
+                                        </v-col>
+                                    </v-row>
+                                </template>
+                            </v-container>
+                        </template>
+                    </div>
+                </searchmediator>
+            </v-col>
+        </v-row>
+</v-card>

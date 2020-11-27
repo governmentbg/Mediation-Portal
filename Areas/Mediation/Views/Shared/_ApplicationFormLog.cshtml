@@ -1,0 +1,22 @@
+﻿<v-simple-table>
+    <template v-slot:default>
+        <thead>
+            <tr>
+                <th class="text-left">Дата</th>
+                <th class="text-left">Име</th>
+                <th class="text-left">Фамилия</th>
+                <th class="text-left">Действие</th>
+                <th class="text-left">Съобщение</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr v-for="(log, index) in formLog" :key="index">
+                <td>{{ convertDate(log.Timestamp) }}</td>
+                <td>{{ log.User.FirstName }}</td>
+                <td>{{ log.User.LastName }}</td>
+                <td>{{ log.ActionTypeName }}</td>
+                <td>{{ log.Message }}</td>
+            </tr>
+        </tbody>
+    </template>
+</v-simple-table>

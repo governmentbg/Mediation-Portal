@@ -1,0 +1,175 @@
+﻿@{
+    ViewBag.Title = "Редакция на страница";
+}
+
+<h2>Редакция на страница</h2>
+<br />
+
+<v-app data-app>
+    <content-management-create-page inline-template ref="contentManagementCreatePage">
+        <template v-if="loading">
+            <v-text-field loading
+                          label="Зареждане..."
+                          disabled>
+            </v-text-field>
+        </template>
+        <template v-else>
+            <div>
+                <v-row>
+                    <v-col cols="12" class="text-right">
+                        <v-btn color="primary"
+                               @@click="submitPage">
+                            <v-icon left>mdi-content-save-all-outline</v-icon>
+                            Запази
+                        </v-btn>
+                    </v-col>
+                </v-row>
+                <v-row>
+                    <v-col cols="12">
+                        <v-card hover outlined>
+                            <v-row>
+                                <v-col cols="12">
+                                    <v-subheader class="subheader-border">Информация за страницата</v-subheader>
+                                </v-col>
+                            </v-row>
+                            <v-card-text>
+                                <v-row>
+                                    <v-col cols="12" md="5" sm="12">
+                                        <v-text-field class="px-4"
+                                                      v-model="Page.MenuLabel"
+                                                      label="Име*"
+                                                      color="primary"></v-text-field>
+                                    </v-col>
+                                    <v-col cols="12" md="5" sm="12">
+                                        <v-text-field class="px-4"
+                                                      v-model="Page.URL"
+                                                      label="Ключова дума*"
+                                                      color="primary"></v-text-field>
+                                    </v-col>
+                                    <v-col cols="12" md="2" sm="12">
+                                        <v-select class="px-4"
+                                                  :items="noms.status"
+                                                  v-model="Page.Is_Active"
+                                                  label="Активност*"
+                                                  :menu-props="{offsetY: true }"
+                                                  color="primary">
+                                        </v-select>
+                                    </v-col>
+                                </v-row>
+                                <v-row>
+                                    <v-col cols="12">
+                                        <label class="px-4">СЪДЪРЖАНИЕ</label>
+                                        <quill-editor class="px-4"
+                                                      label="Съдържание"
+                                                      style="height:500px"
+                                                      v-model="Page.HTMLContent"
+                                                      :options="editorOption">
+
+                                        </quill-editor>
+                                    </v-col>
+                                </v-row>
+                                <v-row>
+                                    <v-col cols="12">
+                                        <v-file-input v-model="files"
+                                                      placeholder="Прикачете файлове, които ще използвате в страницата"
+                                                      label="Файлове"
+                                                      multiple
+                                                      prepend-icon="mdi-paperclip"
+                                                      v-on:change="onFileChange($event)">
+                                            <template v-slot:selection="{ text }">
+                                                <v-chip small
+                                                        label
+                                                        color="primary">
+                                                    {{ text }}
+                                                </v-chip>
+                                            </template>
+                                        </v-file-input>
+                                    </v-col>
+                                </v-row>
+                                <v-row>
+                                    <v-col cols="12">
+                                        <v-data-table :headers="headers"
+                                                      :items="filesInfo"
+                                                      item-key="url"
+                                                      id="result-datatable"
+                                                      class="elevation-1"
+                                                      no-data-text="Няма намерени резултати"
+                                                      :loading="loadingTableData"
+                                                      loading-text="Зареждане на данни"
+                                                      :sort-by="['DateCreated']"
+                                                      :sort-desc="[true]">
+                                            <template v-slot:item="{ item, expand, isExpanded }">
+                                                <tr class="cursor-pointer">
+                                                    <td>{{ item.FileName }}</td>
+                                                    <td>{{ item.FileSize }}</td>
+                                                    <td>{{ moment(item.DateCreated).format("DD.MM.YYYYг. HH:mmч.")}}</td>
+                                                    <td>{{ item.UserName }}</td>
+                                                    <td class="text-right">
+                                                        <v-btn icon
+                                                               text
+                                                               color="blue-grey darken-1"
+                                                               title="Свали файл"
+                                                               :href="'/AttachedDocument/DownloadFile/'+item.GUID"
+                                                               target="_blank">
+                                                            <v-icon>mdi-download</v-icon>
+                                                        </v-btn>
+                                                        <v-btn icon
+                                                               text color="blue darken-1"
+                                                               title="Копирай линк"
+                                                               @@click="copyFileLink(item.GUID)">
+                                                            <v-icon>mdi-link-variant</v-icon>
+                                                        </v-btn>
+                                                        <v-btn icon
+                                                               text color="error"
+                                                               title="Изтрий"
+                                                               @@click="removeFile(item.GUID)">
+                                                            <v-icon>mdi-trash-can-outline</v-icon>
+                                                        </v-btn>
+                                                    </td>
+                                                </tr>
+                                            </template>
+                                        </v-data-table>
+                                    </v-col>
+                                </v-row>
+                            </v-card-text>
+                        </v-card>
+                    </v-col>
+                </v-row>
+                <v-dialog v-model="deleteDialog.open"
+                          persistent
+                          width="25%">
+                    <v-card>
+                        <v-card-title>Потвърждение</v-card-title>
+                        <v-card-text>
+                            <h3>Сигурни ли сте, че искате да изтриете избраният файл?</h3>
+                        </v-card-text>
+                        <v-card-actions>
+                            <v-col cols="12" align="right">
+                                <v-btn color="red darken-3"
+                                       dark
+                                       :loading="deleteDialog.loading"
+                                       @@click="confirmRemoveFile()">
+                                    <h5>Да</h5>
+                                </v-btn>
+                                <v-btn color="grey" dark
+                                       :loading="deleteDialog.loading"
+                                       @@click="deleteDialog.open = !deleteDialog.open">
+                                    <h5>Не</h5>
+                                </v-btn>
+                            </v-col>
+                        </v-card-actions>
+                    </v-card>
+                </v-dialog>
+            </div>
+        </template>
+    </content-management-create-page>
+</v-app>
+
+@section Scripts {
+
+    @* Models *@
+    @Scripts.Render("~/JSModels/ContentManagement/MenuDefinition.js")
+
+    @* Components *@
+    @Scripts.Render("~/Scripts/VueComponents/contentManagement_create_page.js")
+}

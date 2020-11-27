@@ -1,0 +1,178 @@
+﻿<v-row justify="center">
+    <template v-if="showSaveBtn">
+        <v-col cols="12" md="2">
+            <v-btn color="accent"
+                   block
+                   v-on:click="saveForm">
+                <i class="fa fa-save"></i>&nbsp;
+                Запази
+            </v-btn>
+        </v-col>
+    </template>
+
+    <template v-if="showEditBtn">
+        <v-col cols="12" md="2">
+            <v-btn color="warning"
+                   block
+                   :href="'/FormFiling/RegisterMediator/Edit/' + Form.GUID">
+                <i class="fa fa-pencil-square-o"></i>&nbsp;
+                Редакция
+            </v-btn>
+        </v-col>
+    </template>
+
+    <template v-if="showRegisterBtn">
+        <v-col cols="12" md="2">
+            <v-btn color="primary"
+                   block
+                   v-on:click="registerForm">
+                <i class="fa fa-save"></i>&nbsp;
+                Регистрирай
+            </v-btn>
+        </v-col>
+    </template>
+
+    <template v-if="showEmployeeeApproveBtn">
+        <v-col cols="12" md="2">
+            <v-btn color="primary"
+                   block
+                   v-on:click="employeeApproveForm">
+                <i class="fa fa-check"></i>&nbsp;
+                Одобри
+            </v-btn>
+        </v-col>
+    </template>
+
+    <template v-if="showEmployeeeApproveBtn">
+        <v-col cols="12" md="3">
+            <v-btn color="warning"
+                   block
+                   v-on:click="requestCorrectingForm">
+                <i class="fa fa-pencil-square-o"></i>&nbsp;
+                Поискай корекции
+            </v-btn>
+        </v-col>
+    </template>
+
+    <template v-if="showCreateCorrectingFormBtn">
+        <v-col cols="12" md="4">
+            <v-btn color="primary"
+                   block
+                   v-on:click="createCorrectingForm">
+                <i class="fa fa-plus"></i>&nbsp;
+                Създай коригиращо заявление
+            </v-btn>
+        </v-col>
+    </template>
+
+    <template v-if="showCorrectingFormBtn">
+        <v-col cols="3">
+            <v-btn color="primary"
+                   block
+                   target="_blank"
+                   :href="'/FormFiling/RegisterMediator/Preview/' + Form.CorrectingApplicationGUID">
+                <i class="fa fa-folder-open"></i>&nbsp;
+                Отвори коригиращо заявление
+            </v-btn>
+        </v-col>
+    </template>
+
+    <template v-if="showMinisterApproveBtn">
+        <v-col cols="12" md="3">
+            <v-btn color="primary"
+                   block
+                   v-on:click="ministerApproveForm">
+                <i class="fa fa-check"></i>&nbsp;
+                Одобрена от министър
+            </v-btn>
+        </v-col>
+    </template>
+
+    <template v-if="showMinisterApproveBtn">
+        <v-col cols="12" md="3">
+            <v-btn color="error"
+                   block
+                   v-on:click="ministerRejectForm">
+                <i class="fa fa-times"></i>&nbsp;
+                Отказана от министър
+            </v-btn>
+        </v-col>
+    </template>
+
+    <template v-if="showExecuteBtn">
+        <v-col cols="12" md="3">
+            <v-btn color="primary"
+                   block
+                   v-on:click="executeForm">
+                <i class="fa fa-save"></i>&nbsp;
+                Впиши в регистъра
+            </v-btn>
+        </v-col>
+    </template>
+
+    <template v-if="showPrintBtn">
+        <v-col cols="12" md="2" style="float: right">
+            <v-btn color="#DFDFD4"
+                   block
+                   v-on:click="print(Form.GUID)">
+                <i class="fa fa-print"></i>&nbsp;
+                Принтирай
+            </v-btn>
+        </v-col>
+    </template>
+
+    <template v-if="showEmployeeModifyFormBtn">
+        <v-col cols="12" md="3">
+            <v-btn color="#FF9494"
+                   block
+                   v-on:click="employeeRequestModification">
+                <i class="fa fa-unlock"></i>&nbsp;
+                Отключи за корекция от служител
+            </v-btn>
+        </v-col>
+    </template>
+
+    <template v-if="showApprovedByEmployeeWithModificationBtn">
+        <v-col cols="12" md="4">
+            <v-btn color="primary"
+                   block
+                   v-on:click="employeeApproveFormWithModification">
+                <i class="fa fa-save"></i>&nbsp;
+                Одобри с извършените промени
+            </v-btn>
+        </v-col>
+    </template>
+
+    <template v-if="showApprovedByEmployeeWithModificationBtn">
+        <v-col cols="12" md="4">
+            <v-btn color="warning"
+                   block
+                   v-on:click="requestCorrectingFormWithModification">
+                <i class="fa fa-pencil-square-o"></i>&nbsp;
+                Поискай корекции с извършените промени
+            </v-btn>
+        </v-col>
+    </template>
+
+    <template v-if="showSendCertificateBtn">
+        <v-col cols="12" md="4">
+            <v-btn color="primary"
+                   block
+                   v-on:click="sendCertificate">
+                <i class="fa fa-pencil-square-o"></i>&nbsp;
+                Изпрати удостоверение
+            </v-btn>
+        </v-col>
+    </template>
+
+    <template v-if="showCancelProcedureBtn">
+        <v-col cols="12" md="4">
+            <v-btn color="error"
+                   block
+                   v-on:click="cancelProcedure">
+                <i class="fa fa-pencil-square-o"></i>&nbsp;
+                Прекрати производство
+            </v-btn>
+        </v-col>
+    </template>
+</v-row>

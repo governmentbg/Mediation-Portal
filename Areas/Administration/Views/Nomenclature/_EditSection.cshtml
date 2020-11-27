@@ -1,0 +1,59 @@
+﻿<v-row row>
+    <v-card width="100%"
+            color="#b697793b"
+            raised
+            hover>
+        <v-container>
+            <v-row>
+                <v-col cols="12" md="4">
+                    <v-textarea v-model="item.Name"
+                                label="Наименование*"
+                                auto-grow
+                                rows="1">
+                    </v-textarea>
+                </v-col>
+                <v-col cols="12" md="4">
+                    <v-textarea v-model="item.URL"
+                                label="URL*"
+                                auto-grow
+                                rows="1">
+                    </v-textarea>
+                </v-col>
+                <v-col cols="12" md="2">
+                    <v-switch v-model="item.IsActive"
+                              color="success">
+                        <template v-slot:label class="mt-0">
+                            Активност: {{item.IsActive ? 'Да':'Не'}}
+                        </template>
+                    </v-switch>
+                </v-col>
+                <v-col cols="12" md="2" class="text-right pt-7">
+                    <v-tooltip bottom>
+                        <template v-slot:activator="{ on }">
+                            <v-icon v-on="on"
+                                    large
+                                    color="primary"
+                                    class="mr-2"
+                                    @@click="onSave(item, index)">
+                                save
+                            </v-icon>
+                        </template>
+                        <span>Запази промените</span>
+                    </v-tooltip>
+                    <v-tooltip bottom>
+                        <template v-slot:activator="{ on }">
+                            <v-icon v-on="on"
+                                    large
+                                    color="primary"
+                                    class="mr-2"
+                                    @@click="onCancelEdit(index)">
+                                clear
+                            </v-icon>
+                        </template>
+                        <span>Откажи промените</span>
+                    </v-tooltip>
+                </v-col>
+            </v-row>
+        </v-container>
+    </v-card>
+</v-row>

@@ -1,0 +1,177 @@
+﻿<v-card hover outlined>
+    <v-row>
+        <v-col cols="12">
+            <v-subheader class="subheader-border">Упълномощено лице на СТРАНА 2</v-subheader>
+        </v-col>
+    </v-row>
+    <v-card-text>
+        <v-row>
+            <v-col cols="12" md="6" sm="12">
+                <v-checkbox v-model="RespondingPartyRepresentativePersonIsShown"
+                            color="primary"
+                            :value="true"
+                            label="Искам да упълномощя лице, което да ме представлява"
+                            v-bind:readonly="inReadonlyModeRespondingPartyRepsresentativePerson || !isCurrentUserRespondingParty"></v-checkbox>
+            </v-col>
+            <template v-if="Form.RespondingPartyRepresentativePerson && Form.RespondingPartyRepresentativePerson.isConfirmed != null">
+                <v-col cols="12" md="6" sm="12" class="text-right pt-9 font-weight-bold">
+                    <span class="subtitle-1 font-weight-bold">СТАТУС:</span>
+                    <template v-if="Form.RespondingPartyRepresentativePerson.isConfirmed === true">
+                        <span class="body-1 green--text darken-4">Потвърдено участие</span>
+                    </template>
+                    <template v-if="Form.RespondingPartyRepresentativePerson.isConfirmed === false">
+                        <span class="body-1 orange--text darken-4">Очаква потвърждение</span>
+                    </template>
+                </v-col>
+            </template>
+        </v-row>
+        <template v-if="RespondingPartyRepresentativePersonIsShown && Form.RespondingPartyRepresentativePerson != null">
+            <v-row>
+                <v-col cols="12" md="4" sm="12">
+                    <v-text-field v-model="Form.RespondingPartyRepresentativePerson.FirstName"
+                                  label="Име на упълномощено лице*"
+                                  v-bind:clearable="!inReadonlyModeRespondingPartyRepsresentativePerson && isCurrentUserRespondingParty"
+                                  v-bind:readonly="inReadonlyModeRespondingPartyRepsresentativePerson || !isCurrentUserRespondingParty">
+                    </v-text-field>
+                </v-col>
+                <v-col cols="12" md="4" sm="12">
+                    <v-text-field v-model="Form.RespondingPartyRepresentativePerson.MiddleName"
+                                  label="Презиме*"
+                                  v-bind:clearable="!inReadonlyModeRespondingPartyRepsresentativePerson && isCurrentUserRespondingParty"
+                                  v-bind:readonly="inReadonlyModeRespondingPartyRepsresentativePerson || !isCurrentUserRespondingParty">
+                    </v-text-field>
+                </v-col>
+                <v-col cols="12" md="4" sm="12">
+                    <v-text-field v-model="Form.RespondingPartyRepresentativePerson.LastName"
+                                  label="Фамилия*"
+                                  v-bind:clearable="!inReadonlyModeRespondingPartyRepsresentativePerson && isCurrentUserRespondingParty"
+                                  v-bind:readonly="inReadonlyModeRespondingPartyRepsresentativePerson || !isCurrentUserRespondingParty">
+                    </v-text-field>
+                </v-col>
+            </v-row>
+
+            <v-row>
+                <v-col cols="12" md="4" sm="12">
+                    <v-text-field v-model="Form.RespondingPartyRepresentativePerson.EGN"
+                                  label="ЕГН*"
+                                  v-bind:clearable="!inReadonlyModeRespondingPartyRepsresentativePerson && isCurrentUserRespondingParty"
+                                  v-bind:readonly="inReadonlyModeRespondingPartyRepsresentativePerson || !isCurrentUserRespondingParty">
+                    </v-text-field>
+                </v-col>
+                <v-col cols="12" md="4" sm="12">
+                    <v-text-field v-model="Form.RespondingPartyRepresentativePerson.Email"
+                                  label="Електронна поща*"
+                                  v-bind:clearable="!inReadonlyModeRespondingPartyRepsresentativePerson && isCurrentUserRespondingParty"
+                                  v-bind:readonly="inReadonlyModeRespondingPartyRepsresentativePerson || !isCurrentUserRespondingParty">
+                    </v-text-field>
+                </v-col>
+                <v-col cols="12" md="4" sm="12">
+                    <v-text-field v-model="Form.RespondingPartyRepresentativePerson.MobilePhone"
+                                  label="Мобилен телефон*"
+                                  v-bind:clearable="!inReadonlyModeRespondingPartyRepsresentativePerson && isCurrentUserRespondingParty"
+                                  v-bind:readonly="inReadonlyModeRespondingPartyRepsresentativePerson || !isCurrentUserRespondingParty">
+                    </v-text-field>
+                </v-col>
+            </v-row>
+            <v-row>
+                <v-col cols="12" md="3" sm="12">
+                    <v-select v-model="Form.RespondingPartyRepresentativePerson.FullAddress.CountryGUID"
+                              v-bind:items="RepresentativeRespondingPartyAddress.countries"
+                              item-text="Value"
+                              item-value="Key"
+                              label="Държава"
+                              color="primary"
+                              :menu-props="{ offsetY: true }"
+                              :no-data-text="noDataText.countries"
+                              v-bind:clearable="!inReadonlyModeRespondingPartyRepsresentativePerson && isCurrentUserRespondingParty"
+                              v-bind:readonly="inReadonlyModeRespondingPartyRepsresentativePerson || !isCurrentUserRespondingParty"
+                              v-on:change="onCountryChange(Form.RespondingPartyRepresentativePerson.FullAddress, Form.RespondingPartyRepresentativePerson.FullAddress.CountryGUID, $event)"></v-select>
+                </v-col>
+                <v-col cols="12" md="3" sm="12">
+                    <v-select v-model="Form.RespondingPartyRepresentativePerson.FullAddress.DistrictGUID"
+                              v-bind:items="RepresentativeRespondingPartyAddress.districts"
+                              item-text="Value"
+                              item-value="Key"
+                              label="Област"
+                              color="primary"
+                              :menu-props="{ offsetY: true }"
+                              :no-data-text="noDataText.districts"
+                              v-bind:clearable="!inReadonlyModeRespondingPartyRepsresentativePerson && isCurrentUserRespondingParty"
+                              v-bind:readonly="inReadonlyModeRespondingPartyRepsresentativePerson || !isCurrentUserRespondingParty"
+                              v-on:change="onDistrictChange(Form.RespondingPartyRepresentativePerson.FullAddress, RepresentativeRespondingPartyAddress)"
+                              v-if="Form.RespondingPartyRepresentativePerson.FullAddress.CountryGUID == BG_GUID"></v-select>
+                </v-col>
+                <v-col cols="12" md="3" sm="12">
+                    <v-select v-model="Form.RespondingPartyRepresentativePerson.FullAddress.MunicipalityGUID"
+                              v-bind:items="RepresentativeRespondingPartyAddress.municipalities"
+                              item-text="Value"
+                              item-value="Key"
+                              label="Община"
+                              color="primary"
+                              :menu-props="{ offsetY: true }"
+                              :no-data-text="noDataText.municipalities"
+                              v-bind:clearable="!inReadonlyModeRespondingPartyRepsresentativePerson && isCurrentUserRespondingParty"
+                              v-bind:readonly="inReadonlyModeRespondingPartyRepsresentativePerson || !isCurrentUserRespondingParty"
+                              v-on:change="onMunicipalityChange(Form.RespondingPartyRepresentativePerson.FullAddress, RepresentativeRespondingPartyAddress)"
+                              v-if="Form.RespondingPartyRepresentativePerson.FullAddress.CountryGUID == BG_GUID"></v-select>
+                </v-col>
+                <v-col cols="12" md="3" sm="12">
+                    <v-select v-model="Form.RespondingPartyRepresentativePerson.FullAddress.SettlementGUID"
+                              v-bind:items="RepresentativeRespondingPartyAddress.settlements"
+                              item-text="Value"
+                              item-value="Key"
+                              label="Населено място"
+                              color="primary"
+                              :menu-props="{ offsetY: true }"
+                              :no-data-text="noDataText.settlements"
+                              v-bind:clearable="!inReadonlyModeRespondingPartyRepsresentativePerson && isCurrentUserRespondingParty"
+                              v-bind:readonly="inReadonlyModeRespondingPartyRepsresentativePerson || !isCurrentUserRespondingParty"
+                              v-if="Form.RespondingPartyRepresentativePerson.FullAddress.CountryGUID == BG_GUID"></v-select>
+                </v-col>
+                <v-col cols="12">
+                    <v-text-field v-model="Form.RespondingPartyRepresentativePerson.FullAddress.Address"
+                                  label="Адрес"
+                                  color="primary"
+                                  v-bind:clearable="!inReadonlyModeRespondingPartyRepsresentativePerson && isCurrentUserRespondingParty"
+                                  v-bind:readonly="inReadonlyModeRespondingPartyRepsresentativePerson || !isCurrentUserRespondingParty">
+                    </v-text-field>
+                </v-col>
+            </v-row>
+            <template v-if="!isMediationTerminated">
+                <template v-if="isCurrentUserRespondingParty && !inReadonlyModeRespondingPartyRepsresentativePerson && Form.RespondingPartyRepresentativePerson.isConfirmed == null">
+                    <v-row>
+                        <v-col cols="12">
+                            <v-btn color="primary"
+                                   @@click="signInRepresentativeRespondingParty">
+                                <v-icon left>mdi-account-plus</v-icon>
+                                Изпрати покана на упълномощеното лице
+                            </v-btn>
+                        </v-col>
+                    </v-row>
+                </template>
+                <template v-if="isCurrentUserRespondingParty && inReadonlyModeRespondingPartyRepsresentativePerson && Form.RespondingPartyRepresentativePerson.isConfirmed != null">
+                    <v-row>
+                        <v-col cols="12" md="6" sm="12">
+                            <v-btn color="red darken-3"
+                                   dark
+                                   block
+                                   @@click="removeRepresentativeApplicant">
+                                <v-icon left>mdi-account-minus</v-icon>
+                                Премахни упълномощеното лице
+                            </v-btn>
+                        </v-col>
+                        <v-col cols="12" md="6" sm="12">
+                            <v-btn color="lime darken-3"
+                                   dark
+                                   block
+                                   @@click="changeRepresentativeApplicant">
+                                <v-icon left>mdi-account-switch</v-icon>
+                                Смени упълномощеното лице
+                            </v-btn>
+                        </v-col>
+                    </v-row>
+                </template>
+            </template>
+        </template>
+    </v-card-text>
+</v-card>

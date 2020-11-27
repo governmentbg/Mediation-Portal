@@ -1,0 +1,28 @@
+﻿
+<v-card hover outlined>
+    <v-row>
+        <v-col cols="12">
+            <v-subheader class="subheader-border">Декларация за поверителност и безпристрастност</v-subheader>
+        </v-col>
+    </v-row>
+    <v-card-text>
+        <v-row>
+            <v-col cols="12" class="pt-0">
+                <v-checkbox v-model="getCurrentMediator.HasAgreed"
+                            label="Подписана декларация за поверителност"
+                            :readonly="true">
+                </v-checkbox>
+            </v-col>
+        </v-row>
+        <template v-if="getCurrentMediator.HasAgreed">
+            <v-row>
+                <v-col cols="12" class="pt-0 mb-5">
+                    <v-btn color="primary" large @@click="showPrivacyPolicy">
+                        <v-icon left>mdi-file-document-outline</v-icon>
+                        Преглед на приетата декларация за поверителност и безпристрастност
+                    </v-btn>
+                </v-col>
+            </v-row>
+        </template>
+    </v-card-text>
+</v-card>

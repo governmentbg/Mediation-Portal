@@ -1,0 +1,139 @@
+﻿<v-container>
+    <v-row>
+        <v-col cols="12" md="4" sm="12">
+            <v-text-field class="pa-4"
+                          append-icon="search"
+                          label="Имена"
+                          v-model="MediatorFilters.FullName"
+                          clearable
+                          color="primary">
+            </v-text-field>
+        </v-col>
+        <v-col cols="12" md="4" sm="12">
+            <v-text-field class="pa-4"
+                          append-icon="search"
+                          label="ЕГН или ЛНЧ"
+                          v-model="MediatorFilters.EGN"
+                          clearable
+                          color="primary">
+            </v-text-field>
+        </v-col>
+        <v-col cols="12" md="4" sm="12">
+            <v-text-field class="pa-4"
+                          append-icon="search"
+                          label="Регистрационен номер"
+                          v-model="MediatorFilters.RegistrationNumber"
+                          clearable
+                          color="primary">
+            </v-text-field>
+        </v-col>
+    </v-row>
+    <v-row v-if="!forMediation">
+        <v-col cols="12" md="2" sm="12">
+            <v-autocomplete class="pa-4"
+                            label="Статус"
+                            color="primary"
+                            clearable
+                            v-bind:items="mediatorStatuses"
+                            item-text="Value"
+                            item-value="Key"
+                            placeholder="-- Избери --"
+                            no-data-text="Няма данни"
+                            v-model="MediatorFilters.MediatorStatus">
+            </v-autocomplete>
+        </v-col>
+        <v-col cols="12" md="8" sm="12">
+            <v-autocomplete class="pa-4"
+                            label="Обучителна организация"
+                            color="primary"
+                            clearable
+                            v-bind:items="organizations"
+                            item-text="Value"
+                            item-value="Key"
+                            placeholder="-- Избери --"
+                            no-data-text="Няма данни"
+                            v-model="MediatorFilters.OrganizationMembership">
+            </v-autocomplete>
+        </v-col>
+        <v-col cols="12" md="2" sm="12">
+            <v-autocomplete class="pa-4"
+                            label="Деловоден номер"
+                            color="primary"
+                            clearable
+                            v-bind:items="incomingNumber"
+                            item-text="Value"
+                            item-value="Key"
+                            placeholder="-- Избери --"
+                            no-data-text="Няма данни"
+                            v-model="MediatorFilters.HasIncomingNumber">
+            </v-autocomplete>
+        </v-col>
+    </v-row>
+    <v-row>
+        <v-col cols="12" md="6" sm="12">
+            <v-menu v-bind:close-on-content-click="false"
+                    v-bind:nudge-right="40"
+                    transition="scale-transition"
+                    offset-y>
+                <template v-slot:activator="{ on }">
+                    <v-text-field autocomplete="off"
+                                  label="Регистриран от"
+                                  prepend-icon="event"
+                                  v-on="on"
+                                  v-bind:value="formatDate(MediatorFilters.DateCreatedFrom)"
+                                  @@click:clear="onClearDateCreatedFrom()"
+                                  clearable
+                                  color="primary"
+                                  class="pa-4">
+                    </v-text-field>
+                </template>
+                <v-date-picker v-model="MediatorFilters.DateCreatedFrom"
+                               persistent-hint
+                               prepend-icon="event"
+                               header-color="primary"
+                               color="primary"
+                               no-title
+                               v-bind:first-day-of-week="1"
+                               locale="bg-bg">
+                </v-date-picker>
+            </v-menu>
+        </v-col>
+        <v-col cols="12" md="6" sm="12">
+            <v-menu v-bind:close-on-content-click="false"
+                    v-bind:nudge-right="40"
+                    transition="scale-transition"
+                    offset-y>
+                <template v-slot:activator="{ on }">
+                    <v-text-field autocomplete="off"
+                                  label="Регистриран до"
+                                  prepend-icon="event"
+                                  v-on="on"
+                                  v-bind:value="formatDate(MediatorFilters.DateCreatedTo)"
+                                  @@click:clear="onClearDateCreatedTo()"
+                                  clearable
+                                  color="primary"
+                                  class="pa-4">
+                    </v-text-field>
+                </template>
+                <v-date-picker v-model="MediatorFilters.DateCreatedTo"
+                               persistent-hint
+                               prepend-icon="event"
+                               header-color="primary"
+                               color="primary"
+                               no-title
+                               v-bind:first-day-of-week="1"
+                               locale="bg-bg">
+                </v-date-picker>
+            </v-menu>
+        </v-col>
+    </v-row>
+    <v-row class="px-4">
+        <v-col cols="12">
+            <v-btn block color="primary"
+                   v-on:click="triggerSearch">
+                Търсене&nbsp;&nbsp;
+                <i class="fa fa-filter"></i>
+            </v-btn>
+        </v-col>
+    </v-row>
+</v-container>

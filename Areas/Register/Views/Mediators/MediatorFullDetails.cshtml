@@ -1,0 +1,230 @@
+﻿<v-app data-app>
+    <full-details-mediator inline-template ref="fullDetailsMediator">
+        <template v-if="loading">
+            <v-text-field loading
+                          label="Зареждане..."
+                          disabled>
+            </v-text-field>
+        </template>
+        <template v-else>
+            <v-container>
+                <v-row>
+                    <v-col cols="12">
+                        <v-sheet elevation="3">
+                            <v-tabs align-with-title :show-arrows="true">
+                                <v-tabs-slider color="primary"></v-tabs-slider>
+
+                                @* Tabs *@
+                                <v-tab v-for="(revision, index) in mediatorRevisions" :key="index" ripple centered>
+                                    {{formatDate(revision.EffectiveFrom)}}
+                                </v-tab>
+
+                                @* Tabs content *@
+                                <v-tab-item v-for="(revision, indexs) in mediatorRevisions" :key="indexs">
+                                    <div>
+                                        <v-card class="mx-auto mt-10">
+                                            <v-divider></v-divider>
+                                            <v-row>
+                                                <v-col cols="3">
+                                                    <v-subheader class="subheader-border">
+                                                        Детайли за медиатор
+                                                    </v-subheader>
+                                                </v-col>
+                                                <v-col cols="3">
+                                                    <v-alert type="info"
+                                                             color="primary"
+                                                             dense>
+                                                        Статус: <b>{{revision.StatusName}}</b>
+                                                    </v-alert>
+                                                </v-col>
+                                            </v-row>
+                                            <v-card-text>
+                                                <v-row>
+                                                    <v-col cols="12" md="6" sm="12" class="py-0">
+                                                        <v-text-field class="px-4 py-3"
+                                                                      v-model="revision.FirstName"
+                                                                      label="Име"
+                                                                      readonly>
+                                                        </v-text-field>
+                                                    </v-col>
+                                                    <v-col cols="12" md="6" sm="12" class="py-0">
+                                                        <v-text-field class="px-4 py-3"
+                                                                      v-model="revision.LastName"
+                                                                      label="Фамилия"
+                                                                      readonly>
+                                                        </v-text-field>
+                                                    </v-col>
+                                                </v-row>
+                                                <v-row>
+                                                    <v-col cols="12" md="3" class="py-0">
+                                                        <v-text-field :value="revision.Citizenships"
+                                                                      class="px-4 py-3"
+                                                                      label="Гражданства"
+                                                                      readonly>
+                                                        </v-text-field>
+                                                    </v-col>
+                                                    <v-col cols="12" md="3" sm="12" class="py-0">
+                                                        <v-text-field class="px-4 py-3"
+                                                                      v-model="revision.MinisterOrder"
+                                                                      label="Заповед на министър"
+                                                                      readonly>
+                                                        </v-text-field>
+                                                    </v-col>
+                                                    <v-col cols="12" md="3" sm="12" class="py-0">
+                                                        <v-text-field class="px-4 py-3"
+                                                                      v-model="revision.RegistrationNumber"
+                                                                      label="Регистрационен номер"
+                                                                      readonly>
+                                                        </v-text-field>
+                                                    </v-col>
+                                                    <v-col cols="12" md="3" sm="12" class="py-0">
+                                                        <v-text-field class="px-4 py-3"
+                                                                      :value="formatDate(revision.DateCreated)"
+                                                                      label="Регистриран на"
+                                                                      readonly>
+                                                        </v-text-field>
+                                                    </v-col>
+                                                </v-row>
+                                                <v-row>
+                                                    <v-col cols="12" md="3" sm="12" class="py-0">
+                                                        <v-text-field class="px-4 py-3"
+                                                                      v-model="revision.MediatorContacts.LandlinePhone"
+                                                                      label="Стационарен телефон"
+                                                                      readonly>
+                                                        </v-text-field>
+                                                    </v-col>
+                                                    <v-col cols="12" md="3" sm="12" class="py-0">
+                                                        <v-text-field class="px-4 py-3"
+                                                                      v-model="revision.MediatorContacts.MobilePhone"
+                                                                      label="Мобилен телефон"
+                                                                      readonly>
+                                                        </v-text-field>
+                                                    </v-col>
+                                                    <v-col cols="12" md="3" sm="12" class="py-0">
+                                                        <v-text-field class="px-4 py-3"
+                                                                      v-model="revision.MediatorContacts.Fax"
+                                                                      label="Факс"
+                                                                      readonly>
+                                                        </v-text-field>
+                                                    </v-col>
+                                                    <v-col cols="12" md="3" sm="12" class="py-0">
+                                                        <v-text-field class="px-4 py-3"
+                                                                      v-model="revision.MediatorContacts.Email"
+                                                                      label="Електронна поща"
+                                                                      readonly>
+                                                        </v-text-field>
+                                                    </v-col>
+                                                </v-row>
+                                                <v-row>
+                                                </v-row>
+                                                <v-row v-if="revision.MailingAddress">
+                                                    <v-col cols="12" class="py-0">
+                                                        <v-text-field :value="fullAddress(revision.MailingAddress)"
+                                                                      class="px-4 py-3"
+                                                                      label="Адрес за кореспонденция"
+                                                                      readonly>
+                                                        </v-text-field>
+                                                    </v-col>
+                                                </v-row>
+                                                <div v-for="(education, indexx) in revision.Educations" :key="indexx">
+                                                    <v-row>
+                                                        <v-col cols="12" md="4" sm="12" class="py-0">
+                                                            <v-text-field :value="education.EducationDegree || 'липсва информация'"
+                                                                          class="px-4 py-3"
+                                                                          label="Образователно квалификационна степен"
+                                                                          readonly>
+                                                            </v-text-field>
+                                                        </v-col>
+                                                        <v-col cols="12" md="4" sm="12" class="py-0">
+                                                            <v-text-field :value="education.EducationField || 'липсва информация'"
+                                                                          class="px-4 py-3"
+                                                                          label="Област на висше образование"
+                                                                          readonly>
+                                                            </v-text-field>
+                                                        </v-col>
+                                                        <v-col cols="12" md="4" sm="12" class="py-0">
+                                                            <v-text-field :value="education.ProfessionalDirection || 'липсва информация'"
+                                                                          class="px-4 py-3"
+                                                                          label="Професионално направление"
+                                                                          readonly>
+                                                            </v-text-field>
+                                                        </v-col>
+                                                    </v-row>
+                                                </div>
+                                                <v-row>
+                                                    <v-col cols="12" md="6" sm="12" class="py-0">
+                                                        <v-text-field :value="revision.Professions"
+                                                                      class="px-4 py-3"
+                                                                      label="Професии"
+                                                                      readonly>
+                                                        </v-text-field>
+                                                    </v-col>
+                                                    <v-col cols="12" md="6" sm="12" class="py-0">
+                                                        <v-text-field :value="revision.ForeignLanguages"
+                                                                      class="px-4 py-3"
+                                                                      label="Чужди езици"
+                                                                      readonly>
+                                                        </v-text-field>
+                                                    </v-col>
+                                                    <v-col cols="12" class="py-0">
+                                                        <v-text-field :value="revision.TrainingOrganization"
+                                                                      class="px-4 py-3"
+                                                                      label="Обучителна организации"
+                                                                      readonly>
+                                                        </v-text-field>
+                                                    </v-col>
+                                                    <v-col cols="12" class="py-0">
+                                                        <v-text-field :value="revision.OrganizationMemberships"
+                                                                      class="px-4 py-3"
+                                                                      label="Членство в организации"
+                                                                      readonly>
+                                                        </v-text-field>
+                                                    </v-col>
+                                                    <v-col cols="12" class="py-0">
+                                                        <v-text-field :value="revision.AdditionalQualifications"
+                                                                      class="px-4 py-3"
+                                                                      label="Допълнителна квалификация"
+                                                                      readonly>
+                                                        </v-text-field>
+                                                    </v-col>
+                                                    <v-col cols="12" class="py-0">
+                                                        <v-text-field :value="revision.Specializations"
+                                                                      class="px-4 py-3"
+                                                                      label="Допълнителна специализация в областта на медиацията"
+                                                                      readonly>
+                                                        </v-text-field>
+                                                    </v-col>
+                                                </v-row>
+                                                <v-row justify="center">
+                                                    <template v-if="revision.BasedOnFormGUID">
+                                                        <v-col cols="12" md="2">
+                                                            <v-btn color="primary"
+                                                                   block
+                                                                   target="_blank"
+                                                                   :href="'/FormFiling/' + revision.FormType + '/Preview/' + revision.BasedOnFormGUID">
+                                                                <i class="fa fa-external-link"></i>&nbsp;
+                                                                Към заявление
+                                                            </v-btn>
+                                                        </v-col>
+                                                    </template>
+                                                </v-row>
+                                            </v-card-text>
+                                        </v-card>
+                                    </div>
+                                </v-tab-item>
+                            </v-tabs>
+                        </v-sheet>
+                    </v-col>
+                </v-row>
+            </v-container>
+        </template>
+    </full-details-mediator>
+</v-app>
+
+@section Scripts {
+
+    @* Models *@
+
+    @* Components *@
+    @Scripts.Render("~/Scripts/VueComponents/fullDetailsMediator.js")
+}

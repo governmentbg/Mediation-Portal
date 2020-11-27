@@ -1,0 +1,88 @@
+﻿@{
+    ViewBag.Title = "Успешно плащане";
+}
+
+<br />
+
+<payment-result inline-template ref="paymentResult">
+    <template v-if="loading">
+        <v-text-field color="primary"
+                      loading
+                      label="Зареждане..."
+                      readonly>
+        </v-text-field>
+    </template>
+    <template v-else>
+        <v-card>
+            <v-card-title>
+                <v-row>
+                    <v-col class="text-center title font-weight-bold">
+                        Заявление №:{{PaymentResponse.ApplicantInfo.ApplicationNumber}} е платено
+                    </v-col>
+                </v-row>
+            </v-card-title>
+            <v-card-text>
+                <v-row>
+                    <v-col cols="12" md="6" offset-md="3" sm="12">
+                        <v-alert :type="PaymentResponse.Result ? 'success' : 'error'"
+                                 class="pa-5"
+                                 dense>
+                            <v-col cols="12" md="12" sm="12" class="pa-0">
+                                {{PaymentResponse.Message}}</b>
+                            </v-col>
+                        </v-alert>
+                    </v-col>
+                </v-row>
+                <v-row>
+                    <v-col cols="12" md="6" offset-md="3" sm="12">
+                        <v-simple-table>
+                            <template v-slot:default>
+                                <tbody>
+                                    <tr>
+                                        <td class="font-weight-bold">Заявител:</td>
+                                        <td>{{PaymentResponse.ApplicantInfo.ApplicantName}}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="font-weight-bold">Заявление №:</td>
+                                        <td>{{PaymentResponse.ApplicantInfo.ApplicationNumber}}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="font-weight-bold">Дата на отбелязано плащане:</td>
+                                        <td>{{moment(PaymentResponse.ApplicantInfo.DateCreated).format("DD.MM.YYYYг. HH:mmч.")}}</td>
+                                    </tr>
+                                    <template v-if="PaymentResponse.ApplicantInfo.PaymentDescription != null">
+                                        <tr>
+                                            <td class="font-weight-bold">Описание на плащане:</td>
+                                            <td>{{PaymentResponse.ApplicantInfo.PaymentDescription}}</td>
+                                        </tr>
+                                    </template>
+                                </tbody>
+                            </template>
+                        </v-simple-table>
+                    </v-col>
+                </v-row>
+                <v-row>
+                    <v-col cols="12" md="4" offset-md="4" sm="12" class="mt-5">
+                        <v-btn color="primary"
+                                block
+                                large
+                                href="/FormFiling/ApplicationForms/MyApplications">
+                            Към моите заявления
+                        </v-btn>
+                    </v-col>
+                </v-row>
+            </v-card-text>
+        </v-card>
+    </template>
+</payment-result>
+
+
+
+
+
+
+
+@section Scripts {
+    @* Scripts *@
+    @Scripts.Render("~/Scripts/VueComponents/paymentResult.js")
+}

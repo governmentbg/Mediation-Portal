@@ -1,0 +1,170 @@
+﻿@{
+    ViewBag.Title = "Промяна на потребител";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+@Html.ValidationSummary("", new { @class = "text-danger" })
+<edit-user inline-template>
+    <div>
+        <v-row>
+            <v-col cols="12" md="6" offset-md="3">
+                <h2>Промяна на потребител</h2>
+                <br />
+            </v-col>
+        </v-row>
+        <template v-if="loading">
+            <v-text-field color="primary"
+                          loading
+                          label="Зареждане..."
+                          readonly>
+            </v-text-field>
+        </template>
+
+        <template v-else>
+            <v-row>
+                <v-col cols="12" md="6" offset-md="3">
+                    <v-card flat width="100%">
+                        <v-card-text>
+                            <v-container>
+                                <v-form ref="form"
+                                        v-model="valid"
+                                        lazy-validation>
+                                    <v-row>
+                                        <v-col cols="12" class="pt-0">
+                                            <v-text-field v-model="Form.FirstName"
+                                                          :counter="10"
+                                                          :rules="[validationRules.requiredField]"
+                                                          label="Име"
+                                                          required
+                                                          autocomplete="off"></v-text-field>
+                                        </v-col>
+                                        <v-col cols="12" class="pt-0">
+                                            <v-text-field v-model="Form.MiddleName"
+                                                          :counter="10"
+                                                          :rules="[validationRules.requiredField]"
+                                                          label="Презиме"
+                                                          required
+                                                          autocomplete="off"></v-text-field>
+                                        </v-col>
+                                        <v-col cols="12" class="pt-0">
+                                            <v-text-field v-model="Form.LastName"
+                                                          :counter="10"
+                                                          :rules="[validationRules.requiredField]"
+                                                          label="Фамилия"
+                                                          required
+                                                          autocomplete="off"></v-text-field>
+                                        </v-col>
+                                        <v-col cols="12" class="pt-0">
+                                            <v-text-field v-model="Form.UserName"
+                                                          :counter="20"
+                                                          :rules="[validationRules.requiredField]"
+                                                          label="Потребителско име"
+                                                          required
+                                                          autocomplete="off"></v-text-field>
+                                        </v-col>
+                                        <v-col cols="12" class="pt-0">
+                                            <v-text-field v-model="Form.Email"
+                                                          :rules="emailRules"
+                                                          label="Имейл"
+                                                          required
+                                                          autocomplete="off"></v-text-field>
+                                        </v-col>
+                                        <v-col cols="12" class="pt-0">
+                                            <v-select v-model="Form.RoleName"
+                                                      :items="roles"
+                                                      :rules="[validationRules.requiredField]"
+                                                      label="Роли"
+                                                      required
+                                                      autocomplete="off"></v-select>
+                                        </v-col>
+                                        <v-col cols="6">
+                                            <v-btn color="default"
+                                                   class="mr-4"
+                                                   @@click="dialog = !dialog">
+                                                <v-icon left>mdi-pencil</v-icon>
+                                                Смяна на парола
+                                            </v-btn>
+                                        </v-col>
+                                        <v-col cols="6" class="px-0" align="right">
+                                            <v-btn color="primary"
+                                                   class="mr-4"
+                                                   @@click="submitForm">
+                                                <v-icon left>mdi-check</v-icon>
+                                                Запази
+                                            </v-btn>
+                                        </v-col>
+                                    </v-row>
+                                </v-form>
+                            </v-container>
+                        </v-card-text>
+                    </v-card>
+
+                </v-col>
+            </v-row>
+
+            <v-dialog v-model="dialog" persistent max-width="40%">
+                <v-card>
+                    <v-card-title>
+                        <span class="headline">Смяна на парола</span>
+                    </v-card-title>
+                    <v-card-text>
+                        <v-form ref="form"
+                                v-model="valid"
+                                lazy-validation>
+                            <v-row>
+                                <v-col cols="12">
+                                    <v-text-field v-model="Form.Password"
+                                                    :rules="[validationRules.requiredField, validationRules.minlenght]"
+                                                    :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
+                                                    :type="showPassword ? 'text' : 'password'"
+                                                    label="Парола"
+                                                    counter
+                                                    autocomplete="off"
+                                                    @@click:append="showPassword = !showPassword"></v-text-field>
+                                </v-col>
+                                <v-col cols="12">
+                                    <v-text-field v-model="Form.ConfirmPassword"
+                                                    :rules="[validationRules.requiredField, passwordMatch]"
+                                                    :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
+                                                    :type="showPassword ? 'text' : 'password'"
+                                                    label="Потвърждение на парола"
+                                                    counter
+                                                    autocomplete="off"
+                                                    @@click:append="showPassword = !showPassword"></v-text-field>
+                                </v-col>
+                            </v-row>
+                        </v-form>
+                    </v-card-text>
+                    <v-card-actions>
+                        <v-col cols="12" align="right">
+                            <v-btn color="primary"
+                                    @@click="submitFormPassword">
+                                <v-icon left>mdi-check</v-icon>
+                                Запази
+                            </v-btn>
+                            <v-btn color="default"
+                                    @@click="dialog = !dialog">
+                                <v-icon left>mdi-close</v-icon>
+                                Затвори
+                            </v-btn>
+                        </v-col>
+                    </v-card-actions>
+                </v-card>
+            </v-dialog>
+        </template>
+    </div>
+</edit-user>
+
+
+
+
+
+@section Scripts{
+    <script src="~/JSModels/Account/Register.js"></script>
+
+
+    @* Scripts *@
+    @Scripts.Render("~/Scripts/VueComponents/editUserForm.js")
+    
+}
+

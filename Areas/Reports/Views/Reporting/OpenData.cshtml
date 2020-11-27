@@ -1,0 +1,84 @@
+﻿
+@{
+    ViewBag.Title = "Отворени данни";
+}
+
+<h2>Отворени данни</h2>
+
+
+<open-data inline-template ref="openData">
+    <div>
+        <v-card flat width="100%" hover>
+            <v-card-title>
+                Медиатори
+            </v-card-title>
+            <v-card-text>
+                <v-row>
+                    <v-col cols="12" md="4">
+                        <v-btn color="primary"
+                               block
+                               @@click="downloadMediatorsCSV">
+                            <v-icon left>mdi-download</v-icon>
+                            CSV
+                        </v-btn>
+                    </v-col>
+                    <v-col cols="12" md="4">
+                        <v-btn color="primary"
+                               block
+                               @@click="downloadMediatorsXML">
+                            <v-icon left>mdi-download</v-icon>
+                            XML
+                        </v-btn>
+                    </v-col>
+                    <v-col cols="12" md="4">
+                        <v-btn color="primary"
+                               block
+                               @@click="downloadMediatorsJSON">
+                            <v-icon left>mdi-download</v-icon>
+                            JSON
+                        </v-btn>
+                    </v-col>
+                </v-row>
+            </v-card-text>
+        </v-card>
+        <v-card flat width="100%" class="mt-5" hover>
+            <v-card-title>
+                Организации
+            </v-card-title>
+            <v-card-text>
+                <v-row>
+                    <v-col cols="12" md="4">
+                        <v-btn color="primary"
+                               block
+                               @@click="downloadOrganizationsCSV">
+                            <v-icon left>mdi-download</v-icon>
+                            CSV
+                        </v-btn>
+                    </v-col>
+                    <v-col cols="12" md="4">
+                        <v-btn color="primary"
+                               block
+                               @@click="downloadOrganizationsXML">
+                            <v-icon left>mdi-download</v-icon>
+                            XML
+                        </v-btn>
+                    </v-col>
+                    <v-col cols="12" md="4">
+                        <v-btn color="primary"
+                               block
+                               @@click="downloadOrganizationsJSON">
+                            <v-icon left>mdi-download</v-icon>
+                            JSON
+                        </v-btn>
+                    </v-col>
+                </v-row>
+            </v-card-text>
+        </v-card>
+    </div>
+</open-data>
+
+
+
+@section Scripts{
+    <script src="~/Scripts/VueComponents/openData.js"></script>
+}
