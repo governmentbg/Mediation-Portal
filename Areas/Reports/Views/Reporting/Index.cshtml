@@ -1,0 +1,97 @@
+﻿@using Reporting.Models
+
+@model ReportBase
+
+@{
+    // This is used, so when we reach two filters used we will know to put the next ones on a new line
+    int filtersUsedOnALine = 0;
+
+    // This stores the filters that have already been rendered in the view
+    List<int> filtersInUse = new List<int>();
+}
+
+<reports-component inline-template ref="reportsComponent">
+    <v-card flat width="100%">
+        <v-card-text>
+            <v-container>
+                <v-row>
+                    <h4>@Model.ReportDefinitionProperties.ReportName</h4>
+                    <v-btn text icon v-on:click="addInfoDialog = true;" color="primary" title="Информация за справката" style="margin-top: -5px; margin-left: -2px;"><i small class="fa fa-info-circle fa-lg"></i></v-btn>
+                </v-row>
+                <v-row>
+                    @* This code block generates the Report filters based on the filters that are defined in the database *@
+                    @for (int reportFilterIndex = 0; reportFilterIndex < Model.ReportFilters.Count(); reportFilterIndex++)
+                    {
+                        var reportFilter = Model.ReportFilters.ToList()[reportFilterIndex];
+                        var reportColumnMetaData = Model.ReportColumnsMetaData.Where(x => x.TitleToDisplay == reportFilter.FilterNameToDisplay).FirstOrDefault();
+                        string reportFilterTooltip = string.Empty;
+                        if (reportColumnMetaData != null)
+                        {
+                            reportFilterTooltip = reportColumnMetaData.Tooltip;
+                            if (string.IsNullOrEmpty(reportFilterTooltip))
+                            {
+                                reportFilterTooltip = reportFilter.FilterNameToDisplay;
+                            }
+                        }
+                        else
+                        {
+                            reportFilterTooltip = reportFilter.FilterNameToDisplay;
+                        }
+                        ViewData["reportFilterTooltip"] = reportFilterTooltip; // Ths viewdata MIGHT be used when we render a filter (for specific filters that are of type Int32)
+                                                                               // Check if there is a type for [tbl_ReportDefinitionToReportFilterId]
+                        if (string.IsNullOrEmpty(reportFilter.FilterTypeName) || string.IsNullOrEmpty(reportFilter.StoredProcedureFilterName))
+                        {
+                            continue;
+                        }
+
+                        // Here we check if the filter is already in use.
+                        // It might be for the DateTime filters for example, because we use two filters with the same [FilterNameToDisplay]
+                        if (filtersInUse.Contains(reportFilter.ReportFilterID))
+                        {
+                            continue;
+                        }
+                        filtersInUse.Add(reportFilter.ReportFilterID);
+
+                        @Html.Partial("~/Areas/Reports/Views/Reporting/_ViewFilters.cshtml", reportFilter)
+
+                        filtersUsedOnALine++;
+                        if (filtersUsedOnALine == 2)
+                        {
+                            filtersUsedOnALine = 0;
+                        }
+                    }
+                </v-row>
+                @try
+                {
+                    @Html.Partial("~/Areas/Reports/Views/Reporting/_ViewReport.cshtml", @Model.ReportDefinitionProperties.ReportName)
+                }
+                catch (Exception e)
+                {
+                    @Html.Partial("~/Views/Shared/Error.cshtml", new HandleErrorInfo(e, "None", "None"))
+                }
+                @Html.Partial("~/Areas/Reports/Views/Reporting/_ReportAdditionalInformationDialog.cshtml")
+            </v-container>
+        </v-card-text>
+    </v-card>
+</reports-component>
+
+
+
+@section Scripts{
+    @*@Scripts.Render("~/bundles/Vue")
+    @Scripts.Render("~/bundles/Reports")
+    <script src="~/JSModels/Reports/Reports.js"></script>*@
+
+
+
+
+    <script src="~/Scripts/VueComponents/reportDatepicker.js"></script>
+    <script src="~/Scripts/VueComponents/reportDropdown.js"></script>
+    <script src="~/Scripts/VueComponents/reportTextfield.js"></script>
+    <script src="~/Scripts/VueComponents/reports.js"></script>
+
+
+    <script src="~/JSModels/Reports/Reports.js"></script>
+}
+
+

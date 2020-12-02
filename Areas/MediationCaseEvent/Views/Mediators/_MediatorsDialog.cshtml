@@ -1,0 +1,71 @@
+﻿<v-dialog v-model="mediatorsModal.open" scrollable persistent max-width="75%">
+    <v-card>
+        <v-card-title class="headline primary" style="color: white">
+            Добавяне на допълнителен медиатор
+        </v-card-title>
+        <v-card-text class="pa-8">
+            <v-container>
+                <v-row>
+                    <v-col cols="12">
+                        <searchmediator v-bind:for-additional-mediator="true" inline-template ref="searchMediator" :func="chooseMediator">
+                            <div id="searchmediator">
+                                <template v-if="loading">
+                                    <v-text-field loading
+                                                  label="Зареждане..."
+                                                  disabled>
+                                    </v-text-field>
+                                </template>
+                                <template v-else>
+                                    <v-container>
+                                        <v-row>
+                                            <v-col cols="12">
+                                                <v-sheet elevation="3">
+                                                    <v-tabs align-with-title :show-arrows="true">
+                                                        <v-tabs-slider color="primary"></v-tabs-slider>
+                                                        <v-tab ripple centered class="black--text">
+                                                            Основна информация
+                                                        </v-tab>
+                                                        <v-tab ripple centered class="black--text">
+                                                            Контакти
+                                                        </v-tab>
+                                                        <v-tab ripple centered class="black--text">
+                                                            Образование
+                                                        </v-tab>
+
+                                                        @* By General Information *@
+                                                        <v-tab-item>
+                                                            @Html.Partial("~/Areas/Register/Views/Mediators/_SearchByDefaultView.cshtml")
+                                                        </v-tab-item>
+                                                        @* By Contacts *@
+                                                        <v-tab-item>
+                                                            @Html.Partial("~/Areas/Register/Views/Mediators/_SearchByContactsView.cshtml")
+                                                        </v-tab-item>
+                                                        @* By Education *@
+                                                        <v-tab-item>
+                                                            @Html.Partial("~/Areas/Register/Views/Mediators/_SearchByEducationView.cshtml")
+                                                        </v-tab-item>
+                                                    </v-tabs>
+                                                </v-sheet>
+                                            </v-col>
+                                        </v-row>
+                                        <template>
+                                            <v-row>
+                                                <v-col cols="12">
+                                                    @Html.Partial("~/Areas/Register/Views/Mediators/_SearchResultDataTableView.cshtml")
+                                                </v-col>
+                                            </v-row>
+                                        </template>
+                                    </v-container>
+                                </template>
+                            </div>
+                        </searchmediator>
+                    </v-col>
+                </v-row>
+            </v-container>
+        </v-card-text>
+        <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn color="default darken-1" @@click="mediatorsModal.open = !mediatorsModal.open">Затвори</v-btn>
+        </v-card-actions>
+    </v-card>
+</v-dialog>

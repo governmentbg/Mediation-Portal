@@ -1,0 +1,633 @@
+﻿/**
+ * @license
+ * MyFonts Webfont Build ID 3780089, 2019-07-01T06:00:22-0400
+ * 
+ * The fonts listed in this notice are subject to the End User License
+ * Agreement(s) entered into by the website owner. All other parties are 
+ * explicitly restricted from using the Licensed Webfonts(s).
+ * 
+ * You may obtain a valid license at the URLs below.
+ * 
+ * Webfont: UniNeueBlack-Italic by Fontfabric
+ * URL: https://www.myfonts.com/fonts/font-fabric/uni-neue/black-italic/
+ * Copyright: Copyright (c) 2017 by Fontfabric LLC. All rights reserved.
+ * 
+ * Webfont: UniNeueBook-Italic by Fontfabric
+ * URL: https://www.myfonts.com/fonts/font-fabric/uni-neue/book-italic/
+ * Copyright: Copyright (c) 2017 by Fontfabric LLC. All rights reserved.
+ * 
+ * Webfont: UniNeueBold-Italic by Fontfabric
+ * URL: https://www.myfonts.com/fonts/font-fabric/uni-neue/bold-italic/
+ * Copyright: Copyright (c) 2017 by Fontfabric LLC. All rights reserved.
+ * 
+ * Webfont: UniNeueBlack by Fontfabric
+ * URL: https://www.myfonts.com/fonts/font-fabric/uni-neue/black/
+ * Copyright: Copyright (c) 2017 by Fontfabric LLC. All rights reserved.
+ * 
+ * Webfont: UniNeueBold by Fontfabric
+ * URL: https://www.myfonts.com/fonts/font-fabric/uni-neue/bold/
+ * Copyright: Copyright (c) 2017 by Fontfabric LLC. All rights reserved.
+ * 
+ * Webfont: UniNeueBook by Fontfabric
+ * URL: https://www.myfonts.com/fonts/font-fabric/uni-neue/book/
+ * Copyright: Copyright (c) 2017 by Fontfabric LLC. All rights reserved.
+ * 
+ * Webfont: UniNeueHeavy-Italic by Fontfabric
+ * URL: https://www.myfonts.com/fonts/font-fabric/uni-neue/heavy-italic/
+ * Copyright: Copyright (c) 2017 by Fontfabric LLC. All rights reserved.
+ * 
+ * Webfont: UniNeueHeavy by Fontfabric
+ * URL: https://www.myfonts.com/fonts/font-fabric/uni-neue/heavy/
+ * Copyright: Copyright (c) 2017 by Fontfabric LLC. All rights reserved.
+ * 
+ * Webfont: UniNeueLight by Fontfabric
+ * URL: https://www.myfonts.com/fonts/font-fabric/uni-neue/light/
+ * Copyright: Copyright (c) 2017 by Fontfabric LLC. All rights reserved.
+ * 
+ * Webfont: UniNeueLight-Italic by Fontfabric
+ * URL: https://www.myfonts.com/fonts/font-fabric/uni-neue/light-italic/
+ * Copyright: Copyright (c) 2017 by Fontfabric LLC. All rights reserved.
+ * 
+ * Webfont: UniNeueRegular by Fontfabric
+ * URL: https://www.myfonts.com/fonts/font-fabric/uni-neue/regular/
+ * Copyright: Copyright &#x00A9; 2016 by FontfabricLLC. All rights reserved.
+ * 
+ * Webfont: UniNeueRegular-Italic by Fontfabric
+ * URL: https://www.myfonts.com/fonts/font-fabric/uni-neue/regular-italic/
+ * Copyright: Copyright (c) 2017 by Fontfabric LLC. All rights reserved.
+ * 
+ * Webfont: UniNeueThin by Fontfabric
+ * URL: https://www.myfonts.com/fonts/font-fabric/uni-neue/thin/
+ * Copyright: Copyright (c) 2017 by Fontfabric LLC. All rights reserved.
+ * 
+ * Webfont: UniNeueThin-Italic by Fontfabric
+ * URL: https://www.myfonts.com/fonts/font-fabric/uni-neue/thin-italic/
+ * Copyright: Copyright (c) 2017 by Fontfabric LLC. All rights reserved.
+ * 
+ * 
+ * License: https://www.myfonts.com/viewlicense?type=web&buildid=3780089
+ * Licensed pageviews: 20,000
+ * 
+ * © 2019 MyFonts Inc
+*/
+/* @import must be at top of file, otherwise CSS will not work */
+@font-face {
+    font-family: 'UniNeueBook-Italic';
+    src: url("/Content/fonts//39ADF9_1_0.eot");
+    src: url("/Content/fonts//39ADF9_1_0.eot?#iefix") format("embedded-opentype"), url("/Content/fonts//39ADF9_1_0.woff2") format("woff2"), url("/Content/fonts//39ADF9_1_0.woff") format("woff"), url("/Content/fonts//39ADF9_1_0.ttf") format("truetype");
+}
+
+@font-face {
+    font-family: 'UniNeueBold-Italic';
+    src: url("/Content/fonts//39ADF9_2_0.eot");
+    src: url("/Content/fonts//39ADF9_2_0.eot?#iefix") format("embedded-opentype"), url("/Content/fonts//39ADF9_2_0.woff2") format("woff2"), url("/Content/fonts//39ADF9_2_0.woff") format("woff"), url("/Content/fonts//39ADF9_2_0.ttf") format("truetype");
+}
+
+@font-face {
+    font-family: 'UniNeueBold';
+    src: url("/Content/fonts//39ADF9_4_0.eot");
+    src: url("/Content/fonts//39ADF9_4_0.eot?#iefix") format("embedded-opentype"), url("/Content/fonts//39ADF9_4_0.woff2") format("woff2"), url("/Content/fonts//39ADF9_4_0.woff") format("woff"), url("/Content/fonts//39ADF9_4_0.ttf") format("truetype");
+}
+
+@font-face {
+    font-family: 'UniNeueBook';
+    src: url("/Content/fonts//39ADF9_5_0.eot");
+    src: url("/Content/fonts//39ADF9_5_0.eot?#iefix") format("embedded-opentype"), url("/Content/fonts//39ADF9_5_0.woff2") format("woff2"), url("/Content/fonts//39ADF9_5_0.woff") format("woff"), url("/Content/fonts//39ADF9_5_0.ttf") format("truetype");
+}
+
+@font-face {
+    font-family: 'UniNeueRegular';
+    src: url("/Content/fonts//39ADF9_A_0.eot");
+    src: url("/Content/fonts//39ADF9_A_0.eot?#iefix") format("embedded-opentype"), url("/Content/fonts//39ADF9_A_0.woff2") format("woff2"), url("/Content/fonts//39ADF9_A_0.woff") format("woff"), url("/Content/fonts//39ADF9_A_0.ttf") format("truetype");
+}
+
+@font-face {
+    font-family: 'UniNeueRegular-Italic';
+    src: url("/Content/fonts//39ADF9_B_0.eot");
+    src: url("/Content/fonts//39ADF9_B_0.eot?#iefix") format("embedded-opentype"), url("/Content/fonts//39ADF9_B_0.woff2") format("woff2"), url("/Content/fonts//39ADF9_B_0.woff") format("woff"), url("/Content/fonts//39ADF9_B_0.ttf") format("truetype");
+}
+
+/*body {
+    padding-top: 50px;
+    padding-bottom: 20px;
+}
+
+
+.v-application,
+.v-application > .display-1,
+.v-application > .display-2,
+.v-application > .display-3,
+.v-application > .display-4,
+.v-application > .headline,
+.v-application > .title,
+.v-application > .subtitle-1,
+.v-application > .subtitle-2,
+.v-application > .body-1,
+.v-application > .body-2,
+.v-application > .caption,
+.v-application > .overline {
+    font-family: UniNeueRegular !important;
+}*/
+
+a:hover {
+    text-decoration: none;
+}
+
+@media (min-width: 1904px) {
+    .v-content__wrap > .container {
+        max-width: 1385px;
+    }
+}
+/*
+@media (min-width: 1200px) {
+    .container {
+        width: 970px;
+    }
+}*/
+
+.v-card h1 {
+    color: #535353;
+    font-size: 27px;
+}
+
+.v-card__text, .v-card__title {
+    word-break: normal !important;
+}
+
+h2 {
+    position: relative;
+    margin-bottom: 40px;
+    text-transform: uppercase;
+    color: #535353;
+}
+
+    h2::before {
+        content: "";
+        position: absolute;
+        bottom: -20px;
+        left: 0;
+        width: 130px;
+        border-bottom: 7px solid #dadada;
+    }
+
+/* Set padding to keep content from hitting the edges */
+.body-content {
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+/* Override the default bootstrap behavior where horizontal description lists 
+   will truncate terms that are too long to fit in the left column 
+*/
+.dl-horizontal dt {
+    white-space: normal;
+}
+
+/* Set width on the form input elements since they're 100% wide by default */
+input,
+select,
+textarea {
+    max-width: 280px;
+}
+
+.v-btn:not(.v-btn--text):not(.v-btn--outlined):hover:before {
+    opacity: 0.18;
+}
+
+/* app-bar */
+
+.v-app-bar > div.v-toolbar__content {
+    padding: 0px 3%;
+}
+
+    .v-app-bar > div.v-toolbar__content > .v-system-bar {
+        height: 34px !important;
+        background-color: #ffffff00 !important;
+        background-image: linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.6)) !important;
+    }
+
+    .v-app-bar > div.v-toolbar__content .hidden-sm-and-down .v-btn:not(.v-btn--round).v-size--default {
+        padding: 0 8px;
+    }
+
+        .v-app-bar > div.v-toolbar__content .hidden-sm-and-down .v-btn:not(.v-btn--round).v-size--default .v-btn__content .v-icon--left {
+            margin-right: 3px;
+        }
+
+.v-app-bar--is-scrolled > div.v-toolbar__content > .v-system-bar {
+    display: none;
+}
+
+
+
+.v-app-bar--shrink-on-scroll > div.v-toolbar__content > .row > #dis-logo {
+    width: 60px;
+    height: 75px;
+    fill: rgb(255, 255, 255);
+}
+
+.v-app-bar--is-scrolled > div.v-toolbar__content > .row > #dis-logo {
+    width: 55px;
+    height: 40px;
+    fill: rgb(255, 255, 255);
+}
+
+.v-app-bar .v-toolbar__image {
+    background-color: rgb(41, 41, 41);
+}
+
+    .v-app-bar .v-toolbar__image .v-image {
+        opacity: 0.4;
+    }
+
+        .v-app-bar .v-toolbar__image .v-image > .v-image__image {
+            background-position: 0% 0% !important;
+        }
+/* ---------- end app-bar */
+
+/* main content */
+
+main.v-content > div.v-content__wrap > div.ccontainer {
+    margin-top: 50px;
+}
+
+
+
+/* ---------- end main content*/
+
+
+/* breadcrumb */
+
+.breadcrumb-bgr {
+    background-color: rgb(233, 236, 239);
+    height: inherit;
+}
+
+    .breadcrumb-bgr > nav {
+        height: inherit;
+    }
+
+#breadcrumb {
+    height: 46px;
+}
+
+.breadcrumb {
+    display: flex;
+    flex-wrap: wrap;
+    padding: 0.75rem 1rem !important;
+    margin-bottom: 1rem;
+    list-style: none;
+    background-color: #e9ecef;
+    border-radius: 0.25rem;
+    height: inherit;
+}
+
+ol.breadcrumb li.breadcrumb-item {
+    font-size: 14px;
+    font-family: 'UniNeueBook';
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    min-width: 50px;
+    padding-left: 0;
+}
+
+.breadcrumb-item + .breadcrumb-item::before {
+    display: inline-block;
+    color: #6c757d;
+    content: "|";
+    margin: 0 0.5em;
+}
+
+.container--xl {
+    max-width: 1385px;
+}
+
+/* ---------- end breadcrumb*/
+
+
+/* V-CARDS */
+
+.application-form .v-card {
+    margin-bottom: 20px;
+}
+
+.v-card__text > #scroll-target {
+    box-shadow: 1px 1px 4px #888;
+    border-radius: 5px;
+}
+
+/* ---------- end v-cards */
+
+
+/* V-LIST */
+
+.v-application--is-ltr .v-list-group--no-action > .v-list-group__items > div > .v-list-item {
+    padding-left: 30px !important;
+}
+
+.v-application--is-ltr .v-list-item__action:first-child,
+.v-application--is-ltr .v-list-item__icon:first-child {
+    margin-right: 10px !important;
+}
+
+/* ---------- end v-list */
+
+
+/* V-TABS */
+
+.v-expansion-panel-header {
+    text-transform: uppercase;
+}
+
+/* ---------- end v-tabs*/
+
+
+/* select & chips */
+
+.v-chip.v-size--default {
+    height: 23px;
+}
+
+.v-select.v-select--chips .v-select__selections {
+    min-height: initial;
+}
+
+.v-list-item {
+    min-height: 41px;
+}
+
+.v-list-item__title {
+    align-self: center;
+    font-size: 0.97rem;
+}
+
+.v-list-item__content {
+    padding: 12px 0;
+}
+
+.v-list-item__action {
+    margin: 9px 0;
+}
+
+/* ---------- end select & chips */
+
+/* HELPERS */
+.text-uppercase {
+    text-transform: uppercase !important;
+}
+
+.subheader-border {
+    position: relative;
+    margin-bottom: 20px;
+    font-weight: 900;
+    font-style: italic;
+    text-transform: uppercase;
+    font-size: 16px;
+}
+
+    .subheader-border::before {
+        content: "";
+        position: absolute;
+        bottom: -10px;
+        left: 16px;
+        width: 130px;
+        border-bottom: 4px solid #b69779;
+    }
+/* -------- end helpers*/
+
+/*Make the disabled chips look more like none disabled one*/
+.v-chip--disabled {
+    opacity: 1 !important;
+}
+
+.theme--light.v-label--is-disabled {
+    color: rgba(0,0,0,.83) !important;
+}
+
+/*remove multiselect down arrow it is used when in readonly mode*/
+div.v-input--is-readonly > div.v-input__control > div.v-input__slot > div.v-select__slot > div.v-input__append-inner > div {
+    display: none !important;
+}
+
+/* remove bottom margin from label in switch*/
+.v-input--switch label {
+    margin-bottom: 0px;
+}
+
+/* add padding on checkbox label */
+.v-input--checkbox label {
+    padding-top: 5px
+}
+
+
+
+.theme--light > .v-card__actions > .error.v-btn.v-btn--loading.v-btn--disabled {
+    background-color: #b71c1c !important;
+}
+
+.error.v-btn--loading > .v-btn__loader > .v-progress-circular {
+    color: white;
+}
+
+.ql-container {
+    height: 79% !important;
+}
+
+.ql-snow > span.ql-formats > button {
+    display: flex;
+}
+
+.quill-editor {
+    padding: 0 !important;
+}
+
+.prog-img {
+    width: 189px;
+    height: 61px;
+}
+
+#myApplications .v-card__title {
+    min-height: 110px;
+}
+
+#myApplicationsTable tbody > tr > td {
+    padding: 0 8px;
+}
+
+#myApplicationsTable thead > tr > th {
+    padding: 0 8px;
+}
+
+#loginAsUserContainer .v-input--checkbox .v-input__slot {
+    margin-bottom: 0px;
+}
+
+#online_mediation {
+    padding: 0;
+    height: auto;
+    box-shadow: none;
+}
+
+    #online_mediation .v-btn__content {
+        width: 100%;
+    }
+
+    #online_mediation .v-alert {
+        transition: opacity .2s cubic-bezier(.4,0,.6,1);
+        padding: 20px;
+        width: 100%;
+    }
+
+#sections_list,
+#eServices_list {
+    border-color: #b69779 !important;
+}
+
+    #sections_list .v-list,
+    #eServices_list .v-list {
+        background: #fafafa;
+    }
+
+        #sections_list .v-list .v-list-item > div,
+        #eServices_list .v-list .v-list-item > div {
+            display: inline-grid;
+        }
+
+
+#news_section .v-card__actions {
+    padding-top: 0;
+    padding-bottom: 0;
+}
+
+#news_section .v-card__title {
+    padding-top: 10px;
+}
+
+#home_loading {
+    padding: 50px 100px 50px 50px;
+}
+
+#incommingNumber .v-input {
+    position: relative;
+    top: -5px;
+}
+
+#incommingNumber .v-text-field__details {
+    display: none;
+}
+/*.v-menu__content.theme--light.menuable__content__active{
+    min-width: auto !important;
+}*/
+.row:before, .row:after {
+    display: inline-block;
+}
+
+
+@media (max-width: 320px) {
+    ol li:not(.ql-direction-rtl), ul li:not(.ql-direction-rtl) {
+        padding-left: 0.2em;
+    }
+}
+
+/* mobile */
+
+@media (min-width: 321px ) and (max-width: 375px) {
+    ol li:not(.ql-direction-rtl), ul li:not(.ql-direction-rtl) {
+        padding-left: 0.2em;
+    }
+
+    #online_mediation .v-alert .v-alert__content {
+        font-size: 13px;
+    }
+
+    #online_mediation .v-alert {
+        padding: 20px 10px;
+    }
+
+    .container {
+        margin-top: 20px;
+    }
+
+    #home_loading {
+        padding: 12px;
+    }
+
+    #breadcrumb {
+        height: 65px;
+    }
+
+    .breadcrumb-item + .breadcrumb-item::before {
+        content: "";
+        margin: 0;
+        padding: 0;
+        display: block;
+    }
+
+    #sections_list .v-list a {
+        padding: 0;
+    }
+
+        #sections_list .v-list a .v-list-item__title {
+            font-size: 0.90rem;
+        }
+
+    .v-navigation-drawer .v-list > .v-item-group > .v-list > .v-list-group .v-list-group__items {
+        visibility: visible !important;
+    }
+}
+
+@media (min-width: 376px ) and (max-width: 425px) {
+    ol li:not(.ql-direction-rtl), ul li:not(.ql-direction-rtl) {
+        padding-left: 0.2em;
+    }
+}
+
+@media (min-width: 426px ) and (max-width: 768px) {
+    
+}
+
+@media (min-width: 769px ) and (max-width: 1024px) {
+    
+}
+
+@media (min-width: 1025px ) and (max-width: 1440px) {
+    .v-app-bar--shrink-on-scroll > div.v-toolbar__content > .row > #dis-logo {
+        top: 25px;
+        position: relative;
+    }
+
+    .v-app-bar--is-scrolled > div.v-toolbar__content > .row > #dis-logo {
+        top: 0px;
+        position: relative;
+    }
+
+
+    .v-app-bar--shrink-on-scroll > div.v-toolbar__content > .row > #appTitle {
+        top: 25px;
+        position: relative;
+    }
+
+    .v-app-bar--is-scrolled > div.v-toolbar__content > .row > #appTitle {
+        top: 0px;
+        position: relative;
+    }
+
+    .v-app-bar--shrink-on-scroll > div.v-toolbar__content {
+        padding: 0px 3%;
+    }
+
+    .v-app-bar--is-scrolled > div.v-toolbar__content {
+        padding: 0px 1%;
+    }
+}
+
+@media (min-width: 1441px ) and (max-width: 2560px) {
+    
+}
+
+@media (min-width: 2561px ) {
+    
+}
+
+

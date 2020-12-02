@@ -1,0 +1,88 @@
+﻿<v-card width="100%">
+    <v-data-table :headers="getHeaders()"
+                  :items="mediators"
+                  item-key="MediatorGUID"
+                  class="elevation-1"
+                  hide-default-footer
+                  no-data-text="Няма намерени резултати"
+                  :disable-sort="true"
+                  :loading="loadingTableData"
+                  loading-text="Зареждане на данни"
+                  :items-per-page="selectedItemsPerPage">
+        <template v-slot:item="props">
+            <tr class="cursor-pointer">
+                <td @@click="props.expanded = !props.expanded">{{ props.item.FirstName + ' '+props.item.LastName }}</td>
+                <td @@click="props.expanded = !props.expanded">{{ props.item.RegistrationNumber }}</td>
+                <td v-if="!forAdditionalMediator" @@click="props.expanded = !props.expanded">{{ props.item.StatusName }}</td>
+                <td v-if="!forAdditionalMediator" @@click="props.expanded = !props.expanded">{{ props.item.DateCreated }}</td>
+                <td v-if="!forAdditionalMediator && false" @@click="props.expanded = !props.expanded">{{ props.item.MediatorContacts.LandlinePhone  || '-'}}</td>
+
+                <td v-if="forAdditionalMediator" @@click="props.expanded = !props.expanded" class="py-1"><v-chip label small color="primary" class="mr-1 mb-1" v-for="lang in props.item.ForeignLanguages" :key="lang">{{ lang }}</v-chip></td>
+                <td v-if="forAdditionalMediator" @@click="props.expanded = !props.expanded" class="py-1"><v-chip label small color="primary" class="mr-1 mb-1" v-for="prof in props.item.Professions" :key="prof">{{ prof }}</v-chip></td>
+
+                <td v-if="!forAdditionalMediator && false" @@click="props.expanded = !props.expanded">{{ props.item.MediatorContacts.MobilePhone || '-' }}</td>
+                <td v-if="!forAdditionalMediator && false" @@click="props.expanded = !props.expanded">{{ props.item.MediatorContacts.Fax || '-'}}</td>
+                <td v-if="false" @@click="props.expanded = !props.expanded">{{ props.item.MediatorContacts.Email || '-'}}</td>
+                <td align="right" class="px-2">
+                    <div class="my-2">
+                        <v-btn small
+                               :block="!forAdditionalMediator ? true : false"
+                               :color="forMediation || forAdditionalMediator ? 'default' : 'primary'"
+                               :href="'/Register/Mediators/Details/' + props.item.MediatorGUID"
+                               target="_blank"
+                               v-show="showRedirectMediatorButton">
+                            Преглед
+                        </v-btn>
+                        <v-btn small
+                               block
+                               color="primary"
+                               :href="'/Register/Mediators/FullDetails/' + props.item.MediatorGUID"
+                               target="_blank"
+                               v-show="showRedirectMediatorButtonAdmin">
+                            Преглед
+                        </v-btn>
+                        <v-btn v-show="forAdditionalMediator"
+                               class="ml-2"
+                               small
+                               color="primary"
+                               @@click="chooseMediator(props.item.MediatorGUID)">
+                            Избор
+                        </v-btn>
+                    </div>
+                </td>
+                <td v-if="forMediation" align="right" class="px-2">
+                    <v-btn small
+                           block
+                           color="primary"
+                           @@click="chooseMediator(props.item.MediatorGUID)">
+                        Избор
+                    </v-btn>
+                </td>
+            </tr>
+        </template>
+    </v-data-table>
+    <v-footer style="background-color: white !important">
+        <v-spacer></v-spacer>
+        <v-col md="2">
+            <v-select :items="itemsPerPage"
+                      v-model="selectedItemsPerPage"
+                      item-text="Value"
+                      item-value="Key"
+                      placeholder="-- Избери --"
+                      label="Редове на страница"
+                      color="primary"
+                      @@change="setRows(selectedItemsPerPage)">
+            </v-select>
+        </v-col>
+    </v-footer>
+    <template>
+        <div class="text-xs-center pa-4">
+            <v-pagination v-model="pagination.page"
+                          :length="pagination.totalPages"
+                          color="primary"
+                          total-visible="10"
+                          @@input="next(pagination.page)">
+            </v-pagination>
+        </div>
+    </template>
+</v-card>

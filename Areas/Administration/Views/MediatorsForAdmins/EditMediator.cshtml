@@ -1,0 +1,626 @@
+﻿@{
+    ViewBag.Title = "Редкация на медиатор";
+}
+
+<admin-full-details-mediator inline-template ref="adminFullDetailsMediator">
+    <template v-if="loading">
+        <v-text-field loading
+                      label="Зареждане..."
+                      disabled>
+        </v-text-field>
+    </template>
+    <template v-else>
+        <v-container>
+            <v-row>
+                <v-col cols="12" class="text-right">
+                    <v-btn color="primary" @@click="inReadonlyMode = !inReadonlyMode" v-if="inReadonlyMode">
+                        <v-icon left>mdi-account-edit</v-icon>
+                        Редакция
+                    </v-btn>
+                    <v-btn color="cyan" dark @@click="incomingNumberModal.open = !incomingNumberModal.open">
+                        <v-icon left>mdi-account-edit</v-icon>
+                        Промени деловоден номер
+                    </v-btn>
+                </v-col>
+            </v-row>
+            <v-row>
+                <v-col cols="12">
+                    <v-card hover outlined class="mt-5">
+                        <v-row>
+                            <v-col cols="12">
+                                <v-subheader class="subheader-border">Системна информация</v-subheader>
+                            </v-col>
+                        </v-row>
+                        <v-card-text>
+                            <v-row>
+                                <v-col cols="12" md="4" sm="12">
+                                    <v-text-field class="px-4"
+                                                  v-model="Mediator.RegistrationNumber"
+                                                  label="Регистрационен номер"
+                                                  color="primary"
+                                                  v-bind:readonly="true"></v-text-field>
+                                </v-col>
+                                <v-col cols="12" md="4" sm="12">
+                                    <v-text-field class="px-4"
+                                                  v-model="Mediator.MinisterOrder"
+                                                  label="Заповед на министър"
+                                                  color="primary"
+                                                  v-bind:readonly="true"></v-text-field>
+                                </v-col>
+                                <v-col cols="12" md="4" sm="12">
+                                    <v-text-field class="px-4"
+                                                  v-model="Mediator.IncomingNumber"
+                                                  label="Деловоден номер"
+                                                  color="primary"
+                                                  v-bind:readonly="true"></v-text-field>
+                                </v-col>
+                            </v-row>
+                        </v-card-text>
+                    </v-card>
+                    <v-card hover outlined class="mt-5">
+                        <v-row>
+                            <v-col cols="12">
+                                <v-subheader class="subheader-border">Основна информация</v-subheader>
+                            </v-col>
+                        </v-row>
+                        <v-card-text>
+                            <v-row>
+                                <v-col cols="12" md="4" sm="12">
+                                    <v-text-field class="px-4"
+                                                  v-model="Mediator.PersonInfo.FirstName"
+                                                  label="Име*"
+                                                  color="primary"
+                                                  v-bind:readonly="inReadonlyMode"></v-text-field>
+                                </v-col>
+                                <v-col cols="12" md="4" sm="12">
+                                    <v-text-field class="px-4"
+                                                  v-model="Mediator.PersonInfo.MiddleName"
+                                                  label="Презиме*"
+                                                  color="primary"
+                                                  v-bind:readonly="inReadonlyMode"></v-text-field>
+                                </v-col>
+                                <v-col cols="12" md="4" sm="12">
+                                    <v-text-field class="px-4"
+                                                  v-model="Mediator.PersonInfo.LastName"
+                                                  label="Фамилия*"
+                                                  color="primary"
+                                                  v-bind:readonly="inReadonlyMode"></v-text-field>
+                                </v-col>
+                            </v-row>
+                            <v-row>
+                                <v-col cols="12" md="4" sm="12">
+                                    <v-text-field class="px-4"
+                                                  v-model="Mediator.PersonInfo.EGN"
+                                                  label="ЕГН/ЛНЧ*"
+                                                  color="primary"
+                                                  v-bind:readonly="inReadonlyMode"></v-text-field>
+                                </v-col>
+                                <v-col cols="12" md="4" sm="12">
+                                    <v-select class="px-4"
+                                              v-model="Mediator.Citizenships"
+                                              v-bind:items="citizenships"
+                                              item-text="Value"
+                                              item-value="Key"
+                                              label="Гражданство(ва)*"
+                                              color="primary"
+                                              :menu-props="{ offsetY: true }"
+                                              :no-data-text="noDataText.citizenships"
+                                              multiple
+                                              v-bind:clearable="!inReadonlyMode"
+                                              v-bind:readonly="inReadonlyMode"></v-select>
+                                </v-col>
+                            </v-row>
+                            <v-row>
+                                <v-col cols="12" md="4" sm="12">
+                                    <v-text-field class="px-4"
+                                                  v-model="Mediator.ContactInfo.LandlinePhone"
+                                                  label="Стац. телефон"
+                                                  color="primary"
+                                                  v-bind:readonly="inReadonlyMode"></v-text-field>
+                                </v-col>
+                                <v-col cols="12" md="4" sm="12">
+                                    <v-text-field class="px-4"
+                                                  v-model="Mediator.ContactInfo.MobilePhone"
+                                                  label="Моб. телефон"
+                                                  color="primary"
+                                                  v-bind:readonly="inReadonlyMode"></v-text-field>
+                                </v-col>
+                                <v-col cols="12" md="4" sm="12">
+                                    <v-text-field class="px-4"
+                                                  v-model="Mediator.ContactInfo.Email"
+                                                  label="Електронна поща*"
+                                                  color="primary"
+                                                  v-bind:readonly="inReadonlyMode"></v-text-field>
+                                </v-col>
+                            </v-row>
+                        </v-card-text>
+                    </v-card>
+                    <v-card hover outlined class="mt-5">
+                        <v-row>
+                            <v-col cols="12">
+                                <v-subheader class="subheader-border">Постоянен адрес</v-subheader>
+                            </v-col>
+                        </v-row>
+                        <v-card-text>
+                            <v-row>
+                                <v-col cols="12" md="3" sm="12">
+                                    <v-select class="px-4"
+                                              v-model="Mediator.PermanentAddress.CountryGUID"
+                                              v-bind:items="PermanentAddress.countries"
+                                              item-text="Value"
+                                              item-value="Key"
+                                              label="Държава*"
+                                              color="primary"
+                                              :menu-props="{ offsetY: true }"
+                                              :no-data-text="noDataText.countries"
+                                              v-bind:clearable="!inReadonlyMode"
+                                              v-bind:readonly="inReadonlyMode"
+                                              v-on:change="onCountryChange(Mediator.PermanentAddress, Mediator.PermanentAddress.CountryGUID, $event)"></v-select>
+                                </v-col>
+                                <v-col cols="12" md="3" sm="12">
+                                    <v-select class="px-4"
+                                              v-model="Mediator.PermanentAddress.DistrictGUID"
+                                              v-bind:items="PermanentAddress.districts"
+                                              item-text="Value"
+                                              item-value="Key"
+                                              label="Област*"
+                                              color="primary"
+                                              :menu-props="{ offsetY: true }"
+                                              :no-data-text="noDataText.districts"
+                                              v-bind:clearable="!inReadonlyMode"
+                                              v-bind:readonly="inReadonlyMode"
+                                              v-on:change="onDistrictChange(Mediator.PermanentAddress, PermanentAddress)"
+                                              v-if="Mediator.PermanentAddress.CountryGUID == BG_GUID"></v-select>
+                                </v-col>
+                                <v-col cols="12" md="3" sm="12">
+                                    <v-select class="px-4"
+                                              v-model="Mediator.PermanentAddress.MunicipalityGUID"
+                                              v-bind:items="PermanentAddress.municipalities"
+                                              item-text="Value"
+                                              item-value="Key"
+                                              label="Община*"
+                                              color="primary"
+                                              :menu-props="{ offsetY: true }"
+                                              :no-data-text="noDataText.municipalities"
+                                              v-bind:clearable="!inReadonlyMode"
+                                              v-bind:readonly="inReadonlyMode"
+                                              v-on:change="onMunicipalityChange(Mediator.PermanentAddress, PermanentAddress)"
+                                              v-if="Mediator.PermanentAddress.CountryGUID == BG_GUID"></v-select>
+                                </v-col>
+                                <v-col cols="12" md="3" sm="12">
+                                    <v-select class="px-4"
+                                              v-model="Mediator.PermanentAddress.SettlementGUID"
+                                              v-bind:items="PermanentAddress.settlements"
+                                              item-text="Value"
+                                              item-value="Key"
+                                              label="Населено място*"
+                                              color="primary"
+                                              :menu-props="{ offsetY: true }"
+                                              :no-data-text="noDataText.settlements"
+                                              v-bind:clearable="!inReadonlyMode"
+                                              v-bind:readonly="inReadonlyMode"
+                                              v-if="Mediator.PermanentAddress.CountryGUID == BG_GUID"></v-select>
+                                </v-col>
+                                <v-col cols="12">
+                                    <v-text-field class="px-4"
+                                                  v-model="Mediator.PermanentAddress.Address"
+                                                  label="Адрес*"
+                                                  color="primary"
+                                                  v-bind:readonly="inReadonlyMode"></v-text-field>
+                                </v-col>
+                            </v-row>
+                        </v-card-text>
+                    </v-card>
+                    <v-card hover outlined class="mt-5">
+                        <v-row>
+                            <v-col cols="12">
+                                <v-subheader class="subheader-border">
+                                    Настоящ адрес
+                                    <template v-if="true">
+                                        <v-spacer></v-spacer>
+                                        <div class="d-none d-sm-flex text-right">
+                                            <v-btn color="primary lighten-1"
+                                                   v-on:click="onCopyCurrentAddress"
+                                                   v-show="!inReadonlyMode">
+                                                <v-icon dark>mdi-content-copy</v-icon>
+                                                Копирай адрес
+                                            </v-btn>
+                                        </div>
+                                    </template>
+                                </v-subheader>
+                            </v-col>
+                        </v-row>
+                        <v-card-text>
+                            <v-row>
+                                <v-col cols="12" md="3" sm="12">
+                                    <v-select class="px-4"
+                                              v-model="Mediator.CurrentAddress.CountryGUID"
+                                              v-bind:items="CurrentAddress.countries"
+                                              item-text="Value"
+                                              item-value="Key"
+                                              label="Държава*"
+                                              color="primary"
+                                              :menu-props="{ offsetY: true }"
+                                              :no-data-text="noDataText.countries"
+                                              v-bind:clearable="!inReadonlyMode"
+                                              v-bind:readonly="inReadonlyMode"
+                                              v-on:change="onCountryChange(Mediator.CurrentAddress, Mediator.CurrentAddress.CountryGUID, $event)"></v-select>
+                                </v-col>
+                                <v-col cols="12" md="3" sm="12">
+                                    <v-select class="px-4"
+                                              v-model="Mediator.CurrentAddress.DistrictGUID"
+                                              v-bind:items="CurrentAddress.districts"
+                                              item-text="Value"
+                                              item-value="Key"
+                                              label="Област*"
+                                              color="primary"
+                                              :menu-props="{ offsetY: true }"
+                                              :no-data-text="noDataText.districts"
+                                              v-bind:clearable="!inReadonlyMode"
+                                              v-bind:readonly="inReadonlyMode"
+                                              v-on:change="onDistrictChange(Mediator.CurrentAddress, CurrentAddress)"
+                                              v-if="Mediator.CurrentAddress.CountryGUID == BG_GUID"></v-select>
+                                </v-col>
+                                <v-col cols="12" md="3" sm="12">
+                                    <v-select class="px-4"
+                                              v-model="Mediator.CurrentAddress.MunicipalityGUID"
+                                              v-bind:items="CurrentAddress.municipalities"
+                                              item-text="Value"
+                                              item-value="Key"
+                                              label="Община*"
+                                              color="primary"
+                                              :menu-props="{ offsetY: true }"
+                                              :no-data-text="noDataText.municipalities"
+                                              v-bind:clearable="!inReadonlyMode"
+                                              v-bind:readonly="inReadonlyMode"
+                                              v-on:change="onMunicipalityChange(Mediator.CurrentAddress, CurrentAddress)"
+                                              v-if="Mediator.CurrentAddress.CountryGUID == BG_GUID"></v-select>
+                                </v-col>
+                                <v-col cols="12" md="3" sm="12">
+                                    <v-select class="px-4"
+                                              v-model="Mediator.CurrentAddress.SettlementGUID"
+                                              v-bind:items="CurrentAddress.settlements"
+                                              item-text="Value"
+                                              item-value="Key"
+                                              label="Населено място*"
+                                              color="primary"
+                                              :menu-props="{ offsetY: true }"
+                                              :no-data-text="noDataText.settlements"
+                                              v-bind:clearable="!inReadonlyMode"
+                                              v-bind:readonly="inReadonlyMode"
+                                              v-if="Mediator.CurrentAddress.CountryGUID == BG_GUID"></v-select>
+                                </v-col>
+                                <v-col cols="12">
+                                    <v-text-field class="px-4"
+                                                  v-model="Mediator.CurrentAddress.Address"
+                                                  label="Адрес*"
+                                                  color="primary"
+                                                  v-bind:readonly="inReadonlyMode"></v-text-field>
+                                </v-col>
+                            </v-row>
+                        </v-card-text>
+                    </v-card>
+                    <v-card hover class="mt-5">
+                        <v-row>
+                            <v-col cols="12">
+                                <v-subheader class="subheader-border">
+                                    Адрес за кореспонденция
+                                    <template v-if="true">
+                                        <v-spacer></v-spacer>
+                                        <div class="d-none d-sm-flex text-right">
+                                            <v-btn color="primary lighten-1"
+                                                   v-on:click="onCopyMailingAddress"
+                                                   v-show="!inReadonlyMode">
+                                                <v-icon dark>mdi-content-copy</v-icon>
+                                                Копирай адрес
+                                            </v-btn>
+                                        </div>
+                                    </template>
+                                </v-subheader>
+                            </v-col>
+                        </v-row>
+                        <v-card-text>
+                            <v-row>
+                                <v-col cols="12" md="3" sm="12">
+                                    <v-select class="px-4"
+                                              v-model="Mediator.MailingAddress.CountryGUID"
+                                              v-bind:items="MailingAddress.countries"
+                                              item-text="Value"
+                                              item-value="Key"
+                                              label="Държава*"
+                                              color="primary"
+                                              :menu-props="{ offsetY: true }"
+                                              :no-data-text="noDataText.countries"
+                                              v-bind:clearable="!inReadonlyMode"
+                                              v-bind:readonly="inReadonlyMode"
+                                              v-on:change="onCountryChange(Mediator.MailingAddress, Mediator.MailingAddress.CountryGUID, $event)"></v-select>
+                                </v-col>
+                                <v-col cols="12" md="3" sm="12">
+                                    <v-select class="px-4"
+                                              v-model="Mediator.MailingAddress.DistrictGUID"
+                                              v-bind:items="MailingAddress.districts"
+                                              item-text="Value"
+                                              item-value="Key"
+                                              label="Област*"
+                                              color="primary"
+                                              :menu-props="{ offsetY: true }"
+                                              :no-data-text="noDataText.districts"
+                                              v-bind:clearable="!inReadonlyMode"
+                                              v-bind:readonly="inReadonlyMode"
+                                              v-on:change="onDistrictChange(Mediator.MailingAddress, MailingAddress)"
+                                              v-if="Mediator.MailingAddress.CountryGUID == BG_GUID"></v-select>
+                                </v-col>
+                                <v-col cols="12" md="3" sm="12">
+                                    <v-select class="px-4"
+                                              v-model="Mediator.MailingAddress.MunicipalityGUID"
+                                              v-bind:items="MailingAddress.municipalities"
+                                              item-text="Value"
+                                              item-value="Key"
+                                              label="Община*"
+                                              color="primary"
+                                              :menu-props="{ offsetY: true }"
+                                              :no-data-text="noDataText.municipalities"
+                                              v-bind:clearable="!inReadonlyMode"
+                                              v-bind:readonly="inReadonlyMode"
+                                              v-on:change="onMunicipalityChange(Mediator.MailingAddress, MailingAddress)"
+                                              v-if="Mediator.MailingAddress.CountryGUID == BG_GUID"></v-select>
+                                </v-col>
+                                <v-col cols="12" md="3" sm="12">
+                                    <v-select class="px-4"
+                                              v-model="Mediator.MailingAddress.SettlementGUID"
+                                              v-bind:items="MailingAddress.settlements"
+                                              item-text="Value"
+                                              item-value="Key"
+                                              label="Населено място*"
+                                              color="primary"
+                                              :menu-props="{ offsetY: true }"
+                                              :no-data-text="noDataText.settlements"
+                                              v-bind:clearable="!inReadonlyMode"
+                                              v-bind:readonly="inReadonlyMode"
+                                              v-if="Mediator.MailingAddress.CountryGUID == BG_GUID"></v-select>
+                                </v-col>
+                                <v-col cols="12">
+                                    <v-text-field class="px-4"
+                                                  v-model="Mediator.MailingAddress.Address"
+                                                  label="Адрес*"
+                                                  color="primary"
+                                                  v-bind:readonly="inReadonlyMode"></v-text-field>
+                                </v-col>
+                            </v-row>
+                        </v-card-text>
+                    </v-card>
+
+
+                    <v-card hover class="mt-5">
+                        <v-row>
+                            <v-col cols="12">
+                                <v-subheader class="subheader-border">
+                                    Образование и квалификации
+                                    <v-spacer></v-spacer>
+                                    <template v-if="!inReadonlyMode">
+                                        <div class="d-none d-sm-flex text-right">
+                                            <v-btn color="primary lighten-1"
+                                                   v-on:click="onAddNewEducation">
+                                                <v-icon dark>mdi-plus</v-icon>
+                                                Добавяне на образование
+                                            </v-btn>
+                                        </div>
+                                    </template>
+                                </v-subheader>
+                            </v-col>
+                        </v-row>
+                        <v-card-text>
+                            <v-row class="d-flex d-sm-none">
+                                <v-col cols="12" md="12" sm="12">
+                                    <div class="text-center">
+                                        <v-btn color="primary lighten-1"
+                                               v-on:click="onAddNewEducation">
+                                            <v-icon dark>mdi-plus</v-icon>
+                                            Добавяне на образование
+                                        </v-btn>
+                                    </div>
+                                </v-col>
+                            </v-row>
+                            <div v-for="(education, index) in Mediator.Educations" :key="index">
+                                <v-row>
+                                    <v-col cols="12" md="4" sm="12" class="pt-4">
+                                        <v-autocomplete class="px-4 py-2"
+                                                        v-model="education.EducationDegreeGUID"
+                                                        v-bind:items="educationDegrees"
+                                                        item-text="Value"
+                                                        item-value="Key"
+                                                        label="Образователно квалификационна степен*"
+                                                        color="primary"
+                                                        :menu-props="{ offsetY: true }"
+                                                        :no-data-text="noDataText.degrees"
+                                                        v-bind:clearable="!inReadonlyMode"
+                                                        v-bind:readonly="inReadonlyMode"></v-autocomplete>
+                                    </v-col>
+                                    <v-col cols="12" md="4" sm="12" class="pt-4">
+                                        <v-autocomplete class="px-4 py-2"
+                                                        v-model="education.EducationFieldGUID"
+                                                        v-bind:items="educationFields"
+                                                        item-text="Value"
+                                                        item-value="Key"
+                                                        label="Област на висше образование*"
+                                                        color="primary"
+                                                        :menu-props="{ offsetY: true }"
+                                                        @@change="loadProfessionalDirections(education.EducationFieldGUID, education.TrackGuid)"
+                                                        :no-data-text="noDataText.educations"
+                                                        v-bind:clearable="!inReadonlyMode"
+                                                        v-bind:readonly="inReadonlyMode"></v-autocomplete>
+                                    </v-col>
+                                    <v-col cols="12" md="3" sm="12" class="pt-4">
+                                        <v-autocomplete class="px-4 py-2"
+                                                        v-model="education.ProfessionalDirectionGUID"
+                                                        v-bind:items="professionalDirectionsGlobal[education.TrackGuid]"
+                                                        item-text="Value"
+                                                        item-value="Key"
+                                                        label="Професионално направление*"
+                                                        color="primary"
+                                                        :menu-props="{ offsetY: true }"
+                                                        :no-data-text="noDataText.professionalDirections"
+                                                        v-bind:clearable="!inReadonlyMode"
+                                                        v-bind:readonly="inReadonlyMode"></v-autocomplete>
+                                    </v-col>
+                                    <template v-if="!inReadonlyMode">
+                                        <v-col cols="12" md="1" sm="12" class="pt-5 text-center">
+                                            <v-tooltip top>
+                                                <template v-slot:activator="{ on }">
+                                                    <v-btn class="mx-2" fab dark small
+                                                           v-on="on"
+                                                           color="error" v-bind:clearable="!inReadonlyMode"
+                                                           v-on:click="removeEducation(index)">
+                                                        <v-icon dark>close</v-icon>
+                                                    </v-btn>
+                                                </template>
+                                                <span>Изтриване на образование</span>
+                                            </v-tooltip>
+                                        </v-col>
+                                    </template>
+                                </v-row>
+                                <v-row>
+                                    <v-col cols="12" class="py-0">
+                                        <hr class="my-0" />
+                                    </v-col>
+                                </v-row>
+                            </div>
+                            <v-row>
+                                <v-col cols="12" md="6" sm="12">
+                                    <v-autocomplete class="px-4"
+                                                    v-model="Mediator.Professions"
+                                                    v-bind:items="professions"
+                                                    item-text="Value"
+                                                    item-value="Key"
+                                                    label="Професия"
+                                                    color="primary"
+                                                    :menu-props="{ offsetY: true }"
+                                                    :no-data-text="noDataText.professions"
+                                                    multiple
+                                                    chips
+                                                    v-bind:clearable="!inReadonlyMode"
+                                                    v-bind:readonly="inReadonlyMode"></v-autocomplete>
+                                </v-col>
+                                <v-col cols="12" md="6" sm="12">
+                                    <v-select class="px-4"
+                                              v-model="Mediator.ForeignLanguages"
+                                              v-bind:items="foreignLanguages"
+                                              item-text="Value"
+                                              item-value="Key"
+                                              label="Чужди езици"
+                                              color="primary"
+                                              :menu-props="{ offsetY: true }"
+                                              :no-data-text="noDataText.languages"
+                                              multiple
+                                              chips
+                                              v-bind:clearable="!inReadonlyMode"
+                                              v-bind:readonly="inReadonlyMode"></v-select>
+                                </v-col>
+                                <v-col cols="12" md="6" sm="12">
+                                    <v-autocomplete class="px-4"
+                                                    v-model="Mediator.TrainingOrganizationGUID"
+                                                    v-bind:items="organizations"
+                                                    item-text="Value"
+                                                    item-value="Key"
+                                                    label="Обучителна организация*"
+                                                    color="primary"
+                                                    :menu-props="{ offsetY: true }"
+                                                    :no-data-text="noDataText.organizations"
+                                                    v-bind:clearable="!inReadonlyMode"
+                                                    v-bind:readonly="inReadonlyMode"></v-autocomplete>
+                                </v-col>
+                                <v-col cols="12" md="6" xs="12">
+                                    <v-combobox class="px-4"
+                                                v-model="Mediator.OrganizationMemberships"
+                                                label="Членство в организации"
+                                                color="primary"
+                                                :menu-props="{ offsetY: true }"
+                                                multiple
+                                                messages="Натиснете 'Enter' след като въведете текст"
+                                                chips
+                                                v-bind:clearable="!inReadonlyMode"
+                                                v-bind:readonly="inReadonlyMode"></v-combobox>
+                                </v-col>
+                                <v-col cols="12" md="6" xs="12">
+                                    <v-autocomplete class="px-4"
+                                                    v-model="Mediator.Specializations"
+                                                    v-bind:items="specializations"
+                                                    item-text="Value"
+                                                    item-value="Key"
+                                                    label="Допълнителна специализация в областта на медиацията"
+                                                    color="primary"
+                                                    v-bind:clearable="!inReadonlyMode"
+                                                    v-bind:readonly="inReadonlyMode"
+                                                    multiple></v-autocomplete>
+                                </v-col>
+                                <v-col cols="12" md="6" xs="12">
+                                    <v-combobox class="px-4"
+                                                v-model="Mediator.AdditionalQualifications"
+                                                label="Допълнителна квалификация"
+                                                color="primary"
+                                                multiple
+                                                messages="Натиснете 'Enter' след като въведете текст"
+                                                chips
+                                                v-bind:clearable="!inReadonlyMode"
+                                                v-bind:readonly="inReadonlyMode"></v-combobox>
+                                </v-col>
+                            </v-row>
+                        </v-card-text>
+                    </v-card>
+                </v-col>
+            </v-row>
+            <template v-if="!inReadonlyMode">
+                <v-row>
+                    <v-col cols="12" md="6" offset-md="3">
+                        <v-btn color="success"
+                               block
+                               @@click="saveMediator">
+                            Извърши редакция
+                        </v-btn>
+                    </v-col>
+                </v-row>
+            </template>
+            <v-dialog v-model="incomingNumberModal.open" scrollable persistent max-width="75%">
+                <v-card>
+                    <v-card-title class="headline primary" style="color: white">
+                        Добавяне на допълнителен медиатор
+                    </v-card-title>
+                    <v-card-text class="pa-8">
+                        <v-row>
+                            <v-col cols="12">
+                                <v-text-field class="px-4"
+                                              v-model="incomingNumberModal.data.number"
+                                              label="Деловоден номер*"
+                                              color="primary"></v-text-field>
+                            </v-col>
+                        </v-row>
+                    </v-card-text>
+                    <v-card-actions>
+                        <v-spacer></v-spacer>
+                        <v-btn color="success darken-1" @@click="saveIncomingNumber" :loading="incomingNumberModal.loading">
+                            <v-icon left>mdi-check</v-icon>
+                            Запази
+                        </v-btn>
+                        <v-btn color="default darken-1" @@click="incomingNumberModal.open = !incomingNumberModal.open">Затвори</v-btn>
+                    </v-card-actions>
+                </v-card>
+            </v-dialog>
+        </v-container>
+    </template>
+</admin-full-details-mediator>
+
+@section Scripts {
+
+    @* Models *@
+    @Scripts.Render("~/JSModels/FormFilingClasses/MediatorAdmin.js")
+    @Scripts.Render("~/JSModels/FormFilingClasses/Person.js")
+    @Scripts.Render("~/JSModels/FormFilingClasses/Education.js")
+    @Scripts.Render("~/JSModels/FormFilingClasses/Contact.js")
+    @Scripts.Render("~/JSModels/FormFilingClasses/FullAddress.js")
+
+    @* HELPERS *@
+    @Scripts.Render("~/Scripts/Custom/load-nomenclatures.js")
+
+    @* Components *@
+    @Scripts.Render("~/Scripts/VueComponents/admin_fullDetailsMediator.js")
+}

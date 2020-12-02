@@ -1,0 +1,60 @@
+﻿@{
+    ViewBag.Title = "Всички информации";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<informations-list inline-template ref="informationsList">
+    <div>
+        <template v-if="loading">
+            <v-text-field color="primary"
+                          loading
+                          label="Зареждане..."
+                          readonly>
+            </v-text-field>
+        </template>
+        <template v-else>
+            <h2>{{SectionName}}</h2>
+            <br />
+            <v-row class="ma-0">
+                <v-col cols="12">
+                    <template v-for="(info, i) in Data">
+                        <v-card hover class="mb-5">
+                            <v-card-title>{{info.Title}}</v-card-title>
+                            <v-card-subtitle>{{moment(info.DateCreated).format('DD.MM.YYYY')}}</v-card-subtitle>
+                            <v-card-text>
+                                {{info.Description}}
+                            </v-card-text>
+                            <v-card-actions>
+                                <v-col cols="12" md="2" offset-md="10" sm="12" align="right">
+                                    <v-btn color="primary"
+                                           block
+                                           :href="'/Informations/'+SectionUrl+'/'+info.URL">
+                                        Преглед
+                                    </v-btn>
+                                </v-col>
+                            </v-card-actions>
+                        </v-card>
+                    </template>
+                </v-col>
+            </v-row>
+            <v-row>
+                <v-col cols="12" align="center">
+
+                    <v-pagination v-model="pagination.page"
+                                  total-visible="10"
+                                  :length="pagination.totalPages"
+                                  color="primary"
+                                  @@input="next(pagination.page)">
+                    </v-pagination>
+                </v-col>
+            </v-row>
+        </template>
+    </div>
+</informations-list>
+
+@section Scripts {
+
+    @* Components *@
+    @Scripts.Render("~/Scripts/VueComponents/informations-list.js")
+}

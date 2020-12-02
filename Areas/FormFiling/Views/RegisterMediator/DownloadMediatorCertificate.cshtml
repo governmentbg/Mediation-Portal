@@ -1,0 +1,26 @@
+﻿<download-mediator-certificate inline-template ref="downloadMediatorCertificate">
+    <v-row>
+        <v-col cols="12">
+            <v-alert border="left"
+                     color="success"
+                     text
+                     class="elevation-8">
+                Вашето Удостоверение/Сертификат можете да го свалите от
+                <v-btn text
+                       small
+                       color="primary"
+                       @@click="handleDownload">
+                    тук
+                </v-btn>.
+            </v-alert>
+        </v-col>
+    </v-row>
+</download-mediator-certificate>
+
+@section Scripts {
+
+    @* Models *@
+
+    @* Scripts *@
+    @Scripts.Render("~/Scripts/VueComponents/downloadMediatorCertificate.js")
+}

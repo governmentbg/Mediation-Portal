@@ -1,0 +1,283 @@
+﻿<v-card hover outlined>
+    <v-row>
+        <v-col cols="12" md="6" sm="12">
+            <v-subheader class="subheader-border">Основна информация на СТРАНА 1</v-subheader>
+        </v-col>
+        <v-col cols="12" md="6" sm="12" class="text-right pa-6" v-if="showApplicantCheckBtns">
+            <v-btn v-if="Form.ApplicantLegalEntity.EntityEIK"
+                   color="orange darken-3"
+                   dark
+                   @@click="GetBRRACheck(true)">Проверка Търговски Регистър</v-btn>
+            <v-btn color="orange darken-4" v-if="Form.ApplicantLegalEntity.EntityEIK || Form.ApplicantLegalEntity.EntityCourtRegistration"
+                   dark
+                   @@click="GetBulstatCheck(true)">Проверка БУЛСТАТ</v-btn>
+        </v-col>
+    </v-row>
+    <v-card-text>
+        <template v-if="showApplicantCheckBtns && Regix.Applicant.Checked">
+            <v-row>
+                <v-col cols="12">
+                    <v-expansion-panels :value="0">
+                        <v-expansion-panel :key="0">
+                            <v-expansion-panel-header><v-subheader class="subheader-border">{{Regix.Applicant.Name}}</v-subheader></v-expansion-panel-header>
+                            <v-expansion-panel-content>
+
+                                <template v-if="Regix.Applicant.Data.Representatives && Regix.Applicant.Data.Representatives.length">
+                                    <v-card hover outlined style="border:none;">
+                                        <v-card-title>
+                                            Представители на организация&nbsp;
+                                            <span class="title font-weight-bold">{{Regix.Applicant.Data.Name}}</span>
+                                        </v-card-title>
+                                        <v-card-text>
+
+                                            <v-simple-table>
+                                                <template v-slot:default>
+                                                    <thead>
+                                                        <tr>
+                                                            <th class="text-left">Имена</th>
+                                                            <th class="text-left">ЕГН</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <tr v-for="person in Regix.Applicant.Data.Representatives" :key="person.EGN">
+                                                            <td>{{ person.FullName }}</td>
+                                                            <td>{{ person.EGN }}</td>
+                                                        </tr>
+                                                    </tbody>
+                                                </template>
+                                            </v-simple-table>
+                                        </v-card-text>
+                                    </v-card>
+                                </template>
+
+                                <template v-if="Regix.Applicant.Data.Owners && Regix.Applicant.Data.Owners.length">
+                                    <v-card hover outlined style="border:none;">
+                                        <v-card-title>
+                                            Мениджъри на организация&nbsp;
+                                            <span class="title font-weight-bold">{{Regix.Applicant.Data.Name}}</span>
+                                        </v-card-title>
+                                        <v-card-text>
+
+                                            <v-simple-table>
+                                                <template v-slot:default>
+                                                    <thead>
+                                                        <tr>
+                                                            <th class="text-left">Имена</th>
+                                                            <th class="text-left">ЕГН</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <tr v-for="person in Regix.Applicant.Data.Owners" :key="person.EGN">
+                                                            <td>{{ person.FullName }}</td>
+                                                            <td>{{ person.EGN }}</td>
+                                                        </tr>
+                                                    </tbody>
+                                                </template>
+                                            </v-simple-table>
+                                        </v-card-text>
+                                    </v-card>
+                                </template>
+
+
+
+                                <template v-if="!Regix.Applicant.Data.Owners.length && !Regix.Applicant.Data.Owners.length">
+                                    <v-card hover outlined style="border:none;">
+                                        <v-card-text>Няма налична информация</v-card-text>
+                                    </v-card>
+                                </template>
+                            </v-expansion-panel-content>
+                        </v-expansion-panel>
+                    </v-expansion-panels>
+                </v-col>
+            </v-row>
+        </template>
+        <v-row>
+            <v-col cols="12" md="6" sm="12">
+                <v-radio-group label=""
+                               :row="true"
+                               v-model="applicantIsPerson"
+                               v-bind:readonly="inReadonlyMode"
+                               v-on:change="clearApplicantData()">
+                    <v-radio label="Физическо лице" :value="true" color="primary"></v-radio>
+                    <v-radio label="Юридическо лице" :value="false" color="primary"></v-radio>
+                </v-radio-group>
+            </v-col>
+        </v-row>
+        <v-row>
+            <v-col cols="12" md="4" sm="12">
+                <v-text-field v-model="Form.ApplicantInfo.FirstName"
+                              label="Име*"
+                              :rules="[validationRules.requiredField]"
+                              v-bind:clearable="!inReadonlyMode"
+                              v-bind:readonly="inReadonlyMode">
+                </v-text-field>
+            </v-col>
+            <v-col cols="12" md="4" sm="12">
+                <v-text-field v-model="Form.ApplicantInfo.MiddleName"
+                              label="Презиме*"
+                              :rules="[validationRules.requiredField]"
+                              v-bind:clearable="!inReadonlyMode"
+                              v-bind:readonly="inReadonlyMode">
+                </v-text-field>
+            </v-col>
+            <v-col cols="12" md="4" sm="12">
+                <v-text-field v-model="Form.ApplicantInfo.LastName"
+                              label="Фамилия*"
+                              :rules="[validationRules.requiredField]"
+                              v-bind:clearable="!inReadonlyMode"
+                              v-bind:readonly="inReadonlyMode">
+                </v-text-field>
+            </v-col>
+        </v-row>
+        <v-row>
+            <v-col cols="12" md="4" sm="12">
+                <v-text-field v-model="Form.ApplicantInfo.EGN"
+                              label="ЕГН*"
+                              :rules="[validationRules.requiredField]"
+                              v-bind:clearable="!inReadonlyMode"
+                              v-bind:readonly="inReadonlyMode">
+                </v-text-field>
+            </v-col>
+            <v-col cols="12" md="8" sm="12">
+                <v-select v-model="Form.ApplicantCitizenships"
+                          v-bind:items="citizenships"
+                          item-text="Value"
+                          item-value="Key"
+                          label="Гражданство(ва)*"
+                          :rules="[validationRules.requiredField]"
+                          color="primary"
+                          :menu-props="{ offsetY: true }"
+                          :no-data-text="noDataText.citizenships"
+                          multiple
+                          v-bind:clearable="!inReadonlyMode"
+                          v-bind:readonly="inReadonlyMode">
+                </v-select>
+            </v-col>
+        </v-row>
+        <v-row>
+            <v-col cols="12" md="3" sm="12">
+                <v-select v-model="Form.ApplicantMailingAddress.CountryGUID"
+                          v-bind:items="ApplicantMailingAddress.countries"
+                          item-text="Value"
+                          item-value="Key"
+                          label="Държава*"
+                          :rules="[validationRules.requiredField]"
+                          color="primary"
+                          :menu-props="{ offsetY: true }"
+                          :no-data-text="noDataText.countries"
+                          v-bind:clearable="!inReadonlyMode"
+                          v-bind:readonly="inReadonlyMode"
+                          v-on:change="onCountryChange(Form.ApplicantMailingAddress, Form.ApplicantMailingAddress.CountryGUID, $event)"></v-select>
+            </v-col>
+            <v-col cols="12" md="3" sm="12">
+                <v-select v-model="Form.ApplicantMailingAddress.DistrictGUID"
+                          v-bind:items="ApplicantMailingAddress.districts"
+                          item-text="Value"
+                          item-value="Key"
+                          label="Област*"
+                          :rules="[validationRules.requiredField]"
+                          color="primary"
+                          :menu-props="{ offsetY: true }"
+                          :no-data-text="noDataText.districts"
+                          v-bind:clearable="!inReadonlyMode"
+                          v-bind:readonly="inReadonlyMode"
+                          v-on:change="onDistrictChange(Form.ApplicantMailingAddress, ApplicantMailingAddress)"
+                          v-if="Form.ApplicantMailingAddress.CountryGUID == BG_GUID"></v-select>
+            </v-col>
+            <v-col cols="12" md="3" sm="12">
+                <v-select v-model="Form.ApplicantMailingAddress.MunicipalityGUID"
+                          v-bind:items="ApplicantMailingAddress.municipalities"
+                          item-text="Value"
+                          item-value="Key"
+                          label="Община*"
+                          :rules="[validationRules.requiredField]"
+                          color="primary"
+                          :menu-props="{ offsetY: true }"
+                          :no-data-text="noDataText.municipalities"
+                          v-bind:clearable="!inReadonlyMode"
+                          v-bind:readonly="inReadonlyMode"
+                          v-on:change="onMunicipalityChange(Form.ApplicantMailingAddress, ApplicantMailingAddress)"
+                          v-if="Form.ApplicantMailingAddress.CountryGUID == BG_GUID"></v-select>
+            </v-col>
+            <v-col cols="12" md="3" sm="12">
+                <v-select v-model="Form.ApplicantMailingAddress.SettlementGUID"
+                          v-bind:items="ApplicantMailingAddress.settlements"
+                          item-text="Value"
+                          item-value="Key"
+                          label="Населено място*"
+                          :rules="[validationRules.requiredField]"
+                          color="primary"
+                          :menu-props="{ offsetY: true }"
+                          :no-data-text="noDataText.settlements"
+                          v-bind:clearable="!inReadonlyMode"
+                          v-bind:readonly="inReadonlyMode"
+                          v-if="Form.ApplicantMailingAddress.CountryGUID == BG_GUID"></v-select>
+            </v-col>
+            <v-col cols="12">
+                <v-text-field v-model="Form.ApplicantMailingAddress.Address"
+                              label="Адрес*"
+                              :rules="[validationRules.requiredField]"
+                              color="primary"
+                              v-bind:readonly="inReadonlyMode">
+                </v-text-field>
+            </v-col>
+        </v-row>
+        <v-row>
+            <v-col cols="12" md="4" sm="12">
+                <v-text-field v-model="Form.ApplicantContactInfo.MobilePhone"
+                              label="Мобилен телефон*"
+                              :rules="[validationRules.requiredField]"
+                              v-bind:clearable="!inReadonlyMode"
+                              v-bind:readonly="inReadonlyMode"
+                              color="primary">
+                </v-text-field>
+            </v-col>
+            <v-col cols="12" md="4" sm="12">
+                <v-text-field v-model="Form.ApplicantContactInfo.LandlinePhone"
+                              label="Стационарен телефон"
+                              v-bind:clearable="!inReadonlyMode"
+                              v-bind:readonly="inReadonlyMode"
+                              color="primary">
+                </v-text-field>
+            </v-col>
+            <v-col cols="12" md="4" sm="12">
+                <v-text-field v-model="Form.ApplicantContactInfo.Email"
+                              label="Електронна поща*"
+                              :rules="[validationRules.requiredField, validationRules.email]"
+                              color="primary"
+                              v-bind:readonly="inReadonlyMode">
+                </v-text-field>
+            </v-col>
+        </v-row>
+        <template v-if="!applicantIsPerson">
+            <hr />
+            <v-row>
+                <v-col cols="12" md="4" sm="12">
+                    <v-text-field v-model="Form.ApplicantLegalEntity.EntityName"
+                                  label="Име на юридическо лице*"
+                                  :rules="!applicantIsPerson ? [validationRules.requiredField] : []"
+                                  v-bind:clearable="!inReadonlyMode"
+                                  v-bind:readonly="inReadonlyMode"
+                                  color="primary">
+                    </v-text-field>
+                </v-col>
+                <v-col cols="12" md="4" sm="12">
+                    <v-text-field v-model="Form.ApplicantLegalEntity.EntityEIK"
+                                  label="ЕИК*"
+                                  :rules="!applicantIsPerson ? [validationRules.requiredField] : []"
+                                  v-bind:clearable="!inReadonlyMode"
+                                  v-bind:readonly="inReadonlyMode"
+                                  color="primary">
+                    </v-text-field>
+                </v-col>
+                <v-col cols="12" md="4" sm="12">
+                    <v-text-field v-model="Form.ApplicantLegalEntity.EntityCourtRegistration"
+                                  label="Съдебна регистрация"
+                                  color="primary"
+                                  v-bind:readonly="inReadonlyMode">
+                    </v-text-field>
+                </v-col>
+            </v-row>
+        </template>
+    </v-card-text>
+</v-card>

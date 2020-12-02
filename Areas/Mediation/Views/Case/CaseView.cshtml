@@ -1,0 +1,243 @@
+﻿@{
+    ViewBag.Title = "Медиация";
+}
+
+<br />
+
+
+<initiate-mediation-form inline-template ref="initiateMediationForm">
+    <template v-if="loading">
+        <v-text-field color="primary"
+                      loading
+                      label="Зареждане..."
+                      readonly>
+        </v-text-field>
+    </template>
+    <template v-else>
+        <div class="application-form">
+            <template v-if="showApplication">
+                <template v-if="isCurrentUserHasRightsToCase">
+                    <template v-if="false">
+                        <v-alert type="error"
+                                 color="error"
+                                 dense>
+                            Медиатора <strong>{{ rejectedMediatorLog.User.FirstName + " "+ rejectedMediatorLog.User.LastName }}</strong>, който сте избрали, е отказал участие в медиацията поради следната причина - <strong>"{{ rejectedMediatorLog.Message }}"</strong>. Повече информация може да намерите в раздел "История".
+                        </v-alert>
+                    </template>
+                    <v-alert type="info"
+                             color="primary"
+                             dense>
+                        <v-col cols="12" md="4" sm="12" class="pa-0">
+                            Статус: <b>{{Form.CaseStatusName ? Form.CaseStatusName : 'Чернова'}}</b>
+                        </v-col>
+                        <v-col cols="12" md="4" sm="12" class="pa-0">
+                            Входящ номер: <b>{{Form.CaseNumber? Form.CaseNumber : 'след входиране'}}</b>
+                        </v-col>
+                        <v-col cols="8" md="2" sm="6" offset-md="2" class="pa-0">
+                            @Html.Partial("_LogNavigation")
+                        </v-col>
+                    </v-alert>
+                    <template v-if="showLog">
+                        <div>
+                            @Html.Partial("_ApplicationFormLog")
+                        </div>
+                    </template>
+                    <template v-else>
+                        <template v-if="!inCreateMode">
+                            <v-card hover outlined>
+                                <v-row>
+                                    <v-col cols="12">
+                                        <v-subheader class="subheader-border">Детайли за спора</v-subheader>
+                                    </v-col>
+                                </v-row>
+                                <v-card-text>
+                                    <v-row>
+                                        <v-col cols="12" md="4" sm="12">
+                                            <v-autocomplete attached="true"
+                                                            class="pl-4"
+                                                            v-bind:items="disputeSubjects"
+                                                            v-model="Form.SubjectDisputeGUID"
+                                                            color="primary"
+                                                            :no-data-text="noDataText.disputeSubjects"
+                                                            item-text="Value"
+                                                            item-value="Key"
+                                                            v-bind:clearable="!inReadonlyMode"
+                                                            v-bind:readonly="inReadonlyMode"
+                                                            label="Предмет на спора">
+                                            </v-autocomplete>
+                                        </v-col>
+                                    </v-row>
+                                    <v-row>
+                                        <v-col cols="12" md="12" sm="12">
+                                            <v-textarea class="pl-4"
+                                                        auto-grow
+                                                        v-model="Form.SubjectDisputeDescription"
+                                                        color="primary"
+                                                        label="Описание"
+                                                        rows="1"
+                                                        v-bind:readonly="inReadonlyMode">
+                                            </v-textarea>
+                                        </v-col>
+                                    </v-row>
+                                </v-card-text>
+                            </v-card>
+                        </template>
+                        <v-tabs align-with-title grow slider-size="5">
+                            <v-tabs-slider color="brown lighten-1"></v-tabs-slider>
+                            <v-tab ripple centered class="blue-grey--text text--darken-3 subtitle-1 font-weight-bold ml-0">
+                                Страна 1
+                            </v-tab>
+                            <v-tab ripple centered class="blue-grey--text text--darken-3 subtitle-1 font-weight-bold">
+                                Страна 2
+                            </v-tab>
+                            <template v-if="inCreateMode">
+                                <v-tab ripple centered class="blue-grey--text text--darken-3 subtitle-1 font-weight-bold">
+                                    Медиатор
+                                </v-tab>
+                            </template>
+                            @* Applicant *@
+                            <v-tab-item>
+                                @Html.Partial("_ApplicantInformation")
+                            </v-tab-item>
+                            @* Responding party *@
+                            <v-tab-item background-color="#ffffff00">
+                                <template v-if="respondingPartyTabUnlocked">
+                                    @Html.Partial("_RespondingPartyInformationCorrectable")
+                                </template>
+                                <template v-else>
+                                    @Html.Partial("_RespondingPartyInformation")
+                                </template>
+                            </v-tab-item>
+                            @* Mediator *@
+                            <template v-if="inCreateMode">
+                                <v-tab-item>
+                                    @Html.Partial("_MediatorSelection")
+                                </v-tab-item>
+                            </template>
+                        </v-tabs>
+                        <template v-if="showRepresentativePersons">
+                            <v-tabs :show-arrows="true" grow>
+                                <v-tabs-slider color="primary"></v-tabs-slider>
+                                <v-tab ripple centered class="blue-grey--text text--darken-3 subtitle-1 font-weight-bold">
+                                    Упълномощено лице СТРАНА 1
+                                </v-tab>
+                                <v-tab ripple centered class="blue-grey--text text--darken-3 subtitle-1 font-weight-bold">
+                                    Упълномощено лице СТРАНА 2
+                                </v-tab>
+                                @* Applicant Representative Person *@
+                                <v-tab-item>
+                                    @Html.Partial("_RepresentativeApplicant")
+                                </v-tab-item>
+                                @* Responding party Representative Person *@
+                                <v-tab-item background-color="#ffffff00">
+                                    @Html.Partial("_RepresentativeRespondingParty")
+                                </v-tab-item>
+                            </v-tabs>
+                        </template>
+                        <template v-if="false">
+                            {{ 'isCurrentUserPrimaryMediator = '+isCurrentUserPrimaryMediator }}
+                            <br />
+                            {{ 'isCurrentUserSide = '+isCurrentUserSide }}
+                            <br />
+                            {{ 'isCurrentUserApplicant = '+isCurrentUserApplicant }}
+                            <br />
+                            {{ 'isCurrentUserRespondingParty = '+isCurrentUserRespondingParty }}
+                            <br />
+                            {{ 'isCurrentUserMediator = '+isCurrentUserMediator }}
+                            <br />
+                            {{ 'respondingPartyTabUnlocked = '+respondingPartyTabUnlocked}}
+                            <br />
+                            {{ 'isCurrentUserApplicantRepresentativePerson = '+isCurrentUserApplicantRepresentativePerson}}
+                            <br />
+                            {{ 'isCurrentUserRespondingPartyRepresentativePerson = '+isCurrentUserRespondingPartyRepresentativePerson}}
+                            <br />
+                            {{ 'isCurrentUserHasRightsToCase = '+isCurrentUserHasRightsToCase }}
+                        </template>
+                        <template v-if="!inCreateMode && isCurrentUserMediator">
+                            @Html.Partial("_PrivacyPolicy_Mediator")
+                        </template>
+                        <template v-if="isTaxesVisible">
+                            @Html.Partial("_Taxes")
+                        </template>
+                        <template v-if="showMediators">
+                            <template v-if="isCurrentUserPrimaryMediator">
+                                @Html.Partial("~/Areas/MediationCaseEvent/Views/Mediators/Mediators_mediator.cshtml")
+                            </template>
+                            <template v-else>
+                                @Html.Partial("~/Areas/MediationCaseEvent/Views/Mediators/Mediators_side.cshtml")
+                            </template>
+                        </template>
+                        <template v-if="isInitializationAgreementVisible">
+                            @Html.Partial("_AgreementToInitiateMediation")
+                        </template>
+                        <template v-if="showEvents && (isCurrentUserMediator) && !isCurrentUserSide">
+                            @Html.Partial("~/Areas/MediationCaseEvent/Views/Event/EventsMediator.cshtml")
+                        </template>
+                        <template v-if="showEvents && isCurrentUserSide">
+                            @Html.Partial("~/Areas/MediationCaseEvent/Views/Event/EventsSide.cshtml")
+                        </template>
+                        <template v-if="isFinalizationAgreementVisible">
+                            @Html.Partial("_AgreementToFinalizeMediation")
+                        </template>
+
+                        @Html.Partial("_MediationFormTextFields")
+
+                        @Html.Partial("_MediationFormButtons")
+
+                        @Html.Partial("_MediationDialogs")
+                    </template>
+                </template>
+                <template v-else>
+                    <v-row>
+                        <v-col cols="12">
+                            <v-alert type="error">
+                                Нямате права до тази медиация.
+                            </v-alert>
+                        </v-col>
+                    </v-row>
+                </template>
+            </template>
+            <template v-else>
+                @Html.Partial("~/Areas/FormFiling/Views/Shared/_ServiceConfirmation.cshtml")
+            </template>
+            <template>
+                @Html.Partial("~/Views/SharedDialogs/LoginDialog.cshtml")
+            </template>
+        </div>
+    </template>
+</initiate-mediation-form>
+
+
+@Styles.Render("~/Content/css/quill")
+@section Scripts {
+    @Scripts.Render("~/Scripts/quill.min.js")
+    @Scripts.Render("~/Scripts/vue-quill-editor.js")
+
+    @* Models *@
+    @Scripts.Render("~/JSModels/FormFilingClasses/Person.js")
+    @Scripts.Render("~/JSModels/FormFilingClasses/RepresentativePerson.js")
+    @Scripts.Render("~/JSModels/FormFilingClasses/Contact.js")
+    @Scripts.Render("~/JSModels/FormFilingClasses/FullAddress.js")
+    @Scripts.Render("~/JSModels/MediationClasses/LegalEntity.js")
+    @Scripts.Render("~/JSModels/MediationClasses/MediationForm.js")
+    @Scripts.Render("~/JSModels/ContentManagement/CaseEventFormModel.js")
+    @Scripts.Render("~/JSModels/ContentManagement/CaseThirdPerson.js")
+    @Scripts.Render("~/JSModels/Account/Login.js")
+
+    @* Models for search mediator tab *@
+    @Scripts.Render("~/JSModels/FormFilingClasses/Education.js")
+    @Scripts.Render("~/JSModels/SearchMediators/MediatorFilters.js")
+
+    @* Scripts *@
+    @Scripts.Render("~/Scripts/Custom/load-nomenclatures.js")
+    @Scripts.Render("~/Scripts/VueComponents/initiateMediationForm.js")
+    @Scripts.Render("~/Scripts/VueComponents/searchMediator.js")
+    @Scripts.Render("~/Scripts/VueComponents/dateTimePicker.js")
+    @Scripts.Render("~/Scripts/VueComponents/caseEvents.js")
+    @Scripts.Render("~/Scripts/VueComponents/caseMediators.js")
+
+    @Scripts.Render("~/Scripts/VueComponents/digitalSignature.js")
+    @Scripts.Render("~/Scripts/scs/scs.js")
+    @Scripts.Render("~/Scripts/scs/scs.helpers.js")
+    @Scripts.Render("~/Scripts/VueComponents/loginDialog.js")
+}

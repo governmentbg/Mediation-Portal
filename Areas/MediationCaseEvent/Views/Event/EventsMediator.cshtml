@@ -1,0 +1,29 @@
+﻿<case-events :is-mediator="true" inline-template ref="caseEvents">
+    <template>
+        <v-card hover outlined>
+            <v-row>
+                <v-col cols="12">
+                    <v-subheader class="subheader-border">Събития</v-subheader>
+                </v-col>
+            </v-row>
+            <v-card-text>
+                <template v-if="$parent.showNewEventButton">
+                    <v-row>
+                        <v-col cols="12">
+                            <v-btn color="primary" small @@click="newEvent">
+                                <v-icon>mdi-plus</v-icon>
+                                Ново събитие
+                            </v-btn>
+                        </v-col>
+                    </v-row>
+                </template>
+                <v-row>
+                    <v-col cols="12">
+                        @Html.Partial("~/Areas/MediationCaseEvent/Views/Event/_EventsTable.cshtml")
+                    </v-col>
+                </v-row>
+            </v-card-text>
+            @Html.Partial("~/Areas/MediationCaseEvent/Views/Event/_EventDialog.cshtml")
+        </v-card>
+    </template>
+</case-events>

@@ -1,0 +1,85 @@
+﻿<v-row class="mb-5">
+    <v-col cols="12">
+        <v-btn v-if="Form.OrganizationEIK && Form.OrganizationEIK.length"
+               color="orange darken-3"
+               dark
+               @@click="GetBRRACheck">Проверка Търговски Регистър</v-btn>
+        <v-btn v-if="Form.OrganizationEIK && Form.OrganizationEIK.length || Form.CourtRegistration && Form.CourtRegistration.length"
+               color="orange darken-4"
+               dark
+               @@click="GetBulstatCheck">Проверка БУЛСТАТ</v-btn>
+    </v-col>
+    <template v-if="Regix.Checked">
+        <v-col cols="12">
+            <v-expansion-panels :value="0">
+                <v-expansion-panel :key="0">
+                    <v-expansion-panel-header><v-subheader class="subheader-border">{{Regix.Name}}</v-subheader></v-expansion-panel-header>
+                    <v-expansion-panel-content>
+
+                        <template v-if="Regix.Data.Representatives && Regix.Data.Representatives.length">
+                            <v-card hover outlined style="border:none;">
+                                <v-card-title>
+                                    Представители на организация&nbsp;
+                                    <span class="title font-weight-bold">{{Regix.Data.Name}}</span>
+                                </v-card-title>
+                                <v-card-text>
+
+                                    <v-simple-table>
+                                        <template v-slot:default>
+                                            <thead>
+                                                <tr>
+                                                    <th class="text-left">Имена</th>
+                                                    <th class="text-left">ЕГН</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr v-for="person in Regix.Data.Representatives" :key="person.EGN">
+                                                    <td>{{ person.FullName }}</td>
+                                                    <td>{{ person.EGN }}</td>
+                                                </tr>
+                                            </tbody>
+                                        </template>
+                                    </v-simple-table>
+                                </v-card-text>
+                            </v-card>
+                        </template>
+
+                        <template v-if="Regix.Data.Owners && Regix.Data.Owners.length">
+                            <v-card hover outlined style="border:none;">
+                                <v-card-title>
+                                    Мениджъри на организация&nbsp;
+                                    <span class="title font-weight-bold">{{Regix.Data.Name}}</span>
+                                </v-card-title>
+                                <v-card-text>
+
+                                    <v-simple-table>
+                                        <template v-slot:default>
+                                            <thead>
+                                                <tr>
+                                                    <th class="text-left">Имена</th>
+                                                    <th class="text-left">ЕГН</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr v-for="person in Regix.Data.Owners" :key="person.EGN">
+                                                    <td>{{ person.FullName }}</td>
+                                                    <td>{{ person.EGN }}</td>
+                                                </tr>
+                                            </tbody>
+                                        </template>
+                                    </v-simple-table>
+                                </v-card-text>
+                            </v-card>
+                        </template>
+
+                        <template v-if="!Regix.Data.Owners.length && !Regix.Data.Owners.length">
+                            <v-card hover outlined style="border:none;">
+                                <v-card-text>Няма налична информация за ЕИК {{Form.OrganizationEIK}}</v-card-text>
+                            </v-card>
+                        </template>
+                    </v-expansion-panel-content>
+                </v-expansion-panel>
+            </v-expansion-panels>
+        </v-col>
+    </template>
+</v-row>

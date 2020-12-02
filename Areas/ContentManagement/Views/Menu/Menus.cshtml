@@ -1,0 +1,294 @@
+﻿@{
+    ViewBag.Title = "Управление на Меню";
+}
+
+<h2>Управление на Меню</h2>
+<br />
+
+<v-app data-app>
+    <content-management-menus inline-template ref="contentManagementMenus">
+        <template v-if="loading">
+            <v-text-field loading
+                          label="Зареждане..."
+                          disabled>
+            </v-text-field>
+        </template>
+        <template v-else>
+            <div>
+                <v-row>
+                    <v-col cols="12" class="text-right">
+                        <v-btn color="primary" @@click="newMenu">
+                            <v-icon left>mdi-plus</v-icon>
+                            Ново Меню
+                        </v-btn>
+                    </v-col>
+                </v-row>
+                <v-row>
+                    <v-col cols="12">
+                        <v-card>
+                            <v-data-table :headers="headers"
+                                          :items="loadedData"
+                                          item-key="id"
+                                          id="result-datatable"
+                                          class="elevation-1"
+                                          no-data-text="Няма намерени резултати"
+                                          :loading="loadingTableData"
+                                          loading-text="Зареждане на данни"
+                                          hide-default-footer
+                                          :items-per-page="selectedItemsPerPage"
+                                          :single-expand="singleExpand"
+                                          :expanded.sync="expanded"
+                                          @*:footer-props="footer"*@>
+                                <template v-slot:item="{ item, expand, isExpanded }">
+                                    <tr v-on:dblclick="expand(!isExpanded)" class="brown lighten-5">
+                                        <td>
+                                            <v-btn icon text v-if="item.children && item.children.length"
+                                                   @@click="expand(!isExpanded)">
+                                                <v-icon v-if="!isExpanded">mdi-chevron-down</v-icon>
+                                                <v-icon v-else>mdi-chevron-up</v-icon>
+                                            </v-btn>
+                                        </td>
+                                        <td>{{ item.MenuLabel }}</td>
+                                        <td>{{ item.URL }}</td>
+                                        <td>
+                                            <v-icon color="success" v-if="item.active">mdi-check</v-icon>
+                                            <v-icon color="error" v-else>mdi-close</v-icon>
+                                        </td>
+                                        <td class="text-right">
+                                            <v-btn small
+                                                   color="primary"
+                                                   class="mr-2"
+                                                   @@click="editMenu(item.id)">
+                                                <v-icon left>mdi-file-document-edit-outline</v-icon>
+                                                Преглед
+                                            </v-btn>
+                                            <v-btn small
+                                                   color="red darken-3"
+                                                   dark
+                                                   @@click="openDelete(item.id)">
+                                                Изтрий
+                                            </v-btn>
+                                        </td>
+                                    </tr>
+                                </template>
+                                <template v-slot:expanded-item="{ headers, item }">
+                                    <tr v-if="item.children && item.children.length" v-for="subItem in item.children" :index="item.id">
+                                        <td width="3%"><v-icon class="pl-2">mdi-minus</v-icon></td>
+                                        <td class="pl-10" width="15%">{{ subItem.MenuLabel }}</td>
+                                        <td class="pl-10" width="15%">{{ subItem.URL }}</td>
+                                        <td class="pl-10" width="10%">
+                                            <v-icon color="success" v-if="subItem.active">mdi-check</v-icon>
+                                            <v-icon color="error" v-else>mdi-close</v-icon>
+                                        </td>
+                                        <td class="text-right" width="10%">
+                                            <v-btn small
+                                                   color="primary"
+                                                   class="mr-2"
+                                                   @@click="editMenu(subItem.id)">
+                                                <v-icon left>mdi-file-document-edit-outline</v-icon>
+                                                Преглед&nbsp;
+                                            </v-btn>
+                                            <v-btn small
+                                                   dark
+                                                   color="red darken-3"
+                                                   @@click="openDelete(subItem.id)">
+                                                Изтрий&nbsp;
+                                            </v-btn>
+                                        </td>
+                                    </tr>
+                                </template>
+                            </v-data-table>
+                            <v-footer style="background-color: white !important">
+                                <v-spacer></v-spacer>
+                                <v-col md="2">
+                                    <v-select :items="itemsPerPage"
+                                              v-model="selectedItemsPerPage"
+                                              item-text="Value"
+                                              item-value="Key"
+                                              placeholder="-- Избери --"
+                                              label="Редове на страница"
+                                              color="primary"
+                                              :menu-props="{offsetY: true }"
+                                              @@change="setRows(selectedItemsPerPage)">
+                                    </v-select>
+                                </v-col>
+                            </v-footer>
+                            <template>
+                                <div class="text-xs-center pa-4">
+                                    <v-pagination v-model="pagination.page"
+                                                  :length="pagination.totalPages"
+                                                  color="primary"
+                                                  @@input="next(pagination.page)">
+                                    </v-pagination>
+                                </div>
+                            </template>
+                        </v-card>
+                    </v-col>
+                </v-row>
+                <v-dialog v-model="menuDialog.open"
+                          persistent
+                          width="60%">
+                    <v-card>
+                        <v-card-title class="headline"
+                                      primary-title>
+                            <h3 v-if="menuDialog.isNew">Добавяне на меню</h3>
+                            <h3 v-else>Преглед на меню</h3>
+                        </v-card-title>
+
+                        <v-card-text>
+                            <v-row v-if="showErrors">
+                                <v-col cols="12">
+                                    <ul id="example-1">
+                                        <li v-for="error in errors" :key="error.message" style="color: red;">
+                                            * {{ error.message }}
+                                        </li>
+                                    </ul>
+                                </v-col>
+                            </v-row>
+                            <v-row>
+                                <v-col cols="12">
+                                    <v-radio-group row
+                                                   v-model="menuDialog.model.PageType">
+                                        <v-radio label="Системна страница"
+                                                 :value="1"></v-radio>
+                                        <v-radio label="Свободна страница"
+                                                 :value="0"></v-radio>
+                                    </v-radio-group>
+                                </v-col>
+                            </v-row>
+                            <v-row>
+                                <v-col cols="12" md="4">
+                                    <v-radio-group row
+                                                   class="mt-0"
+                                                   v-model="menuDialog.model.MenuType">
+                                        <v-radio label="Главно меню"
+                                                 :value="1"></v-radio>
+                                        <v-radio label="Подменю"
+                                                 :disabled="menuDialog.model.HasChildren"
+                                                 :persistant="menuDialog.model.HasChildren"
+                                                 :value="0"></v-radio>
+                                    </v-radio-group>
+                                </v-col>
+                                <v-col cols="12" md="4">
+                                    <v-select class="pt-0"
+                                              :items="dropdownRoles"
+                                              multiple
+                                              v-model="menuDialog.model.AssignedToRoles"
+                                              label="Избери потребител*"
+                                              :menu-props="{offsetY: true }"
+                                              color="primary"></v-select>
+                                </v-col>
+                                <v-col v-if="menuDialog.model.MenuType === 0" cols="12" md="4">
+                                    <v-select class="pt-0"
+                                              :items="dropdownMainItems"
+                                              v-model="menuDialog.model.ParentGUID"
+                                              label="Избери главно меню*"
+                                              color="primary"></v-select>
+                                </v-col>
+                            </v-row>
+                            <v-row>
+                                <template v-if="menuDialog.model.PageType === 0">
+                                    <v-col cols="12" md="3">
+                                        <v-text-field label="Име на меню"
+                                                      v-model="menuDialog.model.MenuLabel"></v-text-field>
+                                    </v-col>
+                                    <v-col cols="12" md="3">
+                                        <v-text-field label="Номер ред"
+                                                      v-model="menuDialog.model.RowNumber"
+                                                      type="number"
+                                                      min="1">
+                                        </v-text-field>
+                                    </v-col>
+                                    <v-col cols="12" md="3">
+                                        <v-text-field label="Адрес (URL)"
+                                                      v-model="menuDialog.model.URL"></v-text-field>
+                                    </v-col>
+                                </template>
+                                <template v-if="menuDialog.model.PageType === 1">
+                                    <v-col cols="12" md="3">
+                                        <v-text-field label="Име на меню"
+                                                      v-model="menuDialog.model.MenuLabel"></v-text-field>
+                                    </v-col>
+                                    <v-col cols="12" md="3">
+                                        <v-text-field label="Номер ред"
+                                                      v-model="menuDialog.model.RowNumber"
+                                                      type="number"
+                                                      min="1">
+                                        </v-text-field>
+                                    </v-col>
+                                    <v-col cols="12" md="3">
+                                        <v-select :items="dropdownSubItems"
+                                                  v-model="menuDialog.model.Page"
+                                                  item-value="value"
+                                                  item-text="text"
+                                                  label="Избери страница*"
+                                                  :menu-props="{offsetY: true }"
+                                                  color="primary"></v-select>
+                                    </v-col>
+                                </template>
+                                <v-col cols="12" md="3">
+                                    <v-select :items="noms.status"
+                                              v-model="menuDialog.model.Is_Active"
+                                              label="Активност*"
+                                              :menu-props="{offsetY: true }"
+                                              color="primary"></v-select>
+                                </v-col>
+                            </v-row>
+                        </v-card-text>
+
+                        <v-divider class="ma-0"></v-divider>
+
+                        <v-card-actions>
+                            <v-spacer></v-spacer>
+                            <v-btn v-if="menuDialog.isNew" color="success"
+                                   @@click="createMenuDefinition()">
+                                <h5>Запази</h5>
+                            </v-btn>
+                            <v-btn v-else color="success"
+                                   @@click="updateMenuDefinition(menuDialog.model.Id)">
+                                <h5>Промени</h5>
+                            </v-btn>
+                            <v-btn color="grey" dark
+                                   @@click="cancelMenuDefinition()">
+                                Затвори
+                            </v-btn>
+                        </v-card-actions>
+                    </v-card>
+                </v-dialog>
+                <v-dialog v-model="menuDeleteDialog.openDelete"
+                          persistent
+                          width="25%">
+                    <v-card>
+                        <v-card-title>Потвърждение</v-card-title>
+                        <v-card-text>
+                            <h3 v-if="menuDialog.model.Id == menuDialog.model.ParentGUID">Сигурни ли сте, че искате да изтриете това главно меню и всичките му подменюта?</h3>
+                            <h3 v-else>Сигурни ли сте, че искате да изтриете това подменю?</h3>
+                        </v-card-text>
+                        <v-card-actions>
+                            <v-col cols="12" align="right">
+                                <v-btn color="red darken-3"
+                                       dark
+                                       @@click="deleteMenu(menuDeleteDialog.id)">
+                                    <h5>Да</h5>
+                                </v-btn>
+                                <v-btn color="grey" dark
+                                       @@click="cancelDelete()">
+                                    <h5>Не</h5>
+                                </v-btn>
+                            </v-col>
+                        </v-card-actions>
+                    </v-card>
+                </v-dialog>
+            </div>
+        </template>
+    </content-management-menus>
+</v-app>
+
+
+@section Scripts {
+
+    @* Models *@
+    @Scripts.Render("~/JSModels/ContentManagement/MenuDefinition.js")
+    @* Components *@
+    @Scripts.Render("~/Scripts/VueComponents/contentManagement_menus.js")
+}

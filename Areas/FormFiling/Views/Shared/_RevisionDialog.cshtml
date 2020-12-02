@@ -1,0 +1,23 @@
+﻿<v-dialog v-model="revisionDialog.open" scrollable persistent>
+    <v-card>
+        <template v-if="revisionDialog.loading">
+            <v-text-field color="primary"
+                          loading
+                          label="Зареждане..."
+                          readonly>
+            </v-text-field>
+        </template>
+        <template v-else>
+            <v-card-title class="headline primary" style="color: white">
+                {{revisionDialog.header}}
+            </v-card-title>
+            <v-card-text>
+                {{revisionDialog.FormRevisionContent}}
+            </v-card-text>
+        </template>
+        <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn color="default darken-1" @@click="revisionDialog.open = !revisionDialog.open">Затвори</v-btn>
+        </v-card-actions>
+    </v-card>
+</v-dialog>

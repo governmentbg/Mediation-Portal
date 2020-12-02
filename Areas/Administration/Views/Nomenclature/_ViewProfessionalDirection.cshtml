@@ -1,0 +1,38 @@
+﻿<v-container>
+    <v-row>
+        <v-col cols="12" md="4">
+            <p>{{item.Name}}</p>
+        </v-col>
+        <v-col cols="12" md="4">
+            <v-autocomplete v-model="item.EducationFieldGUID"
+                            label="Област на образование"
+                            color="primary"
+                            v-bind:items="educationFields"
+                            item-text="Value"
+                            item-value="Key"
+                            placeholder="-- Избери --"
+                            no-data-text="Няма данни"
+                            readonly>
+            </v-autocomplete>
+        </v-col>
+        <v-col cols="12" md="2">
+            Активност:
+            <v-icon color="success" v-if="item.IsActive">mdi-check-circle</v-icon>
+            <v-icon color="error" v-if="!item.IsActive">mdi-close-circle</v-icon>
+        </v-col>
+        <v-col cols="12" md="2">
+            <v-tooltip bottom>
+                <template v-slot:activator="{ on }">
+                    <v-icon v-on="on"
+                            medium
+                            color="primary"
+                            class="mr-2"
+                            @@click="onEdit(item)">
+                        edit
+                    </v-icon>
+                </template>
+                <span>Редакция</span>
+            </v-tooltip>
+        </v-col>
+    </v-row>
+</v-container>

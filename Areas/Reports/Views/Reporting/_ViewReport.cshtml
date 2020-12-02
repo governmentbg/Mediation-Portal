@@ -1,0 +1,37 @@
+﻿@model string
+
+
+<v-row>
+    <v-col cols="12" md="6" class="pa-2">
+        <v-btn class="btn btn-sm btn-outline-secondary white--text" color="primary" v-on:click="onSubmitFilters" type="button">Филтрирай&nbsp;&nbsp;<i class="fa fa-filter"></i></v-btn>
+    </v-col>
+    <v-col cols="12" md="6" class="pa-2">
+        <v-btn style="float:right;" class="btn btn-sm btn-outline-secondary" v-on:click="exportToExcel" :disabled='isExportDisabled' type="button">Експортирай към Excel&nbsp;&nbsp;<i class="fa fa-file-excel-o" aria-hidden="true"></i></v-btn>
+    </v-col>
+</v-row>
+
+<template v-if="tableDataIsLoaded">
+    <v-card width="100%">
+        <v-card-title>
+            <v-spacer></v-spacer>
+            <v-text-field v-model="search"
+                          append-icon="search"
+                          label="Търсене"
+                          single-line
+                          hide-details>
+            </v-text-field>
+        </v-card-title>
+        <v-data-table v-bind:headers="reportHeaders"
+                      v-bind:items="reportRows"
+                      v-bind:search="search"
+                      no-data-text="Няма намерени резултати по избраните филтри">
+            <template v-slot:items="props">
+                <tr>
+                    <span v-for="(col, index) in reportHeaders" :key="index">
+                        <td>{{ props.item[col.value] }}</td>
+                    </span>
+                </tr>
+            </template>
+        </v-data-table>
+    </v-card>
+</template>

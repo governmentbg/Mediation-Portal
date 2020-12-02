@@ -1,0 +1,284 @@
+﻿<v-dialog v-model="revisionDialog.open" scrollable persistent>
+    <v-card>
+        <template v-if="revisionDialog.loading">
+            <v-text-field color="primary"
+                          loading
+                          label="Зареждане..."
+                          readonly>
+            </v-text-field>
+        </template>
+        <template v-else>
+            <v-card-title class="headline primary" style="color: white">
+                {{revisionDialog.header}}
+            </v-card-title>
+            <v-card-text class="pa-8">
+
+                <v-card outlined hover>
+                    <v-row>
+                        <v-col cols="12">
+                            <v-subheader class="subheader-border">Основна информация за организация</v-subheader>
+                        </v-col>
+                    </v-row>
+                    <v-card-text>
+                        <v-row>
+                            <v-col cols="12" md="4" sm="12">
+                                <v-text-field class="px-4"
+                                              v-model="revisionDialog.FormRevisionContent.OrganizationName"
+                                              label="Име"
+                                              color="primary"
+                                              readonly>
+                                </v-text-field>
+                            </v-col>
+                            <v-col cols="12" md="4" sm="12">
+                                <v-text-field class="px-4"
+                                              v-model="revisionDialog.FormRevisionContent.OrganizationEIK"
+                                              label="ЕИК"
+                                              color="primary"
+                                              readonly>
+                                </v-text-field>
+                            </v-col>
+                            <v-col cols="12" md="4" sm="12">
+                                <v-text-field class="px-4"
+                                              v-model="Form.CourtRegistration"
+                                              label="Съдебна регистрация"
+                                              color="primary"
+                                              readonly>
+                                </v-text-field>
+                            </v-col>
+                        </v-row>
+                        <v-row>
+                            <v-col cols="12" md="3" sm="12">
+                                <v-text-field class="px-4"
+                                              label="Стационарен телефон"
+                                              v-model="revisionDialog.FormRevisionContent.OrganizationContact.LandlinePhone"
+                                              color="primary"
+                                              readonly>
+                                </v-text-field>
+                            </v-col>
+                            <v-col cols="12" md="3" sm="12">
+                                <v-text-field class="px-4"
+                                              label="Мобилен телефон"
+                                              v-model="revisionDialog.FormRevisionContent.OrganizationContact.MobilePhone"
+                                              readonly
+                                              color="primary">
+                                </v-text-field>
+                            </v-col>
+                            <v-col cols="12" md="3" sm="12">
+                                <v-text-field class="px-4"
+                                              label="Факс"
+                                              v-model="revisionDialog.FormRevisionContent.OrganizationContact.Fax"
+                                              readonly
+                                              color="primary">
+                                </v-text-field>
+                            </v-col>
+                            <v-col cols="12" md="3" sm="12">
+                                <v-text-field class="px-4"
+                                              label="Електронна поща"
+                                              v-model="revisionDialog.FormRevisionContent.OrganizationContact.Email"
+                                              readonly
+                                              color="primary">
+                                </v-text-field>
+                            </v-col>
+                        </v-row>
+                    </v-card-text>
+                </v-card>
+                <v-card outlined hover>
+                    <v-row>
+                        <v-col cols="12">
+                            <v-subheader class="subheader-border">
+                                Представител на организацията
+                            </v-subheader>
+                        </v-col>
+                    </v-row>
+                    <v-card-text>
+                        <div v-for="(r, i) in Form.OrganizationRepresentatives" :key="i">
+                            <v-row>
+                                <v-col cols="12" md="4" sm="12" class="pt-4">
+                                    <v-text-field class="px-4 py-2"
+                                                  v-model="r.FirstName"
+                                                  label="Име"
+                                                  readonly
+                                                  color="primary">
+                                    </v-text-field>
+                                </v-col>
+                                <v-col cols="12" md="3" sm="12" class="pt-4">
+                                    <v-text-field class="px-4 py-2"
+                                                  v-model="r.MiddleName"
+                                                  label="Презиме"
+                                                  readonly
+                                                  color="primary">
+                                    </v-text-field>
+                                </v-col>
+                                <v-col cols="12" md="4" sm="12" class="pt-4">
+                                    <v-text-field class="px-4 py-2"
+                                                  v-model="r.LastName"
+                                                  label="Фамилия"
+                                                  readonly
+                                                  color="primary">
+                                    </v-text-field>
+                                </v-col>
+                            </v-row>
+                        </div>
+                    </v-card-text>
+                </v-card>
+                <v-card outlined hover>
+                    <v-row>
+                        <v-col cols="12">
+                            <v-subheader class="subheader-border">
+                                Адрес по регистрация
+                            </v-subheader>
+                        </v-col>
+                    </v-row>
+                    <v-card-text>
+                        <v-row>
+                            <v-col cols="12" md="3" sm="12">
+                                <v-autocomplete v-model="revisionDialog.FormRevisionContent.RegistrationAddress.CountryGUID"
+                                                class="px-4"
+                                                label="Държава"
+                                                color="primary"
+                                                v-bind:items="RegistrationAddressData.countries"
+                                                item-text="Value"
+                                                item-value="Key"
+                                                placeholder="-- Избери --"
+                                                no-data-text="Няма данни"
+                                                readonly>
+                                </v-autocomplete>
+                            </v-col>
+                            <v-col cols="12" md="3" sm="12">
+                                <v-autocomplete class="px-4"
+                                                label="Област"
+                                                color="primary"
+                                                :items="RegistrationAddressData.districts"
+                                                v-model="revisionDialog.FormRevisionContent.RegistrationAddress.DistrictGUID"
+                                                item-text="Value"
+                                                item-value="Key"
+                                                no-data-text="Няма данни"
+                                                placeholder="-- Избери --"
+                                                v-if="Form.RegistrationAddress.CountryGUID == BG_GUID"
+                                                readonly>
+                                </v-autocomplete>
+                            </v-col>
+                            <v-col cols="12" md="3" sm="12">
+                                <v-autocomplete class="px-4"
+                                                label="Община"
+                                                color="primary"
+                                                :items="RegistrationAddressData.municipalities"
+                                                v-model="revisionDialog.FormRevisionContent.RegistrationAddress.MunicipalityGUID"
+                                                item-text="Value"
+                                                item-value="Key"
+                                                placeholder="-- Избери --"
+                                                no-data-text="Няма данни"
+                                                v-if="Form.RegistrationAddress.CountryGUID == BG_GUID"
+                                                readonly>
+                                </v-autocomplete>
+                            </v-col>
+                            <v-col cols="12" md="3" sm="12">
+                                <v-autocomplete class="px-4"
+                                                v-model="revisionDialog.FormRevisionContent.RegistrationAddress.SettlementGUID"
+                                                label="Населено място"
+                                                color="primary"
+                                                :items="RegistrationAddressData.settlements"
+                                                item-text="Value"
+                                                item-value="Key"
+                                                placeholder="-- Избери --"
+                                                v-if="Form.RegistrationAddress.CountryGUID == BG_GUID"
+                                                no-data-text="Няма данни"
+                                                readonly>
+                                </v-autocomplete>
+                            </v-col>
+                            <v-col cols="12">
+                                <v-text-field class="px-4"
+                                              label="Адрес"
+                                              color="primary"
+                                              v-model="revisionDialog.FormRevisionContent.RegistrationAddress.Address"
+                                              readonly>
+                                </v-text-field>
+                            </v-col>
+                        </v-row>
+                    </v-card-text>
+                </v-card>
+                <v-card outlined hover>
+                    <v-row>
+                        <v-col cols="12">
+                            <v-subheader class="subheader-border">
+                                Адрес на осъществяване на дейността
+                            </v-subheader>
+                        </v-col>
+                    </v-row>
+                    <v-card-text>
+                        <v-row row wrap>
+                            <v-col cols="12" md="3" sm="12">
+                                <v-autocomplete class="px-4"
+                                                v-model="revisionDialog.FormRevisionContent.MailingAddress.CountryGUID"
+                                                label="Държава"
+                                                color="primary"
+                                                v-bind:items="MailingAddressData.countries"
+                                                item-text="Value"
+                                                item-value="Key"
+                                                placeholder="-- Избери --"
+                                                no-data-text="Няма данни"
+                                                readonly>
+                                </v-autocomplete>
+                            </v-col>
+                            <v-col cols="12" md="3" sm="12">
+                                <v-autocomplete class="px-4"
+                                                label="Област"
+                                                color="primary"
+                                                :items="MailingAddressData.districts"
+                                                v-model="revisionDialog.FormRevisionContent.MailingAddress.DistrictGUID"
+                                                item-text="Value"
+                                                item-value="Key"
+                                                placeholder="-- Избери --"
+                                                no-data-text="Няма данни"
+                                                v-if="Form.MailingAddress.CountryGUID == BG_GUID"
+                                                readonly>
+                                </v-autocomplete>
+                            </v-col>
+                            <v-col cols="12" md="3" sm="12">
+                                <v-autocomplete class="px-4"
+                                                label="Община"
+                                                color="primary"
+                                                no-data-text="Няма данни"
+                                                :items="MailingAddressData.municipalities"
+                                                v-model="revisionDialog.FormRevisionContent.MailingAddress.MunicipalityGUID"
+                                                item-text="Value"
+                                                item-value="Key"
+                                                placeholder="-- Избери --"
+                                                v-if="Form.MailingAddress.CountryGUID == BG_GUID"
+                                                readonly>
+                                </v-autocomplete>
+                            </v-col>
+                            <v-col cols="12" md="3" sm="12">
+                                <v-autocomplete class="px-4"
+                                                v-model="revisionDialog.FormRevisionContent.MailingAddress.SettlementGUID"
+                                                label="Населено място"
+                                                color="primary"
+                                                :items="MailingAddressData.settlements"
+                                                no-data-text="Няма данни"
+                                                item-text="Value"
+                                                item-value="Key"
+                                                placeholder="-- Избери --"
+                                                v-if="Form.MailingAddress.CountryGUID == BG_GUID"
+                                                readonly>
+                                </v-autocomplete>
+                            </v-col>
+                            <v-col cols="12">
+                                <v-text-field class="px-4"
+                                              label="Адрес"
+                                              color="primary"
+                                              v-model="revisionDialog.FormRevisionContent.MailingAddress.Address"
+                                              readonly>
+                                </v-text-field>
+                            </v-col>
+                        </v-row>
+                    </v-card-text>
+                </v-card>
+
+            </v-card-text>
+        </template>
+        <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn color="default darken-1" @@click="revisionDialog.open = !revisionDialog.open">Затвори</v-btn>
+        </v-card-actions>
+    </v-card>
+</v-dialog>

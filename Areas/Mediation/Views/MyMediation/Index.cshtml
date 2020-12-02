@@ -1,0 +1,47 @@
+﻿@{
+    ViewBag.Title = "Моята медиация";
+}
+
+<br />
+
+
+<my-mediations inline-template ref="myMediations">
+    <template v-if="loading">
+        <v-text-field color="primary"
+                      loading
+                      label="Зареждане..."
+                      readonly>
+        </v-text-field>
+    </template>
+    <template v-else>
+        <v-tabs :show-arrows="true" grow>
+            <v-tabs-slider color="primary"></v-tabs-slider>
+            <v-tab ripple centered class="black--text">
+                В процес
+            </v-tab>
+            <v-tab ripple centered class="black--text">
+                {{currentUser.MediatorGUID ? 'Очакване на потвърждение' : 'Чернови'}}
+            </v-tab>
+            <v-tab ripple centered class="black--text">
+                Приключили
+            </v-tab>
+            <v-tab-item>
+                @Html.Partial("~/Areas/Mediation/Views/MyMediation/_InProcessTableData.cshtml")
+            </v-tab-item>
+            <v-tab-item>
+                @Html.Partial("~/Areas/Mediation/Views/MyMediation/_DraftsTableData.cshtml")
+            </v-tab-item>
+            <v-tab-item>
+                @Html.Partial("~/Areas/Mediation/Views/MyMediation/_FinishedTableData.cshtml")
+            </v-tab-item>
+        </v-tabs>
+    </template>
+</my-mediations>
+
+@section Scripts {
+
+    @* Models *@
+
+    @* Scripts *@
+    @Scripts.Render("~/Scripts/VueComponents/myMediation.js")
+}

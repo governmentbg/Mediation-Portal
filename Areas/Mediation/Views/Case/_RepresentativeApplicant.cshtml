@@ -1,0 +1,177 @@
+﻿<v-card hover outlined>
+    <v-row>
+        <v-col cols="12">
+            <v-subheader class="subheader-border">Упълномощено лице на СТРАНА 1</v-subheader>
+        </v-col>
+    </v-row>
+    <v-card-text>
+        <v-row>
+            <v-col cols="12" md="6" sm="12">
+                <v-checkbox v-model="ApplicantRepresentativePersonIsShown"
+                            color="primary"
+                            :value="true"
+                            label="Искам да упълномощя лице, което да ме представлява"
+                            v-bind:readonly="inReadonlyModeApplicantRepsresentativePerson || !isCurrentUserApplicant"></v-checkbox>
+            </v-col>
+            <template v-if="Form.ApplicantRepresentativePerson && Form.ApplicantRepresentativePerson.isConfirmed != null">
+                <v-col cols="12" md="6" sm="12" class="text-right pt-9 font-weight-bold">
+                    <span class="subtitle-1 font-weight-bold">СТАТУС:</span>
+                    <template v-if="Form.ApplicantRepresentativePerson.isConfirmed === true">
+                        <span class="body-1 green--text darken-4">Потвърдено участие</span>
+                    </template>
+                    <template v-if="Form.ApplicantRepresentativePerson.isConfirmed === false">
+                        <span class="body-1 orange--text darken-4">Очаква потвърждение</span>
+                    </template>
+                </v-col>
+            </template>
+        </v-row>
+        <template v-if="ApplicantRepresentativePersonIsShown && Form.ApplicantRepresentativePerson != null">
+            <v-row>
+                <v-col cols="12" md="4" sm="12">
+                    <v-text-field v-model="Form.ApplicantRepresentativePerson.FirstName"
+                                  label="Име на упълномощено лице*"
+                                  v-bind:clearable="!inReadonlyModeApplicantRepsresentativePerson && isCurrentUserApplicant"
+                                  v-bind:readonly="inReadonlyModeApplicantRepsresentativePerson || !isCurrentUserApplicant">
+                    </v-text-field>
+                </v-col>
+                <v-col cols="12" md="4" sm="12">
+                    <v-text-field v-model="Form.ApplicantRepresentativePerson.MiddleName"
+                                  label="Презиме*"
+                                  v-bind:clearable="!inReadonlyModeApplicantRepsresentativePerson && isCurrentUserApplicant"
+                                  v-bind:readonly="inReadonlyModeApplicantRepsresentativePerson || !isCurrentUserApplicant">
+                    </v-text-field>
+                </v-col>
+                <v-col cols="12" md="4" sm="12">
+                    <v-text-field v-model="Form.ApplicantRepresentativePerson.LastName"
+                                  label="Фамилия*"
+                                  v-bind:clearable="!inReadonlyModeApplicantRepsresentativePerson && isCurrentUserApplicant"
+                                  v-bind:readonly="inReadonlyModeApplicantRepsresentativePerson || !isCurrentUserApplicant">
+                    </v-text-field>
+                </v-col>
+            </v-row>
+
+            <v-row>
+                <v-col cols="12" md="4" sm="12">
+                    <v-text-field v-model="Form.ApplicantRepresentativePerson.EGN"
+                                  label="ЕГН*"
+                                  v-bind:clearable="!inReadonlyModeApplicantRepsresentativePerson && isCurrentUserApplicant"
+                                  v-bind:readonly="inReadonlyModeApplicantRepsresentativePerson || !isCurrentUserApplicant">
+                    </v-text-field>
+                </v-col>
+                <v-col cols="12" md="4" sm="12">
+                    <v-text-field v-model="Form.ApplicantRepresentativePerson.Email"
+                                  label="Електронна поща*"
+                                  v-bind:clearable="!inReadonlyModeApplicantRepsresentativePerson && isCurrentUserApplicant"
+                                  v-bind:readonly="inReadonlyModeApplicantRepsresentativePerson || !isCurrentUserApplicant">
+                    </v-text-field>
+                </v-col>
+                <v-col cols="12" md="4" sm="12">
+                    <v-text-field v-model="Form.ApplicantRepresentativePerson.MobilePhone"
+                                  label="Мобилен телефон*"
+                                  v-bind:clearable="!inReadonlyModeApplicantRepsresentativePerson && isCurrentUserApplicant"
+                                  v-bind:readonly="inReadonlyModeApplicantRepsresentativePerson || !isCurrentUserApplicant">
+                    </v-text-field>
+                </v-col>
+            </v-row>
+            <v-row>
+                <v-col cols="12" md="3" sm="12">
+                    <v-select v-model="Form.ApplicantRepresentativePerson.FullAddress.CountryGUID"
+                              v-bind:items="RepresentativeApplicantAddress.countries"
+                              item-text="Value"
+                              item-value="Key"
+                              label="Държава"
+                              color="primary"
+                              :menu-props="{ offsetY: true }"
+                              :no-data-text="noDataText.countries"
+                              v-bind:clearable="!inReadonlyModeApplicantRepsresentativePerson && isCurrentUserApplicant"
+                              v-bind:readonly="inReadonlyModeApplicantRepsresentativePerson || !isCurrentUserApplicant"
+                              v-on:change="onCountryChange(Form.ApplicantRepresentativePerson.FullAddress, Form.ApplicantRepresentativePerson.FullAddress.CountryGUID, $event)"></v-select>
+                </v-col>
+                <v-col cols="12" md="3" sm="12">
+                    <v-select v-model="Form.ApplicantRepresentativePerson.FullAddress.DistrictGUID"
+                              v-bind:items="RepresentativeApplicantAddress.districts"
+                              item-text="Value"
+                              item-value="Key"
+                              label="Област"
+                              color="primary"
+                              :menu-props="{ offsetY: true }"
+                              :no-data-text="noDataText.districts"
+                              v-bind:clearable="!inReadonlyModeApplicantRepsresentativePerson && isCurrentUserApplicant"
+                              v-bind:readonly="inReadonlyModeApplicantRepsresentativePerson || !isCurrentUserApplicant"
+                              v-on:change="onDistrictChange(Form.ApplicantRepresentativePerson.FullAddress, RepresentativeApplicantAddress)"
+                              v-if="Form.ApplicantRepresentativePerson.FullAddress.CountryGUID == BG_GUID"></v-select>
+                </v-col>
+                <v-col cols="12" md="3" sm="12">
+                    <v-select v-model="Form.ApplicantRepresentativePerson.FullAddress.MunicipalityGUID"
+                              v-bind:items="RepresentativeApplicantAddress.municipalities"
+                              item-text="Value"
+                              item-value="Key"
+                              label="Община"
+                              color="primary"
+                              :menu-props="{ offsetY: true }"
+                              :no-data-text="noDataText.municipalities"
+                              v-bind:clearable="!inReadonlyModeApplicantRepsresentativePerson && isCurrentUserApplicant"
+                              v-bind:readonly="inReadonlyModeApplicantRepsresentativePerson || !isCurrentUserApplicant"
+                              v-on:change="onMunicipalityChange(Form.ApplicantRepresentativePerson.FullAddress, RepresentativeApplicantAddress)"
+                              v-if="Form.ApplicantRepresentativePerson.FullAddress.CountryGUID == BG_GUID"></v-select>
+                </v-col>
+                <v-col cols="12" md="3" sm="12">
+                    <v-select v-model="Form.ApplicantRepresentativePerson.FullAddress.SettlementGUID"
+                              v-bind:items="RepresentativeApplicantAddress.settlements"
+                              item-text="Value"
+                              item-value="Key"
+                              label="Населено място"
+                              color="primary"
+                              :menu-props="{ offsetY: true }"
+                              :no-data-text="noDataText.settlements"
+                              v-bind:clearable="!inReadonlyModeApplicantRepsresentativePerson && isCurrentUserApplicant"
+                              v-bind:readonly="inReadonlyModeApplicantRepsresentativePerson || !isCurrentUserApplicant"
+                              v-if="Form.ApplicantRepresentativePerson.FullAddress.CountryGUID == BG_GUID"></v-select>
+                </v-col>
+                <v-col cols="12">
+                    <v-text-field v-model="Form.ApplicantRepresentativePerson.FullAddress.Address"
+                                  label="Адрес"
+                                  color="primary"
+                                  v-bind:clearable="!inReadonlyModeApplicantRepsresentativePerson && isCurrentUserApplicant"
+                                  v-bind:readonly="inReadonlyModeApplicantRepsresentativePerson || !isCurrentUserApplicant">
+                    </v-text-field>
+                </v-col>
+            </v-row>
+            <template v-if="!isMediationTerminated">
+                <template v-if="isCurrentUserApplicant && !inReadonlyModeApplicantRepsresentativePerson && Form.ApplicantRepresentativePerson.isConfirmed == null && !isCurrentUserApplicantRepresentativePerson">
+                    <v-row>
+                        <v-col cols="12">
+                            <v-btn color="primary"
+                                   @@click="signInRepresentativeApplicant">
+                                <v-icon left>mdi-account-plus</v-icon>
+                                Изпрати покана на упълномощеното лице
+                            </v-btn>
+                        </v-col>
+                    </v-row>
+                </template>
+                <template v-if="isCurrentUserApplicant && inReadonlyModeApplicantRepsresentativePerson && Form.ApplicantRepresentativePerson.isConfirmed != null && !isCurrentUserApplicantRepresentativePerson">
+                    <v-row>
+                        <v-col cols="12" md="6" sm="12">
+                            <v-btn color="red darken-3"
+                                   dark
+                                   block
+                                   @@click="removeRepresentativeApplicant">
+                                <v-icon left>mdi-account-minus</v-icon>
+                                Премахни упълномощеното лице
+                            </v-btn>
+                        </v-col>
+                        <v-col cols="12" md="6" sm="12">
+                            <v-btn color="lime darken-3"
+                                   dark
+                                   block
+                                   @@click="changeRepresentativeApplicant">
+                                <v-icon left>mdi-account-switch</v-icon>
+                                Смени упълномощеното лице
+                            </v-btn>
+                        </v-col>
+                    </v-row>
+                </template>
+            </template>
+        </template>
+    </v-card-text>
+</v-card>

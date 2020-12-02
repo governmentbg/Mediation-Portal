@@ -1,0 +1,38 @@
+﻿<v-card hover outlined>
+    <v-row>
+        <v-col cols="12">
+            <v-subheader class="subheader-border">Договорени такси</v-subheader>
+        </v-col>
+    </v-row>
+    <v-card-text>
+        <v-row>
+            <v-col cols="12" class="pt-0">
+                <v-checkbox v-model="Form.CaseMediators[0].FeesAgreed"
+                            label="Договорени такси"
+                            :readonly="!isCurrentUserMediator || (isCurrentUserMediator && areFeesAgreed === true)">
+                </v-checkbox>
+            </v-col>
+        </v-row>
+        <template v-if="Form.CaseMediators[0].FeesAgreed">
+            <v-row>
+                <v-col cols="12" class="py-0">
+                    <v-textarea v-model="Form.MediatorFeesNotes"
+                                outlined
+                                label="Информация за договрените такси"
+                                :readonly="!isCurrentUserMediator">
+                    </v-textarea>
+                </v-col>
+            </v-row>
+            <template v-if="isCurrentUserMediator && !isMediationTerminated">
+                <v-row>
+                    <v-col cols="12" class="text-right">
+                        <v-btn color="info" @@click="saveMediationTaxes">
+                            <v-icon left>mdi-check</v-icon>
+                            Запази
+                        </v-btn>
+                    </v-col>
+                </v-row>
+            </template>
+        </template>
+    </v-card-text>
+</v-card>

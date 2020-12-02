@@ -1,0 +1,66 @@
+﻿<v-card width="100%">
+    <v-data-table :headers="headers"
+                  :items="trainingOrganizations"
+                  item-key="GUID"
+                  class="elevation-1"
+                  hide-default-footer
+                  no-data-text="Няма намерени резултати"
+                  :disable-sort="true"
+                  :loading="loadingTableData"
+                  loading-text="Зареждане на данни"
+                  :items-per-page="selectedItemsPerPage">
+        <template v-slot:item="props">
+            <tr class="cursor-pointer">
+                <td @@click="props.expanded = !props.expanded">{{ props.item.Name }}</td>
+                <td @@click="props.expanded = !props.expanded">{{ props.item.EIK ? props.item.EIK : '-'}}</td>
+                <td @@click="props.expanded = !props.expanded">{{ props.item.RegistrationNumber }}</td>
+                <td @@click="props.expanded = !props.expanded">{{ props.item.StatusName }}</td>
+                <td @@click="props.expanded = !props.expanded">{{ props.item.DateCreated }}</td>
+                <td align="center">
+                    <div class="my-2">
+                        <v-btn color="primary"
+                               dark
+                               small
+                               :href="'/Register/TrainingOrganizations/Details/' + props.item.TrainingOrganizationGUID"
+                               target="_blank"
+                               v-show="showRedirectOrganizationButton">
+                            Преглед
+                        </v-btn>
+                        <v-btn color="primary"
+                               dark
+                               small
+                               :href="'/Register/TrainingOrganizations/FullDetails/' + props.item.TrainingOrganizationGUID"
+                               target="_blank"
+                               v-show="showRedirectOrganizationButtonAdmin">
+                            Преглед
+                        </v-btn>
+                    </div>
+                </td>
+            </tr>
+        </template>
+    </v-data-table>
+    <v-footer style="background-color: white !important">
+        <v-spacer></v-spacer>
+        <v-col md="2">
+            <v-select :items="itemsPerPage"
+                      v-model="selectedItemsPerPage"
+                      item-text="Value"
+                      item-value="Key"
+                      placeholder="-- Избери --"
+                      label="Редове на страница"
+                      color="primary"
+                      @@change="setRows(selectedItemsPerPage)">
+            </v-select>
+        </v-col>
+    </v-footer>
+    <template>
+        <div class="text-xs-center pa-4">
+            <v-pagination v-model="pagination.page"
+                          :length="pagination.totalPages"
+                          color="primary"
+                          total-visible="10"
+                          @@input="next(pagination.page)">
+            </v-pagination>
+        </div>
+    </template>
+</v-card>

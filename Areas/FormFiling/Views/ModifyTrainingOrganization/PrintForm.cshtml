@@ -1,0 +1,180 @@
+﻿@model MediationPortal.Services.Models.PrintModels.TrainingOrganizationPrintVM
+
+@{
+    Layout = null;
+
+    var registrationAddress = "";
+    if (Model.RegistrationAddress.CountryName == "България")
+    {
+        registrationAddress = $"{Model.RegistrationAddress.CountryName}, област: {Model.RegistrationAddress.DistrictName}, община: {Model.RegistrationAddress.MunicipalityName}, населено място: {Model.RegistrationAddress.SettlementName}, адрес: {Model.RegistrationAddress.Address}";
+    }
+    else
+    {
+        registrationAddress = $"{Model.RegistrationAddress.CountryName}";
+    }
+
+    var mailingAddress = "";
+    if (Model.MailingAddress.CountryName == "България")
+    {
+        mailingAddress = $"{Model.MailingAddress.CountryName}, област: {Model.MailingAddress.DistrictName}, община: {Model.MailingAddress.MunicipalityName}, населено място: {Model.MailingAddress.SettlementName}, адрес: {Model.MailingAddress.Address}";
+    }
+    else
+    {
+        mailingAddress = $"{Model.MailingAddress.CountryName}";
+    }
+}
+
+<div style="padding:15px; text-align:center; display:flex;">
+    <div style="width:5%;">
+        <h1></h1>
+    </div>
+    <div style="width:90%;">
+        <div style="padding-bottom:25px;">
+            <h3 style="text-align:center; margin-bottom: 13px;">@Model.FormType</h3>
+            <h5 style="text-align:center; margin-bottom: 5px; margin-top: 8px">Входящ номер: @Model.IncomingNumber / Уникален номер: @Model.InternalNumber</h5>
+        </div>
+        <div style="display:inline-flex; width:100%; padding-bottom:25px;">
+            <div style="padding-right:10px; width:50%;">
+                <table>
+                    <thead style="text-align:justify;">
+                        <tr>
+                            <th colspan="1"><h3>Основна информация</h3></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td style="width:50%">
+                                <b>Име: </b><br />
+                                @Model.Name
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="width:50%">
+                                <b>ЕИК: </b><br />
+                                @Model.EIK
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="width:50%">
+                                <b>Съдебна регистрация: </b><br />
+                                @Model.RegistrationNumber
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <b>Контакти: </b><br />
+                                Мобилен телефон: @Model.Contact.MobilePhone<br />
+                                Стационарен телефон: @Model.Contact.LandlinePhone<br />
+                                Факс: @Model.Contact.Fax<br />
+                                Е-мейл: @Model.Contact.Email
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div style="padding-left:10px; width:50%;">
+                <table align="right">
+                    <thead style="text-align:justify;">
+                        <tr>
+                            <th colspan="2"><h3>Представител</h3></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <b>Имена: </b>
+                                @foreach (var representative in Model.OrganizationRepresentatives)
+                                {
+                                    <p style="margin-top: 5px; margin-bottom: 5px;">@representative.FirstName @representative.MiddleName @representative.LastName</p>
+                                }
+                                <b>ЕГН: </b>
+                                @foreach (var representative in Model.OrganizationRepresentatives)
+                                {
+                                    <p style="margin-top: 5px; margin-bottom: 5px;">@representative.EGN</p>
+                                }
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div style="display:inline-flex; width:100%; padding-bottom:25px;">
+            <div style="padding-right:10px; width:50%;">
+                <table>
+                    <thead style="text-align:justify;">
+                        <tr>
+                            <th colspan="1"><h3>Адреси</h3></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td style="width:50%">
+                                <b>Постоянен: </b><br />
+                                @registrationAddress
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="width:50%">
+                                <b>За кореспондеция: </b><br />
+                                @mailingAddress
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div style="padding-left:10px; width:50%;">
+                <table align="right">
+                    <thead style="text-align:justify;">
+                        <tr>
+                            <th colspan="2"><h3>Прикачени документи</h3></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                @foreach (var docName in Model.Documents)
+                                {
+                                    <p style="margin-top: 5px; margin-bottom: 10px;">@docName</p>
+                                }
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div>
+                <span style="float:right; position:absolute; bottom:30px; right:40px;">Подпис ............................................................</span>
+            </div>
+        </div>
+        <div style="display:inline-flex; width:100%; padding-bottom:25px;">
+            <div style="padding-right:10px; width:50%;">
+                <table>
+                    <thead style="text-align:justify;">
+                        <tr>
+                            <th colspan="1"><h3>Промени: </h3></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                @if (Model.LastFormDifferences.Count() == 0)
+                                {
+                                    <p style="margin-top: 5px; margin-bottom: 10px;">Няма промени</p>
+                                }
+                                @foreach (var dif in Model.LastFormDifferences)
+                                {
+                                    <p style="margin-top: 5px; margin-bottom: 10px;"><b>@dif.Key</b>: @dif.Value</p>
+                                }
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        window.print();
+    </script>
+}

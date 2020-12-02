@@ -1,0 +1,206 @@
+﻿<v-app data-app>
+    <details-mediator inline-template ref="detailsMediator">
+        <template v-if="loading">
+            <v-text-field loading
+                          label="Зареждане..."
+                          disabled>
+            </v-text-field>
+        </template>
+        <template v-else>
+            <div>
+                <v-card dark class="mt-10">
+                    <v-system-bar :color="Mediator.IsActive ? 'success' : 'error'"
+                                  height="40"
+                                  rounded>
+                        <v-icon large>info</v-icon>
+                        <v-row auto class="text-center">
+                            <v-col cols="12">
+                                <template v-if="false">
+                                    <h4>{{ (Mediator.IsActive ? 'Медиатора е активен. Статус - ' : 'Медиатора не е активен. Статус - ') + Mediator.StatusName}}</h4>
+                                </template>
+                                <h4>{{ 'Статус - ' + Mediator.StatusName}}</h4>
+                            </v-col>
+                        </v-row>
+                    </v-system-bar>
+                </v-card>
+                <v-card class="mx-auto mt-10">
+                    <v-row>
+                        <v-col cols="12">
+                            <v-subheader class="subheader-border">Детайли за медиатор</v-subheader>
+                        </v-col>
+                    </v-row>
+                    <v-card-text>
+                        <v-row>
+                            <v-col cols="12" md="6" sm="12" class="py-0">
+                                <v-text-field class="px-4 py-3"
+                                              v-model="Mediator.FirstName"
+                                              label="Име"
+                                              readonly>
+                                </v-text-field>
+                            </v-col>
+                            <v-col cols="12" md="6" sm="12" class="py-0">
+                                <v-text-field class="px-4 py-3"
+                                              v-model="Mediator.LastName"
+                                              label="Фамилия"
+                                              readonly>
+                                </v-text-field>
+                            </v-col>
+                        </v-row>
+                        <v-row>
+                            <v-col cols="12" md="3" class="py-0">
+                                <v-text-field :value="citizenships"
+                                              class="px-4 py-3"
+                                              label="Гражданства"
+                                              readonly>
+                                </v-text-field>
+                            </v-col>
+                            <template v-if="false">
+                                <v-col cols="12" md="3" sm="12" class="py-0">
+                                    <v-text-field class="px-4 py-3"
+                                                  v-model="Mediator.MinisterOrder"
+                                                  label="Заповед на министър"
+                                                  readonly>
+                                    </v-text-field>
+                                </v-col>
+                            </template>
+                            <v-col cols="12" md="3" sm="12" class="py-0">
+                                <v-text-field class="px-4 py-3"
+                                                v-model="Mediator.RegistrationNumber"
+                                                label="Регистрационен номер"
+                                                readonly>
+                                </v-text-field>
+                            </v-col>
+                            <v-col cols="12" md="3" sm="12" class="py-0">
+                                <v-text-field class="px-4 py-3"
+                                                :value="formatDate(Mediator.DateCreated)"
+                                                label="Регистриран на"
+                                                readonly>
+                                </v-text-field>
+                            </v-col>
+                        </v-row>
+                        <v-row>
+                            <v-col cols="12" md="3" sm="12" class="py-0">
+                                <v-text-field class="px-4 py-3"
+                                              v-model="Mediator.MediatorContacts.LandlinePhone"
+                                              label="Стационарен телефон"
+                                              readonly>
+                                </v-text-field>
+                            </v-col>
+                            <v-col cols="12" md="3" sm="12" class="py-0">
+                                <v-text-field class="px-4 py-3"
+                                              v-model="Mediator.MediatorContacts.MobilePhone"
+                                              label="Мобилен телефон"
+                                              readonly>
+                                </v-text-field>
+                            </v-col>
+                            <v-col cols="12" md="3" sm="12" class="py-0">
+                                <v-text-field class="px-4 py-3"
+                                              v-model="Mediator.MediatorContacts.Fax"
+                                              label="Факс"
+                                              readonly>
+                                </v-text-field>
+                            </v-col>
+                            <v-col cols="12" md="3" sm="12" class="py-0">
+                                <v-text-field class="px-4 py-3"
+                                              v-model="Mediator.MediatorContacts.Email"
+                                              label="Електронна поща"
+                                              readonly>
+                                </v-text-field>
+                            </v-col>
+                        </v-row>
+                        <v-row>
+                        </v-row>
+                        <v-row v-if="Mediator.MailingAddress">
+                            <v-col cols="12" class="py-0">
+                                <v-text-field :value="fullAddress(addresses.mailing)"
+                                              class="px-4 py-3"
+                                              label="Адрес за кореспонденция"
+                                              readonly>
+                                </v-text-field>
+                            </v-col>
+                        </v-row>
+                        <div v-for="(education, index) in Mediator.Educations" :key="index">
+                            <v-row>
+                                <v-col cols="12" md="4" sm="12" class="py-0">
+                                    <v-text-field :value="education.EducationDegree || 'липсва информация'"
+                                                  class="px-4 py-3"
+                                                  label="Образователно квалификационна степен"
+                                                  readonly>
+                                    </v-text-field>
+                                </v-col>
+                                <v-col cols="12" md="4" sm="12" class="py-0">
+                                    <v-text-field :value="education.EducationField || 'липсва информация'"
+                                                  class="px-4 py-3"
+                                                  label="Област на висше образование"
+                                                  readonly>
+                                    </v-text-field>
+                                </v-col>
+                                <v-col cols="12" md="4" sm="12" class="py-0">
+                                    <v-text-field :value="education.ProfessionalDirection || 'липсва информация'"
+                                                  class="px-4 py-3"
+                                                  label="Професионално направление"
+                                                  readonly>
+                                    </v-text-field>
+                                </v-col>
+                            </v-row>
+                        </div>
+                        <v-row>
+                            <v-col cols="12" md="6" sm="12" class="py-0">
+                                <v-text-field :value="professions"
+                                              class="px-4 py-3"
+                                              label="Професии"
+                                              readonly>
+                                </v-text-field>
+                            </v-col>
+                            <v-col cols="12" md="6" sm="12" class="py-0">
+                                <v-text-field :value="foreignLanguages"
+                                              class="px-4 py-3"
+                                              label="Чужди езици"
+                                              readonly>
+                                </v-text-field>
+                            </v-col>
+                            <v-col cols="12" class="py-0">
+                                <v-text-field :value="Mediator.TrainingOrganization"
+                                              class="px-4 py-3"
+                                              label="Обучителна организации"
+                                              readonly>
+                                </v-text-field>
+                            </v-col>
+                            <v-col cols="12" class="py-0">
+                                <v-text-field :value="organizationMemberships"
+                                              class="px-4 py-3"
+                                              label="Членство в организации"
+                                              readonly>
+                                </v-text-field>
+                            </v-col>
+                            <v-col cols="12" class="py-0">
+                                <v-text-field :value="additionalQualifications"
+                                              class="px-4 py-3"
+                                              label="Допълнителна квалификация"
+                                              readonly>
+                                </v-text-field>
+                            </v-col>
+                            <v-col cols="12" class="py-0">
+                                <v-text-field :value="specializations"
+                                              class="px-4 py-3"
+                                              label="Допълнителна специализация в областта на медиацията"
+                                              readonly>
+                                </v-text-field>
+                            </v-col>
+                        </v-row>
+                    </v-card-text>
+                </v-card>
+            </div>
+        </template>
+    </details-mediator>
+</v-app>
+
+
+@section Scripts {
+
+    @* Models *@
+
+    @* Components *@
+    @Scripts.Render("~/Scripts/VueComponents/detailsMediator.js")
+
+}

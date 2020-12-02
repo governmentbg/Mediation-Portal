@@ -1,0 +1,96 @@
+﻿@using Reporting.Models
+
+@model ReportFilterModel
+
+@{
+    var filterType = Type.GetType(Model.FilterTypeName);
+    var fromOrToDate = Model.FilterParameterName.Contains("From") == true ? "От Дата" : "До Дата";
+}
+
+@if (filterType == typeof(DateTime))
+{
+    <v-col cols="12" md="4" class="pa-2">
+        <datepickerfilter inline-template placeholder="@Model.FilterParameterName" label="@fromOrToDate" :func="collectData">
+            <div id="datepickerfilter">
+                <v-menu v-model="popUp"
+                        :close-on-content-click="false"
+                        v-bind:nudge-right="40"
+                        transition="scale-transition"
+                        offset-y
+                        min-width="290px">
+                    <template v-slot:activator="{ on }">
+                        <v-text-field v-bind:label="label"
+                                      prepend-icon="event"
+                                      solo
+                                      v-on="on"
+                                      v-bind:value="datePickerFormated(date)"
+                                      @@click:clear="saveSelectedDropdownValue(null,'@Model.FilterParameterName')"
+                                      clearable>
+                        </v-text-field>
+                    </template>
+                    <v-date-picker v-model="date"
+                                   persistent-hint
+                                   prepend-icon="event"
+                                   header-color="primary"
+                                   color="primary"
+                                   v-bind:first-day-of-week="1"
+                                   locale="bg-bg"
+                                   @@change="saveSelectedDropdownValue(date,'@Model.FilterParameterName')"
+                                   @@input="popUp = false">
+                    </v-date-picker>
+                </v-menu>
+            </div>
+        </datepickerfilter>
+    </v-col>
+}
+else if (filterType == typeof(int))
+{
+    <v-col cols="12" md="4" class="pa-2">
+        :func="collectData"
+        <dropdownfilter inline-template rdtorp="@Model.ReportDefinitionToReportFilterId.ToString()" :func="collectData">
+            <div id="dropdownfilter" v-if="elementsAreLoaded">
+                <v-autocomplete v-model="selectedElement"
+                                v-bind:items="dropdownItems"
+                                item-text="Text"
+                                item-value="Value"
+                                placeholder="-- @Model.FilterNameToDisplay --"
+                                no-data-text="Няма намерени резултати"
+                                clearable
+                                @@change="saveSelectedDropdownValue(selectedElement,'@Model.FilterParameterName')">
+                </v-autocomplete>
+            </div>
+        </dropdownfilter>
+    </v-col>
+}
+else if (filterType == typeof(Guid))
+{
+    <v-col cols="12" md="4" class="pa-2">
+        <dropdownfilter inline-template rdtorp="@Model.ReportDefinitionToReportFilterId.ToString()" :func="collectData">
+            <div id="dropdownfilter" v-if="elementsAreLoaded">
+                <v-autocomplete v-model="selectedElement"
+                                v-bind:items="dropdownItems"
+                                item-text="Text"
+                                item-value="Value"
+                                placeholder="-- @Model.FilterNameToDisplay --"
+                                no-data-text="Няма намерени резултати"
+                                clearable
+                                @@change="saveSelectedDropdownValue(selectedElement,'@Model.FilterParameterName')">
+                </v-autocomplete>
+            </div>
+        </dropdownfilter>
+    </v-col>
+}
+else if (filterType == typeof(string))
+{
+    <v-col cols="12" md="4" class="pa-2">
+        <textfieldfilter inline-template :func="collectData">
+            <div id="textfieldfilter">
+                <v-text-field v-model="selectedElement"
+                                label="@Model.FilterNameToDisplay"
+                                @@change="saveSelectedDropdownValue(selectedElement,'@Model.FilterParameterName')"
+                                clearable>
+                </v-text-field>
+            </div>
+        </textfieldfilter>
+    </v-col>
+}

@@ -1,0 +1,324 @@
+﻿<v-dialog v-model="eventModal.open" scrollable persistent :max-width="eventModal.step == 1 || eventModal.step == 4 ? '40%' : '70%'">
+    <v-card>
+        <v-card-title class="headline primary" style="color: white">
+            {{ (eventModal.new ? 'Създаване на ново събитие' : 'Преглед на събитие') + (eventModal.step == 2 ? ' - АУДИО/ЧАТ' : eventModal.step === 3 ? ' - ВИДЕО/ЧАТ' :  eventModal.step === 4 ? ' - ДОКУМЕНТ' : '') }}
+        </v-card-title>
+        <v-card-text class="pa-8">
+            <v-container>
+                <template v-if="!eventModal.new">
+                    <v-row class="mb-5">
+                        <v-col cols="12" md="5" sm="12">
+                            <v-col cols="12" class="pa-0">
+                                <span class="font-weight-bold">Статус:</span> <span :class="getStatusColor(eventModal.Data.status)">{{ eventModal.Data.CaseEventStatusName }}</span>
+                            </v-col>
+                            <template v-if="eventModal.Data.isDocumentEvent != true">
+                                <v-col cols="12" class="pa-0">
+                                    <span class="font-weight-bold">Потвърдено:</span> <span :class="getConfirmationColor(eventModal.confirmationId)">{{ eventModal.confirmation }}</span>
+                                </v-col>
+                            </template>
+                        </v-col>
+                        <v-col cols="12" md="7" sm="12" class="text-right">
+                            <template v-if="eventModal.participantsStatuses.confirmed.length">
+                                <v-row>
+                                    <v-col cols="12" :class="'pa-0 '+getStatusColor(1)">
+                                        <span class="font-weight-bold">
+                                            {{ eventModal.Data.isDocumentEvent ? 'Изпратено от' : 'Потвърдено от' }}:
+                                        </span>
+                                        {{ eventModal.participantsStatuses.confirmed }}
+                                    </v-col>
+                                </v-row>
+                            </template>
+                            <template v-if="eventModal.participantsStatuses.refused.length">
+                                <v-row>
+                                    <v-col cols="12" :class="'pa-0 '+getStatusColor(2)">
+                                        <span class="font-weight-bold">Отказано от:</span>
+                                        {{ eventModal.participantsStatuses.refused }}
+                                    </v-col>
+                                </v-row>
+                            </template>
+                            <template v-if="eventModal.participantsStatuses.awaitingResponse.length">
+                                <v-row>
+                                    <v-col cols="12" :class="'pa-0 '+getStatusColor(0)">
+                                        <span class="font-weight-bold">Очаква се отговор от:</span> 
+                                        {{ eventModal.participantsStatuses.awaitingResponse }}
+                                    </v-col>
+                                </v-row>
+                            </template>
+                        </v-col>
+                    </v-row>
+                </template>
+                <template v-if="eventModal.step == 1">
+                    <v-col cols="12" md="6" sm="12">
+                        <v-btn color="info" block x-large height="100" @@click="selectAudioEvent">
+                            <v-row>
+                                <v-col cols="12" class="pa-0">
+                                    <v-icon large>mdi-microphone</v-icon>
+                                </v-col>
+                                <v-col cols="12" class="pa-0 pt-2">
+                                    АУДИО/ЧАТ
+                                </v-col>
+                            </v-row>
+                        </v-btn>
+                    </v-col>
+                    <v-col cols="12" md="6" sm="12">
+                        <v-btn color="error" block x-large height="100" @@click="selectVideoEvent">
+                            <v-row>
+                                <v-col cols="12" class="pa-0">
+                                    <v-icon x-large>mdi-video-wireless</v-icon>
+                                </v-col>
+                                <v-col cols="12" class="pa-0 pt-2">
+                                    ВИДЕО/ЧАТ
+                                </v-col>
+                            </v-row>
+                        </v-btn>
+                    </v-col>
+                    <template v-if="$parent.isCurrentUserMediator">
+                        <v-col cols="12">
+                            <v-btn color="success" block x-large height="100" @@click="selectDocumentEvent">
+                                <v-row>
+                                    <v-col cols="12" class="pa-0">
+                                        <v-icon x-large>mdi-file-document</v-icon>
+                                    </v-col>
+                                    <v-col cols="12" class="pa-0 pt-2">
+                                        ДОКУМЕНТ
+                                    </v-col>
+                                </v-row>
+                            </v-btn>
+                        </v-col>
+                    </template>
+                </template>
+                <template v-if="eventModal.step == 2 || eventModal.step === 3">
+                    <v-row>
+                        <v-col cols="12" class="pt-0">
+                            <v-text-field label="Описание*"
+                                          :disabled="!eventModal.new"
+                                          v-model="eventModal.Data.Description"
+                                          required></v-text-field>
+                        </v-col>
+                        <v-col cols="12" sm="12" md="6" class="pt-0">
+                            <custom-date-time-picker label="Дата и час на събитието"
+                                                     :disabled="!eventModal.new"
+                                                     v-model="eventModal.Data.StartDate"
+                                                     date-format="DD.MM.YYYY"
+                                                     time-format="HH:mm">
+                            </custom-date-time-picker>
+                        </v-col>
+                        <v-col cols="12" sm="12" md="6" class="pt-0">
+                            <v-text-field label="Продължителност (минути)*"
+                                          :disabled="!eventModal.new"
+                                          v-model="eventModal.Data.Duration"
+                                          required></v-text-field>
+                        </v-col>
+                        <v-col cols="12" sm="12" class="pt-0">
+                            <v-select v-model="eventModal.Data.CaseParticipants"
+                                      :disabled="!eventModal.new"
+                                      :items="eventModal.caseParticipants"
+                                      item-text="Value"
+                                      item-value="Key"
+                                      label="Участници*"
+                                      :menu-props="{ offsetY: true }"
+                                      multiple
+                                      required></v-select>
+                        </v-col>
+                        <v-col cols="12" sm="12" class="pt-0">
+                            <v-text-field v-if="eventModal.caseThirdParticipants && !eventModal.new"
+                                          v-model="eventModal.caseThirdParticipants"
+                                          label="Външни участници"
+                                          disabled>
+                            </v-text-field>
+                        </v-col>
+                        <v-col cols="12" sm="12" class="pt-0">
+                            <template v-if="eventModal.new && $parent.isCurrentUserMediator">
+                                <v-btn color="primary darken" small @@click="newThirdPerson" class="mb-4">
+                                    <v-icon>mdi-plus</v-icon>
+                                    Добави външен участник
+                                </v-btn>
+                            </template>
+                            <v-row v-for="(person, index) in eventModal.Data.CaseThirdPerson" :key="index">
+                                <v-col cols="12" sm="12" md="3" class="pt-0">
+                                    <v-text-field label="Име*"
+                                                    :disabled="!eventModal.new"
+                                                    v-model="person.FirstName"
+                                                    required></v-text-field>
+                                </v-col>
+                                <v-col cols="12" sm="12" md="3" class="pt-0">
+                                    <v-text-field label="Фамилия*"
+                                                    :disabled="!eventModal.new"
+                                                    v-model="person.LastName"
+                                                    required></v-text-field>
+                                </v-col>
+                                <v-col cols="12" sm="12" md="3" class="pt-0">
+                                    <v-text-field label="E-mail*"
+                                                    :disabled="!eventModal.new"
+                                                    v-model="person.Email"
+                                                    required></v-text-field>
+                                </v-col>
+                                <v-col cols="12" sm="12" md="2" class="pt-0">
+                                    <v-text-field label="Телефон*"
+                                                    :disabled="!eventModal.new"
+                                                    v-model="person.MobilePhone"
+                                                    required></v-text-field>
+                                </v-col>
+                                <v-col cols="12" sm="12" md="1" class="pt-0">
+                                    <v-btn color="error" fab small circle @@click="removeAdditionalParticipans(index)">
+                                        <v-icon>mdi-close</v-icon>
+                                    </v-btn>
+                                </v-col>
+                            </v-row>
+                        </v-col>
+                        <v-col cols="12" sm="12" class="pt-0">
+                            <v-textarea label="Бележки"
+                                        :readonly="!eventModal.new"
+                                        v-model="eventModal.Data.Notes"
+                                        outlined></v-textarea>
+                        </v-col>
+                        <template v-if="!eventModal.new && $parent.isCurrentUserMediator">
+                            <v-col cols="12" sm="12" class="pt-0">
+                                <v-textarea label="Бележки от събитието"
+                                            :readonly="!eventModal.new"
+                                            v-model="eventModal.Data.EventNotes"
+                                            outlined></v-textarea>
+                            </v-col>
+                        </template>
+                    </v-row>
+                </template>
+                <template v-if="eventModal.step === 4">
+                    <v-row>
+                        <v-col cols="12" class="pt-0">
+                            <v-text-field label="Описание*"
+                                          :disabled="!eventModal.new"
+                                          v-model="eventModal.Data.Description"
+                                          required></v-text-field>
+                        </v-col>
+                        <v-col cols="12" sm="12" class="pt-0">
+                            @*ще трябва да се добави и функционалност да излизат и допълнителните модератори*@
+                            <v-select v-model="eventModal.Data.CaseParticipants"
+                                      :items="eventModal.caseParticipants"
+                                      :disabled="!eventModal.new"
+                                      item-text="Value"
+                                      item-value="Key"
+                                      label="Участници*"
+                                      :menu-props="{ offsetY: true }"
+                                      multiple
+                                      required></v-select>
+                        </v-col>
+                        <v-col cols="12" sm="12" class="pt-0">
+                            <v-text-field v-if="eventModal.caseThirdParticipants && !eventModal.new"
+                                          v-model="eventModal.caseThirdParticipants"
+                                          label="Външни участници"
+                                          disabled>
+                            </v-text-field>
+                        </v-col>
+                        <v-col cols="12" sm="12" class="pt-0">
+                            <template v-if="false">
+                                <v-btn color="primary darken" small @@click="newThirdPerson" class="mb-4">
+                                    <v-icon>mdi-plus</v-icon>
+                                    Добави външен участник
+                                </v-btn>
+                            </template>
+                            <v-row v-for="(person, index) in eventModal.Data.AdditionalParticipans" :key="index">
+                                <v-col cols="12" sm="12" md="3" class="pt-0">
+                                    <v-text-field label="Име*"
+                                                  v-model="person.FirstName"
+                                                  required></v-text-field>
+                                </v-col>
+                                <v-col cols="12" sm="12" md="3" class="pt-0">
+                                    <v-text-field label="Фамилия*"
+                                                  v-model="person.LastName"
+                                                  required></v-text-field>
+                                </v-col>
+                                <v-col cols="12" sm="12" md="5" class="pt-0">
+                                    <v-text-field label="E-mail*"
+                                                  v-model="person.Email"
+                                                  required></v-text-field>
+                                </v-col>
+                                <v-col cols="12" sm="12" md="1" class="pt-0">
+                                    <v-btn color="error" fab small circle @@click="removeAdditionalParticipans(index)">
+                                        <v-icon>mdi-close</v-icon>
+                                    </v-btn>
+                                </v-col>
+                            </v-row>
+                        </v-col>
+                        <v-col cols="12" sm="12" class="pt-0">
+                            <v-textarea label="Бележки"
+                                        v-model="eventModal.Data.Notes"
+                                        :disabled="!eventModal.new"
+                                        outlined></v-textarea>
+                        </v-col>
+                        <template v-if="!eventModal.new && !$parent.isCurrentUserMediator && !eventModal.Data.hasCurrentUserAlreadyAttachedDocument">
+                            <v-col cols="12" class="pt-0">
+                                <v-file-input v-model="eventModal.uploadDocuments"
+                                              multiple counter chips show-size
+                                              label="Прикачи файл/ове"
+                                              class="pt-0"></v-file-input>
+                            </v-col>
+                        </template>
+                        <template v-if="!eventModal.new && $parent.isCurrentUserMediator || (!$parent.isCurrentUserMediator && documentsTable.uploadedFilesInfo && documentsTable.uploadedFilesInfo.length)">
+                            <v-col cols="12" sm="12">
+                                <h3>Прикачени файлове</h3>
+                                <v-data-table :headers="documentsTable.header"
+                                              :items="documentsTable.uploadedFilesInfo"
+                                              item-key="guid"
+                                              id="documents-Datatable"
+                                              class="elevation-1"
+                                              no-data-text="Няма намерени резултати"
+                                              :loading="documentsTable.loading"
+                                              loading-text="Зареждане на данни"
+                                              :items-per-page="documentsTable.selectedItemsPerPage"
+                                              hide-default-footer
+                                              style="width: 100%">
+                                    <template v-slot:item="{ item }">
+                                        <tr class="cursor-pointer">
+                                            <td>{{ item.FileName }}</td>
+                                            <td>{{ item.DateCreated}}</td>
+                                            <td>{{ item.UserName }}</td>
+                                            <td align="right">
+                                                <template v-if="item.GUID != EmptyGuid">
+                                                    <div class="my-2">
+                                                        <v-btn flated
+                                                               small
+                                                               color="primary"
+                                                               dark
+                                                               target="_blank"
+                                                               :href="'/AttachedDocument/DownloadFile/' + item.GUID">
+                                                            <i class="fa fa-download white--text" style="font-size:20px; color:#b69778;"></i>&nbsp;Свали
+                                                        </v-btn>
+                                                    </div>
+                                                </template>
+                                            </td>
+                                        </tr>
+                                    </template>
+                                </v-data-table>
+                            </v-col>
+                        </template>
+                    </v-row>
+                </template>
+            </v-container>
+        </v-card-text>
+        <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn v-if="eventModal.new && eventModal.step > 1" color="info darken-1" @@click="eventModal.step = 1">
+                <v-icon left>mdi-arrow-left</v-icon>
+                Назад
+            </v-btn>
+            <v-btn v-if="eventModal.new && eventModal.step > 1" color="success darken-1" @@click="saveEvent" :loading="eventModal.loading">
+                <v-icon left>mdi-check</v-icon>
+                Запази
+            </v-btn>
+
+            <v-btn v-if="!eventModal.new && !$parent.isCurrentUserMediator && eventModal.step === 4 && eventModal.uploadDocuments.length" color="success darken-1" @@click="sendEventFile" :loading="eventModal.loading">
+                <v-icon left>mdi-check</v-icon>
+                Изпрати файл/ове
+            </v-btn>
+            <v-btn v-if="eventModal.new === false && eventModal.Data.currentUserParticipatingStatus === 0" dark color="success darken-1" @@click="confirmEventParticipation" :loading="eventModal.loading">
+                <v-icon left>mdi-check</v-icon>
+                Приемам
+            </v-btn>
+            <v-btn v-if="eventModal.new === false && eventModal.Data.currentUserParticipatingStatus === 0" dark color="red darken-1" @@click="refuseEventParticipation" :loading="eventModal.loading">
+                <v-icon left>mdi-close</v-icon>
+                Отказвам
+            </v-btn>
+            <v-btn color="default darken-1" @@click="eventModal.open = !eventModal.open">Затвори</v-btn>
+        </v-card-actions>
+    </v-card>
+</v-dialog>

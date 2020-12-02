@@ -1,0 +1,87 @@
+﻿<template v-if="!doesMediatorAlreadyExistsInMediation">
+    <v-card-text>
+        <v-card-actions>
+            <v-row>
+                <v-col cols="12" md="6" sm="12">
+                    <v-btn block color="success"
+                           v-show="showButton"
+                           @@click="mediatorApproveForm">
+                        <v-icon left>mdi-check</v-icon>
+                        Приеми
+                    </v-btn>
+                </v-col>
+                <v-col cols="12" md="6" sm="12">
+                    <v-btn block color="error"
+                           v-show="showButton"
+                           v-on:click="rejectMediationModal.open = !rejectMediationModal.open">
+                        <v-icon left>mdi-close</v-icon>
+                        Откажи
+                    </v-btn>
+                </v-col>
+            </v-row>
+        </v-card-actions>
+    </v-card-text>
+</template>
+
+
+
+<v-dialog v-model="mediatorApproveMediation.open" scrollable persistent max-width="60%">
+    <v-card>
+        <v-card-title class="headline primary white--text"
+                      primary-title>
+            {{mediatorApproveMediation.mediatorsPrivacyDeclaration.PreviousName}}
+        </v-card-title>
+
+        <v-card-text class="pt-5">
+            <template v-if="mediatorApproveMediation.loadingDeclaration">
+                <v-text-field color="primary"
+                              loading
+                              label="Зареждане..."
+                              readonly>
+                </v-text-field>
+            </template>
+            <template v-else>
+                <v-col cols="12" v-html="mediatorApproveMediation.mediatorsPrivacyDeclaration.PreviousHTMLContent"></v-col>
+            </template>
+        </v-card-text>
+
+        <v-divider></v-divider>
+
+        <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn color="success"
+                   @@click="mediatorAgreeMediation">
+                <v-icon left>mdi-check</v-icon>
+                Приемам
+            </v-btn>
+            <v-btn @@click="mediatorApproveMediation.open = !mediatorApproveMediation.open">
+                Затвори
+            </v-btn>
+        </v-card-actions>
+    </v-card>
+</v-dialog>
+
+<v-dialog v-model="rejectMediationModal.open" scrollable persistent max-width="40%">
+    <v-card>
+        <v-card-title :class="'headline white--text '+ (rejectMediationModal.errorMessage.length ? ' error' : ' primary')">
+            Отказване на участие в медиация
+        </v-card-title>
+        <v-card-text class="pa-8">
+            <v-container>
+                <v-row>
+                    <v-col cols="12">
+                        <v-textarea rows="5" outlined label="Причинa за отказ от медиация" :error-messages="rejectMediationModal.errorMessage" @@keyup.native="validateRejectTextarea" v-model="rejectMediationModal.message"></v-textarea>
+                    </v-col>
+                </v-row>
+            </v-container>
+        </v-card-text>
+        <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn class="error" @@click="mediatorRejectForm" :loading="rejectMediationModal.loading" :disabled="rejectMediationModal.loading">
+                <v-icon>mdi-close</v-icon>
+                Отказвам
+            </v-btn>
+            <v-btn color="default darken-1" @@click="cancelRejectMediationByMediatorModal" :loading="rejectMediationModal.loading" :disabled="rejectMediationModal.loading">Затвори</v-btn>
+        </v-card-actions>
+    </v-card>
+</v-dialog>

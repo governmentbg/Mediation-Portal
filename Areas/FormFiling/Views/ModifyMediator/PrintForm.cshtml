@@ -1,0 +1,236 @@
+﻿@model MediationPortal.Services.Models.PrintModels.MediatorPrintVM
+
+@{
+    Layout = null;
+
+    if (string.IsNullOrEmpty(Model.PersonInfo.EGN)) { Model.PersonInfo.EGN = "липсва"; }
+
+    var permanentAdress = "";
+    if (Model.PermanentAddress.CountryName == "България")
+    {
+        permanentAdress = $"{Model.PermanentAddress.CountryName}, област: {Model.PermanentAddress.DistrictName}, община: {Model.PermanentAddress.MunicipalityName}, населено място: {Model.PermanentAddress.SettlementName}, адрес: {Model.PermanentAddress.Address}";
+    }
+    else
+    {
+        permanentAdress = $"{Model.PermanentAddress.CountryName}";
+    }
+
+    var currentAddress = "";
+    if (Model.CurrentAddress.CountryName == "България")
+    {
+        currentAddress = $"{Model.CurrentAddress.CountryName}, област: {Model.CurrentAddress.DistrictName}, община: {Model.CurrentAddress.MunicipalityName}, населено място: {Model.CurrentAddress.SettlementName}, адрес: {Model.CurrentAddress.Address}";
+    }
+    else
+    {
+        currentAddress = $"{Model.CurrentAddress.CountryName}";
+    }
+
+    var mailingAddress = "";
+    if (Model.MailingAddress.CountryName == "България")
+    {
+        mailingAddress = $"{Model.MailingAddress.CountryName}, област: {Model.MailingAddress.DistrictName}, община: {Model.MailingAddress.MunicipalityName}, населено място: {Model.MailingAddress.SettlementName}, адрес: {Model.MailingAddress.Address}";
+    }
+    else
+    {
+        mailingAddress = $"{Model.MailingAddress.CountryName}";
+    }
+}
+
+<div style="padding:15px; text-align:center; display:flex;">
+    <div style="width:5%;">
+        <h1></h1>
+    </div>
+    <div style="width:90%;">
+        <div style="padding-bottom:25px;">
+            <h4 style="text-align:center; margin-bottom: 13px;">@Model.FormType</h4>
+            <h5 style="text-align:center; margin-bottom: 5px; margin-top: 8px">Входящ номер: @Model.IncomingNumber / Уникален номер: @Model.InternalNumber</h5>
+        </div>
+        <div style="display:inline-flex; width:100%; padding-bottom:25px;">
+            <div style="padding-right:10px; width:50%;">
+                <table>
+                    <thead style="text-align:justify;">
+                        <tr>
+                            <th colspan="1"><h4>Основна информация</h4></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td style="width:50%"><b>Три имена: </b><br />@Model.PersonInfo.FirstName @Model.PersonInfo.MiddleName @Model.PersonInfo.LastName</td>
+                        </tr>
+                        <tr>
+                            <td><b>ЕГН: </b>@Model.PersonInfo.EGN</td>
+                        </tr>
+                        <tr>
+                            <td><b>Гражданство(ва): </b>@String.Join(", ", Model.Citizenships)</td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <b>Контакти: </b><br />
+                                Мобилен телефон: @Model.ContactInfo.MobilePhone<br />
+                                Стационарен телефон: @Model.ContactInfo.LandlinePhone<br />
+                                Факс: @Model.ContactInfo.Fax<br />
+                                Е-мейл: @Model.ContactInfo.Email
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div style="padding-left:10px; width:50%;">
+                <table align="right">
+                    <thead style="text-align:justify;">
+                        <tr>
+                            <th colspan="2"><h4>Образование</h4></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <b>Образователно квалификационна степен: </b>
+                                @foreach (var education in Model.Educations)
+                                {
+                                    <p style="margin-top: 5px; margin-bottom: 5px;">@education.EducationDegree</p>
+                                }
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <b>Област на висшето образование: </b>
+                                @foreach (var education in Model.Educations)
+                                {
+                                    <p style="margin-top: 5px; margin-bottom: 5px;">@education.EducationField</p>
+                                }
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <b>Професионални направления: </b>
+                                @foreach (var education in Model.Educations)
+                                {
+                                    <p style="margin-top: 5px; margin-bottom: 5px;">@education.ProfessionalDirection</p>
+                                }
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <b>Професия: </b><br />
+                                @String.Join(", ", Model.Professions)
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <b>Чужди езици: </b><br />
+                                @String.Join(", ", Model.ForeignLanguages)
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <b>Обучителна организация: </b><br />
+                                @Model.TrainingOrganization
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <b>Членство в организации: </b><br />
+                                @String.Join(", ", Model.OrganizationMemberships)
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <b>Допълнителна специализация в областта на медиацията: </b><br />
+                                @String.Join(", ", Model.Specializations)
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <b>Допълнителна квалификация: </b><br />
+                                @String.Join(", ", Model.AdditionalQualifications)
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div style="display:inline-flex; width:100%; padding-bottom:25px;">
+            <div style="padding-right:10px; width:50%;">
+                <table>
+                    <thead style="text-align:justify;">
+                        <tr>
+                            <th colspan="1"><h4>Адреси</h4></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td style="width:50%">
+                                <b>Постоянен: </b><br />
+                                @permanentAdress
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="width:50%">
+                                <b>Настоящ: </b><br />
+                                @currentAddress
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="width:50%">
+                                <b>За кореспондеция: </b><br />
+                                @mailingAddress
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div style="padding-left:10px; width:50%;">
+                <table align="right">
+                    <thead style="text-align:justify;">
+                        <tr>
+                            <th colspan="2"><h4>Прикачени документи</h4></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                @foreach (var docName in Model.Documents)
+                                {
+                                    <p style="margin-top: 5px; margin-bottom: 10px;">@docName</p>
+                                }
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div>
+                <span style="float:right; position:absolute; bottom:30px; right:40px;">Подпис ............................................................</span>
+            </div>
+        </div>
+        <div style="padding-right:10px; width:50%;">
+            <table>
+                <thead style="text-align:justify;">
+                    <tr>
+                        <th colspan="1"><h3>Промени: </h3></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>
+                            @if (Model.LastFormDifferences.Count() == 0)
+                            {
+                                <p style="margin-top: 5px; margin-bottom: 10px;">Няма промени</p>
+                            }
+                            @foreach (var dif in Model.LastFormDifferences)
+                            {
+                                <p style="margin-top: 5px; margin-bottom: 10px;">@dif.Key: @dif.Value</p>
+                            }
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        window.print();
+    </script>
+}

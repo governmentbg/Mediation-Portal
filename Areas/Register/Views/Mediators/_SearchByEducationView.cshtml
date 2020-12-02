@@ -1,0 +1,97 @@
+﻿<v-container>
+    <v-row>
+        <v-col cols="12" md="5" sm="12">
+            <v-autocomplete v-model="MediatorFilters.MediatorEducation.EducationDegreeGUID"
+                            class="pa-4"
+                            label="Образователно квалификационна степен"
+                            color="primary"
+                            clearable
+                            v-bind:items="educationDegrees"
+                            item-text="Value"
+                            item-value="Key"
+                            no-data-text="Няма данни"
+                            placeholder="-- Избери --">
+            </v-autocomplete>
+        </v-col>
+        <v-col cols="12" md="6" sm="12">
+            <v-autocomplete v-model="MediatorFilters.MediatorEducation.EducationFieldGUID"
+                            class="pa-4"
+                            label="Област на висше образование"
+                            color="primary"
+                            clearable
+                            v-bind:items="educationFields"
+                            item-text="Value"
+                            item-value="Key"
+                            no-data-text="Няма данни"
+                            placeholder="-- Избери --">
+            </v-autocomplete>
+        </v-col>
+    </v-row>
+    <v-row>
+        <v-col cols="12" md="5" sm="12">
+            <v-autocomplete v-model="MediatorFilters.MediatorForeignLanguages"
+                            class="pa-4"
+                            label="Чужди езици"
+                            color="primary"
+                            clearable
+                            v-bind:items="foreignLanguages"
+                            item-text="Value"
+                            item-value="Key"
+                            no-data-text="Няма данни"
+                            placeholder="-- Избери --"
+                            multiple
+                            chips>
+                <template slot="selection" slot-scope="data">
+                    <v-chip close
+                            @@click:close="removeFromForeignLanguagesMultipleDropdown(data.item.Key)">
+                        <v-list-item-content>
+                            <v-list-item-title v-html="data.item.Value"></v-list-item-title>
+                        </v-list-item-content>
+                    </v-chip>
+                </template>
+                <template slot="item" slot-scope="data">
+                    <v-list-item-content>
+                        <v-list-item-title v-html="data.item.Value"></v-list-item-title>
+                    </v-list-item-content>
+                </template>
+            </v-autocomplete>
+        </v-col>
+        <v-col cols="12" md="6" sm="12">
+            <v-autocomplete v-model="MediatorFilters.MediatorSpecializations"
+                            class="pa-4"
+                            label="Специализации"
+                            color="primary"
+                            clearable
+                            v-bind:items="specializations"
+                            item-text="Value"
+                            item-value="Key"
+                            no-data-text="Няма данни"
+                            placeholder="-- Избери --"
+                            multiple
+                            chips>
+                <template slot="selection" slot-scope="data">
+                    <v-chip close
+                            @@click:close="removeFromSpecializationsMultipleDropdown(data.item.Key)">
+                        <v-list-item-content>
+                            <v-list-item-title v-html="data.item.Value"></v-list-item-title>
+                        </v-list-item-content>
+                    </v-chip>
+                </template>
+                <template slot="item" slot-scope="data">
+                    <v-list-item-content>
+                        <v-list-item-title v-html="data.item.Value"></v-list-item-title>
+                    </v-list-item-content>
+                </template>
+            </v-autocomplete>
+        </v-col>
+    </v-row>
+    <v-row class="px-4">
+        <v-col cols="12">
+            <v-btn block color="primary"
+                   v-on:click="triggerSearch">
+                Търсене&nbsp;&nbsp;
+                <i class="fa fa-filter"></i>
+            </v-btn>
+        </v-col>
+    </v-row>
+</v-container>

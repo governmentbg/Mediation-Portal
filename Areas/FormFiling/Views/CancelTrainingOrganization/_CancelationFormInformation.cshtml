@@ -1,0 +1,248 @@
+﻿<v-card outlined hover>
+    <v-row>
+        <v-col cols="12">
+            <v-subheader class="subheader-border">Основна информация за организация</v-subheader>
+        </v-col>
+    </v-row>
+    <v-card-text>
+        <v-row>
+            <v-col cols="12" md="4" sm="12">
+                <v-text-field class="px-4"
+                              v-model="Form.OrganizationName"
+                              label="Име"
+                              color="primary"
+                              v-bind:readonly="inReadonlyMode">
+                </v-text-field>
+            </v-col>
+            <v-col cols="12" md="4" sm="12">
+                <v-text-field class="px-4"
+                              v-model="Form.OrganizationEIK"
+                              label="ЕИК"
+                              color="primary"
+                              v-bind:readonly="inReadonlyMode">
+                </v-text-field>
+            </v-col>
+            <v-col cols="12" md="4" sm="12">
+                <v-text-field class="px-4"
+                              v-model="Form.CourtRegistration"
+                              label="Съдебна регистрация"
+                              color="primary"
+                              v-bind:readonly="inReadonlyMode">
+                </v-text-field>
+            </v-col>
+        </v-row>
+        <v-row>
+            <v-col cols="12" md="3" sm="12">
+                <v-text-field class="px-4"
+                              label="Стационарен телефон"
+                              v-model="Form.OrganizationContact.LandlinePhone"
+                              color="primary"
+                              v-bind:readonly="inReadonlyMode">
+                </v-text-field>
+            </v-col>
+            <v-col cols="12" md="3" sm="12">
+                <v-text-field class="px-4"
+                              label="Мобилен телефон"
+                              v-model="Form.OrganizationContact.MobilePhone"
+                              v-bind:readonly="inReadonlyMode"
+                              color="primary">
+                </v-text-field>
+            </v-col>
+            <v-col cols="12" md="3" sm="12">
+                <v-text-field class="px-4"
+                              label="Факс"
+                              v-model="Form.OrganizationContact.Fax"
+                              v-bind:readonly="inReadonlyMode"
+                              color="primary">
+                </v-text-field>
+            </v-col>
+            <v-col cols="12" md="3" sm="12">
+                <v-text-field class="px-4"
+                              label="Електронна поща"
+                              v-model="Form.OrganizationContact.Email"
+                              v-bind:readonly="inReadonlyMode"
+                              color="primary">
+                </v-text-field>
+            </v-col>
+        </v-row>
+    </v-card-text>
+</v-card>
+<v-card outlined hover>
+    <v-row>
+        <v-col cols="12">
+            <v-subheader class="subheader-border">
+                Представител на организацията
+            </v-subheader>
+        </v-col>
+    </v-row>
+    <v-card-text>
+        <div v-for="(representative, index) in Form.OrganizationRepresentatives" :key="index">
+            <v-row>
+                <v-col cols="12" md="3" sm="12" class="pt-4">
+                    <v-text-field class="px-4 py-2"
+                                  v-model="representative.FirstName"
+                                  label="Име"
+                                  v-bind:readonly="inReadonlyMode"
+                                  color="primary">
+                    </v-text-field>
+                </v-col>
+                <v-col cols="12" md="3" sm="12" class="pt-4">
+                    <v-text-field class="px-4 py-2"
+                                  v-model="representative.MiddleName"
+                                  label="Презиме"
+                                  v-bind:readonly="inReadonlyMode"
+                                  color="primary">
+                    </v-text-field>
+                </v-col>
+                <v-col cols="12" md="3" sm="12" class="pt-4">
+                    <v-text-field class="px-4 py-2"
+                                  v-model="representative.LastName"
+                                  label="Фамилия"
+                                  v-bind:readonly="inReadonlyMode"
+                                  color="primary">
+                    </v-text-field>
+                </v-col>
+            </v-row>
+        </div>
+    </v-card-text>
+</v-card>
+<v-card outlined hover>
+    <v-row>
+        <v-col cols="12">
+            <v-subheader class="subheader-border">Адрес по регистрация</v-subheader>
+        </v-col>
+    </v-row>
+    <v-card-text>
+        <v-row>
+            <v-col cols="12" md="3" sm="12">
+                <v-autocomplete v-model="Form.RegistrationAddress.CountryGUID"
+                                class="px-4"
+                                label="Държава"
+                                color="primary"
+                                v-bind:items="RegistrationAddressData.countries"
+                                item-text="Value"
+                                item-value="Key"
+                                no-data-text="Няма данни"
+                                v-bind:readonly="inReadonlyMode">
+                </v-autocomplete>
+            </v-col>
+            <v-col cols="12" md="3" sm="12">
+                <v-autocomplete class="px-4"
+                                label="Област"
+                                color="primary"
+                                :items="RegistrationAddressData.districts"
+                                v-model="Form.RegistrationAddress.DistrictGUID"
+                                item-text="Value"
+                                item-value="Key"
+                                no-data-text="Няма данни"
+                                v-if="Form.RegistrationAddress.CountryGUID == BG_GUID"
+                                v-bind:readonly="inReadonlyMode">
+                </v-autocomplete>
+            </v-col>
+            <v-col cols="12" md="3" sm="12">
+                <v-autocomplete class="px-4"
+                                label="Община"
+                                color="primary"
+                                :items="RegistrationAddressData.municipalities"
+                                v-model="Form.RegistrationAddress.MunicipalityGUID"
+                                item-text="Value"
+                                item-value="Key"
+                                no-data-text="Няма данни"
+                                v-if="Form.RegistrationAddress.CountryGUID == BG_GUID"
+                                v-bind:readonly="inReadonlyMode">
+                </v-autocomplete>
+            </v-col>
+            <v-col cols="12" md="3" sm="12">
+                <v-autocomplete class="px-4"
+                                v-model="Form.RegistrationAddress.SettlementGUID"
+                                label="Населено място"
+                                color="primary"
+                                :items="RegistrationAddressData.settlements"
+                                item-text="Value"
+                                item-value="Key"
+                                v-if="Form.RegistrationAddress.CountryGUID == BG_GUID"
+                                no-data-text="Няма данни"
+                                v-bind:readonly="inReadonlyMode">
+                </v-autocomplete>
+            </v-col>
+            <v-col cols="12">
+                <v-text-field class="px-4"
+                              label="Адрес"
+                              color="primary"
+                              v-model="Form.RegistrationAddress.Address"
+                              v-bind:readonly="inReadonlyMode">
+                </v-text-field>
+            </v-col>
+        </v-row>
+    </v-card-text>
+</v-card>
+<v-card outlined hover>
+    <v-row>
+        <v-col cols="12">
+            <v-subheader class="subheader-border">Адрес на осъществяване на дейността</v-subheader>
+        </v-col>
+    </v-row>
+    <v-card-text>
+        <v-row row wrap>
+            <v-col cols="12" md="3" sm="12">
+                <v-autocomplete class="px-4"
+                                v-model="Form.MailingAddress.CountryGUID"
+                                label="Държава"
+                                color="primary"
+                                v-bind:items="MailingAddressData.countries"
+                                item-text="Value"
+                                item-value="Key"
+                                no-data-text="Няма данни"
+                                v-bind:readonly="inReadonlyMode">
+                </v-autocomplete>
+            </v-col>
+            <v-col cols="12" md="3" sm="12">
+                <v-autocomplete class="px-4"
+                                label="Област"
+                                color="primary"
+                                :items="MailingAddressData.districts"
+                                v-model="Form.MailingAddress.DistrictGUID"
+                                item-text="Value"
+                                item-value="Key"
+                                no-data-text="Няма данни"
+                                v-if="Form.MailingAddress.CountryGUID == BG_GUID"
+                                v-bind:readonly="inReadonlyMode">
+                </v-autocomplete>
+            </v-col>
+            <v-col cols="12" md="3" sm="12">
+                <v-autocomplete class="px-4"
+                                label="Община"
+                                color="primary"
+                                no-data-text="Няма данни"
+                                :items="MailingAddressData.municipalities"
+                                v-model="Form.MailingAddress.MunicipalityGUID"
+                                item-text="Value"
+                                item-value="Key"
+                                v-if="Form.MailingAddress.CountryGUID == BG_GUID"
+                                v-bind:readonly="inReadonlyMode">
+                </v-autocomplete>
+            </v-col>
+            <v-col cols="12" md="3" sm="12">
+                <v-autocomplete class="px-4"
+                                v-model="Form.MailingAddress.SettlementGUID"
+                                label="Населено място"
+                                color="primary"
+                                :items="MailingAddressData.settlements"
+                                no-data-text="Няма данни"
+                                item-text="Value"
+                                item-value="Key"
+                                v-if="Form.MailingAddress.CountryGUID == BG_GUID"
+                                v-bind:readonly="inReadonlyMode">
+                </v-autocomplete>
+            </v-col>
+            <v-col cols="12">
+                <v-text-field class="px-4"
+                              label="Адрес"
+                              color="primary"
+                              v-model="Form.MailingAddress.Address"
+                              v-bind:readonly="inReadonlyMode">
+                </v-text-field>
+            </v-col>
+        </v-row>
+    </v-card-text>
+</v-card>

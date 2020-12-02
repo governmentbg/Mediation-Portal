@@ -1,0 +1,29 @@
+﻿<case-mediators :is-mediator="true" inline-template ref="caseMediators">
+    <template>
+        <v-card hover outlined>
+            <v-row>
+                <v-col cols="12">
+                    <v-subheader class="subheader-border">Медиатори</v-subheader>
+                </v-col>
+            </v-row>
+            <v-card-text>
+                <template v-if="unlockAddAdditionalMediators">
+                    <v-row>
+                        <v-col cols="12">
+                            <v-btn color="primary" small @@click="addAdditionalMediator">
+                                <v-icon>mdi-plus</v-icon>
+                                Добави допълнителен медиатор
+                            </v-btn>
+                        </v-col>
+                    </v-row>
+                </template>
+                <v-row>
+                    <v-col cols="12">
+                        @Html.Partial("~/Areas/MediationCaseEvent/Views/Mediators/_MediatorsTable.cshtml")
+                    </v-col>
+                </v-row>
+            </v-card-text>
+            @Html.Partial("~/Areas/MediationCaseEvent/Views/Mediators/_MediatorsDialog.cshtml")
+        </v-card>
+    </template>
+</case-mediators>

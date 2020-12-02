@@ -1,0 +1,149 @@
+﻿<v-row justify="center">
+    <template v-if="showSaveBtn">
+        <v-col cols="12" md="3">
+            <v-btn color="accent"
+                   block
+                   v-on:click="saveForm">
+                <i class="fa fa-save"></i>&nbsp;
+                Запази
+            </v-btn>
+        </v-col>
+    </template>
+
+    <template v-if="showRegisterBtn">
+        <v-col cols="12" md="3">
+            <v-btn color="primary"
+                   block
+                   v-on:click="registerForm">
+                <i class="fa fa-save"></i>&nbsp;
+                Регистрирай
+            </v-btn>
+        </v-col>
+    </template>
+
+    <template v-if="showMediatorApproveBtn">
+        <v-col cols="12" md="3">
+            <v-btn color="primary"
+                   block
+                   v-on:click="mediatorApproveForm">
+                <v-icon left>mdi-check</v-icon>
+                Приеми медиация
+            </v-btn>
+        </v-col>
+    </template>
+
+    <template v-if="showMediatorRejectBtn">
+        <v-col cols="12" md="3">
+            <v-btn color="error"
+                   block
+                   v-on:click="rejectMediationModal.open = !rejectMediationModal.open">
+                <v-icon left>mdi-close</v-icon>
+                Откажи медиация
+            </v-btn>
+        </v-col>
+    </template>
+
+    <template v-if="showRequestNewMediatorFormBtn">
+        <v-col cols="12" md="4">
+            <v-btn color="primary"
+                   block
+                   v-on:click="createRequestNewMediator">
+                <i class="fa fa-plus"></i>&nbsp;
+                Искане за нов медиатор
+            </v-btn>
+        </v-col>
+    </template>
+
+    <template v-if="showRespondingPartyAgreeMediationBtn">
+        <v-col cols="12" md="4">
+            <v-btn color="success"
+                   block
+                   v-on:click="respondingPartyAgreeMediationAction">
+                <i class="fa fa-check"></i>&nbsp;
+                Включи ме като СТРАНА 2 в медиацията
+            </v-btn>
+        </v-col>
+        <v-col cols="12" md="4">
+            <v-btn color="error"
+                   block
+                   v-on:click="respondingPartyRefuseMediationAction">
+                <i class="fa fa-times"></i>&nbsp;
+                Откажи участие
+            </v-btn>
+        </v-col>
+    </template>
+
+    <template v-if="showMediatorTaxAgreedBtn && false">
+        <v-col cols="12" md="4">
+            <v-btn color="success"
+                   block
+                   v-on:click="mediatorTaxAgreed">
+                <i class="fa fa-check"></i>&nbsp;
+                Договорени такси
+            </v-btn>
+        </v-col>
+    </template>
+
+    <template v-if="showRequestTerminationApplicantBtn">
+        <v-col cols="12" md="4">
+            <v-btn color="error"
+                   block
+                   v-on:click="requestTerminationApplicant">
+                <i class="fa fa-times"></i>&nbsp;
+                Искане за прекратяване на процес по медиация
+            </v-btn>
+        </v-col>
+    </template>
+
+    <template v-if="showRequestTerminationRespondingPartyBtn">
+        <v-col cols="12" md="4">
+            <v-btn color="error"
+                   block
+                   v-on:click="requestTerminationRespondingParty">
+                <i class="fa fa-times"></i>&nbsp;
+                Искане за прекратяване на процес по медиация
+            </v-btn>
+        </v-col>
+    </template>
+
+    <template v-if="showRequestTerminationApplicantSendBtn">
+        <v-col cols="12" md="12" class="text-center">
+            <v-btn color="success"
+                   v-on:click="partiesRequestTermination">
+                <i class="fa fa-check"></i>&nbsp;
+                Изпрати причина за прекратяване на процес по медиация
+            </v-btn>
+        </v-col>
+    </template>
+
+    <template v-if="showRequestTerminationRespondingPartySendBtn">
+        <v-col cols="12" md="12" class="text-center">
+            <v-btn color="success"
+                   v-on:click="partiesRequestTermination">
+                <i class="fa fa-check"></i>&nbsp;
+                Изпрати причина за прекратяване на процес по медиация
+            </v-btn>
+        </v-col>
+    </template>
+
+    <template v-if="showMediatorTerminateBtn">
+        <v-col cols="12" md="4">
+            <v-btn color="error"
+                   block
+                   v-on:click="requestMediatorTerminate">
+                <i class="fa fa-times"></i>&nbsp;
+                Прекрати процес
+            </v-btn>
+        </v-col>
+    </template>
+
+    <template v-if="showMediatorTerminateSendBtn">
+        <v-col cols="12" md="12" class="text-center">
+            <v-btn color="error"
+                   v-on:click="mediatorTerminate">
+                <i class="fa fa-check"></i>&nbsp;
+                Изпрати причина за прекратяване на процес по медиация
+            </v-btn>
+        </v-col>
+    </template>
+</v-row>

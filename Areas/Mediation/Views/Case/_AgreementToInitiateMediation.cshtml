@@ -1,0 +1,76 @@
+﻿<v-card hover outlined>
+    <v-row>
+        <v-col cols="12">
+            <v-subheader class="subheader-border">Споразумение за започване на медиация</v-subheader>
+        </v-col>
+    </v-row>
+    <v-card-text>
+        <template v-if="isCurrentUserMediator && !Form.isProcedureInitializationAgreementSent">
+            <v-row>
+                <v-col cols="12">
+                    <v-btn color="primary" small @@click="showExampleProcedureInitializationAgreement">
+                        <v-icon left>mdi-file-document-outline</v-icon>
+                        Примерно споразумение
+                    </v-btn>
+                </v-col>
+            </v-row>
+            <v-row>
+                <v-col cols="12" md="12" sm="12" class="py-0">
+                    <quill-editor label="Споразумение за започване на медиация"
+                                  style="height:500px"
+                                  v-model="Form.ProcedureInitializationContent"
+                                  :readonly="!isCurrentUserMediator"
+                                  :options="quillOptions">
+                    </quill-editor>
+                </v-col>
+            </v-row>
+            <v-row>
+                <v-col cols="12" class="pt-0 text-right" v-if="!isMediationTerminated">
+                    <v-btn color="info" @@click="sendProcedureInitializationAgreementToSides">
+                        <v-icon left>mdi-send</v-icon>
+                        Изпратете до двете страни
+                    </v-btn>
+                </v-col>
+            </v-row>
+        </template>
+
+        <template v-if="!isCurrentUserMediator && !Form.isProcedureInitializationAgreementSent">
+            <v-row>
+                <v-col cols="12">
+                    <h4>Няма изпратено споразумение за започване на медиация от медиатора към момента.</h4>
+                </v-col>
+            </v-row>
+        </template>
+
+        <template v-if="Form.isProcedureInitializationAgreementSent">
+            <v-row>
+                <v-col cols="12" class="pt-0 mb-5">
+                    <v-btn color="primary" large @@click="showInitializationAgreement">
+                        <v-icon left>mdi-file-document-outline</v-icon>
+                        Преглед на споразумение
+                    </v-btn>
+                </v-col>
+            </v-row>
+            <v-row>
+                <v-col cols="12" class="py-0">
+                    Страна 1:
+                    <template v-if="Form.ApplicantSignedAgreement === false">
+                        <span class="red--text text--darken-4 font-weight-bold">Изчаква приемане</span>
+                    </template>
+                    <template v-else>
+                        <span class="green--text text--darken-4 font-weight-bold">Прието на {{ moment(Form.ApplicantSignedAgreementTimestamp).format("DD.MM.YYYYг. HH:mmч.")}}</span>
+                    </template>
+                </v-col>
+                <v-col cols="12">
+                    Страна 2:
+                    <template v-if="Form.RespondingPartySignedAgreement === false">
+                        <span class="red--text text--darken-4 font-weight-bold">Изчаква приемане</span>
+                    </template>
+                    <template v-else>
+                        <span class="green--text text--darken-4 font-weight-bold">Прието на {{ moment(Form.RespondingPartySignedAgreementTimestamp).format("DD.MM.YYYYг. HH:mmч.")}}</span>
+                    </template>
+                </v-col>
+            </v-row>
+        </template>
+    </v-card-text>
+</v-card>

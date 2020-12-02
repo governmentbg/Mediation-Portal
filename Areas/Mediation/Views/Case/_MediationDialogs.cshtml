@@ -1,0 +1,166 @@
+﻿<v-dialog v-model="mediatorApproveMediation.open" scrollable persistent max-width="60%">
+    <v-card>
+        <v-card-title class="headline grey lighten-4"
+                        primary-title>
+            {{mediatorApproveMediation.mediatorsPrivacyDeclaration.PreviousName}}
+        </v-card-title>
+
+        <v-card-text class="pt-5">
+            <template v-if="mediatorApproveMediation.loadingDeclaration">
+                <v-text-field color="primary"
+                                loading
+                                label="Зареждане..."
+                                readonly>
+                </v-text-field>
+            </template>
+            <template v-else>
+                <v-col cols="12" v-html="mediatorApproveMediation.mediatorsPrivacyDeclaration.PreviousHTMLContent"></v-col>
+            </template>
+        </v-card-text>
+
+        <v-divider></v-divider>
+
+        <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn color="success"
+                    @@click="mediatorAgreeMediation">
+                <v-icon left>mdi-check</v-icon>
+                Приемам
+            </v-btn>
+            <v-btn color="error"
+                    @@click="mediatorRefusePrivacyDeclaration">
+                <v-icon left>mdi-close</v-icon>
+                Отказвам
+            </v-btn>
+        </v-card-actions>
+    </v-card>
+</v-dialog>
+
+
+
+
+<v-dialog v-model="agreementDialog.open" scrollable persistent max-width="60%">
+    <v-card>
+        <v-card-title class="headline grey lighten-4">{{agreementDialog.title}}</v-card-title>
+        <v-card-text v-html="agreementDialog.content" class="py-10"></v-card-text>
+        <v-card-actions>
+            <v-spacer></v-spacer>
+            <template v-if="!isMediationTerminated">
+                <template v-if="agreementDialog.type === 1 && Form.isProcedureInitializationAgreementSent && ((isCurrentUserApplicant && Form.ApplicantSignedAgreement != true) || (isCurrentUserRespondingParty && !Form.RespondingPartySignedAgreement))">
+                    <v-btn color="success"
+                           v-on:click="partiesSignedInitializationAgreement">
+                        <i class="fa fa-check"></i>&nbsp;
+                        Приеми споразумение
+                    </v-btn>
+                </template>
+                <template v-if="agreementDialog.type === 2 && Form.isProcedureInitializationAgreementSent && ((isCurrentUserApplicant && Form.ApplicantSignedClosing != true) || (isCurrentUserRespondingParty && !Form.RespondingPartySignedClosing))">
+                    <v-btn color="success"
+                           v-on:click="partiesSignedClosingAgreement">
+                        <i class="fa fa-check"></i>&nbsp;
+                        Приеми споразумение
+                    </v-btn>
+                </template>
+            </template>
+            <v-btn color="default darken-1" @@click="agreementDialog.open = !agreementDialog.open">Затвори</v-btn>
+        </v-card-actions>
+    </v-card>
+</v-dialog>
+
+<template v-if="respondingPartyAgreeMediation">
+    <v-alert border="left"
+                type="success"
+                text
+                class="elevation-2 py-5"
+                dense>
+        Изпратен е потвърждаващ е-мейл за включване към медиацията.
+    </v-alert>
+</template>
+
+<template v-if="showMediatorRejectBtn">
+    <v-dialog v-model="rejectMediationModal.open" scrollable persistent max-width="40%">
+        <v-card>
+            <v-card-title :class="'headline '+ (rejectMediationModal.errorMessage.length ? ' error' : ' primary')" style="color: white">
+                Отказване на участие в медиация
+            </v-card-title>
+            <v-card-text class="pa-8">
+                <v-container>
+                    <v-row>
+                        <v-col cols="12">
+                            <v-textarea rows="5" outlined label="Причинa за отказ от медиация" :error-messages="rejectMediationModal.errorMessage" @@keyup.native="validateRejectTextarea" v-model="rejectMediationModal.message"></v-textarea>
+                        </v-col>
+                    </v-row>
+                </v-container>
+            </v-card-text>
+            <v-card-actions>
+                <v-spacer></v-spacer>
+                <v-btn class="error" @@click="mediatorRejectForm" :loading="rejectMediationModal.loading" :disabled="rejectMediationModal.loading">
+                    <v-icon>mdi-close</v-icon>
+                    Отказвам
+                </v-btn>
+                <v-btn color="default darken-1" @@click="cancelRejectMediationByMediatorModal" :loading="rejectMediationModal.loading" :disabled="rejectMediationModal.loading">Затвори</v-btn>
+            </v-card-actions>
+        </v-card>
+    </v-dialog>
+</template>
+
+
+<template v-if="(isCurrentUserRespondingParty && inReadonlyModeRespondingPartyRepsresentativePerson && Form.RespondingPartyRepresentativePerson && Form.RespondingPartyRepresentativePerson.isConfirmed != null) || (isCurrentUserApplicant && inReadonlyModeApplicantRepsresentativePerson && Form.ApplicantRepresentativePerson && Form.ApplicantRepresentativePerson.isConfirmed != null)">
+    <v-dialog v-model="rejectRepresentativeModal.open" scrollable persistent max-width="40%">
+        <v-card>
+            <v-card-title class="headline primary" style="color: white">
+                Премахване на упълномощено лице
+            </v-card-title>
+            <v-card-text class="pa-8">
+                <v-container>
+                    <v-row>
+                        <v-col cols="12" class="text-center title">
+                            Сигурни ли сте, че искате да премахнете упълномощеното лице от медиацията, което сте избрали да Ви представлява?
+                        </v-col>
+                    </v-row>
+                </v-container>
+            </v-card-text>
+            <v-card-actions>
+                <v-spacer></v-spacer>
+                <v-btn class="success" @@click="doRepresentativeReject" :loading="rejectRepresentativeModal.loading" :disabled="rejectRepresentativeModal.loading">
+                    <v-icon class="mr-2">mdi-check</v-icon>
+                    Да
+                </v-btn>
+                <v-btn class="error" @@click="rejectRepresentativeModal.open = !rejectRepresentativeModal.open" :loading="rejectRepresentativeModal.loading" :disabled="rejectRepresentativeModal.loading">
+                    <v-icon class="mr-2">mdi-close</v-icon>
+                    Не
+                </v-btn>
+            </v-card-actions>
+        </v-card>
+    </v-dialog>
+</template>
+
+<template v-if="(isCurrentUserRespondingParty && inReadonlyModeRespondingPartyRepsresentativePerson && Form.RespondingPartyRepresentativePerson && Form.RespondingPartyRepresentativePerson.isConfirmed != null) || (isCurrentUserApplicant && inReadonlyModeApplicantRepsresentativePerson && Form.ApplicantRepresentativePerson && Form.ApplicantRepresentativePerson.isConfirmed != null)">
+    <v-dialog v-model="replaceRepresentativeModal.open" scrollable persistent max-width="40%">
+        <v-card>
+            <v-card-title class="headline primary" style="color: white">
+                Смяна на упълномощено лице
+            </v-card-title>
+            <v-card-text class="pa-8">
+                <v-container>
+                    <v-row>
+                        <v-col cols="12" class="text-center title">
+                            <p>Сигурни ли сте, че искате да смените упълномощеното лице от медиацията, което сте избрали да Ви представлява?</p>
+                            <p>Тази опция ще премахне въведеното упълномощено лице към момента и системата ще Ви даде възможност да въведете ново.</p>
+                        </v-col>
+                    </v-row>
+                </v-container>
+            </v-card-text>
+            <v-card-actions>
+                <v-spacer></v-spacer>
+                <v-btn class="success" @@click="doRepresentativeReplace" :loading="replaceRepresentativeModal.loading" :disabled="replaceRepresentativeModal.loading">
+                    <v-icon class="mr-2">mdi-check</v-icon>
+                    Да
+                </v-btn>
+                <v-btn class="error" @@click="replaceRepresentativeModal.open = !replaceRepresentativeModal.open" :loading="replaceRepresentativeModal.loading" :disabled="replaceRepresentativeModal.loading">
+                    <v-icon class="mr-2">mdi-close</v-icon>
+                    Не
+                </v-btn>
+            </v-card-actions>
+        </v-card>
+    </v-dialog>
+</template>

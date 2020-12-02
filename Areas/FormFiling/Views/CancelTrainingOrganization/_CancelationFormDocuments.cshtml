@@ -1,0 +1,77 @@
+﻿<v-card class="mx-auto card-cursor-default"
+        hover>
+    <v-row>
+        <v-col cols="12">
+            <v-subheader class="subheader-border">
+                Документи на лицето
+                <v-spacer></v-spacer>
+                <div v-if="!inReadonlyMode || !readonlyMode" class="d-none d-sm-flex text-right">
+                    <v-btn color="primary lighten-1"
+                           v-on:click="onAddAttachmentContainer">
+                        <v-icon dark>mdi-plus</v-icon>
+                        Добави друг документ
+                    </v-btn>
+                </div>
+            </v-subheader>
+        </v-col>
+    </v-row>
+
+    <v-card-text>
+        <v-row v-for="(attContainer, index) in attachedDocumentConteiners" :key="index">
+            <v-col cols="12" class="pt-0">
+                <template v-if="attContainer.UserAdded">
+                    <v-col cols="12" md="4" sm="12" class="pt-0">
+                        <v-file-input label="Файл"
+                                      chips
+                                      truncate-length="50"
+                                      v-on:change="onFileChange($event, attContainer)"
+                                      :value="attContainer.FileInfo"
+                                      show-size
+                                      color="primary"
+                                      v-bind:disabled="inReadonlyMode && readonlyMode">
+                        </v-file-input>
+                    </v-col>
+                    <v-col cols="12" md="6" sm="12" class="pt-0">
+                        <v-select v-model="attContainer.AttachedDocumentTypeGUID"
+                                  v-on:change="onAttachmentTypeChange($event, attContainer)"
+                                  v-bind:items="attachedDocumentTypes"
+                                  item-text="AttachmentTypeName"
+                                  item-value="AttachedDocumentTypeGUID"
+                                  label="Тип документ"
+                                  color="primary"
+                                  :menu-props="{ offsetY: true }"
+                                  no-data-text="Няма налични типове"
+                                  v-bind:clearable="!inReadonlyMode && !readonlyMode"
+                                  v-bind:readonly="inReadonlyMode && readonlyMode">
+                        </v-select>
+                    </v-col>
+                </template>
+                <template v-else>
+                    <v-col cols="10" md="8" sm="10">
+                        <v-file-input v-bind:label="attContainer.AttachmentTypeName.concat(attContainer.IsMandatory? '*' : '')"
+                                      chips
+                                      truncate-length="50"
+                                      v-on:change="onFileChange($event, attContainer)"
+                                      :value="attContainer.FileInfo"
+                                      show-size
+                                      color="primary"
+                                      v-bind:disabled="inReadonlyMode && readonlyMode">
+                        </v-file-input>
+                    </v-col>
+                </template>
+
+                <template v-if="attContainer.AttachedDocumentGUID">
+                    <v-btn class="mt-4 ml-5"
+                           fab
+                           flated
+                           small
+                           target="_blank"
+                           :href="'/AttachedDocument/DownloadFile/' + attContainer.AttachedDocumentGUID">
+                        <i class="fa fa-download" style="font-size:20px; color:#b69778;"></i>
+                    </v-btn>
+                </template>
+            </v-col>
+        </v-row>
+    </v-card-text>
+</v-card>
+

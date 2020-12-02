@@ -1,0 +1,275 @@
+﻿<v-app data-app>
+    <full-details-organization inline-template ref="fullDetailsOrganization">
+        <template v-if="loading">
+            <v-text-field loading
+                          label="Зареждане..."
+                          disabled>
+            </v-text-field>
+        </template>
+        <template v-else>
+            <v-container>
+                <v-row>
+                    <v-col cols="12">
+                        <v-sheet elevation="3">
+                            <v-tabs align-with-title :show-arrows="true">
+                                <v-tabs-slider color="primary"></v-tabs-slider>
+
+                                @* Tabs *@
+                                <v-tab v-for="(revision, index) in organizationRevisions" :key="index" ripple centered>
+                                    {{formatDate(revision.EffectiveFrom)}}
+                                </v-tab>
+
+                                @* Tabs content *@
+                                <v-tab-item v-for="(revision, index) in organizationRevisions" :key="index">
+                                    <div>
+                                        <v-card class="mx-auto my-5" flat>
+                                            <v-row>
+                                                <v-col cols="12" md="9">
+                                                    <v-subheader class="subheader-border">Основна информация за организация</v-subheader>
+                                                </v-col>
+                                                <v-col cols="12" md="3" class="px-10">
+                                                    <v-alert type="info"
+                                                             color="primary"
+                                                             dense>
+                                                        Статус: <b>{{revision.StatusName}}</b>
+                                                    </v-alert>
+                                                </v-col>
+                                            </v-row>
+                                            <v-card-text>
+                                                <v-row>
+                                                    <v-col cols="12" md="6" sm="12" class="py-0">
+                                                        <v-text-field class="px-4 py-3"
+                                                                      v-model="revision.Name"
+                                                                      label="Име"
+                                                                      readonly>
+                                                        </v-text-field>
+                                                    </v-col>
+                                                    <v-col cols="12" md="3" class="py-0">
+                                                        <v-text-field class="px-4 py-3"
+                                                                      v-model="revision.EIK"
+                                                                      label="ЕИК"
+                                                                      readonly>
+                                                        </v-text-field>
+                                                    </v-col>
+                                                    <v-col cols="12" md="3" class="py-0">
+                                                        <v-text-field class="px-4 py-3"
+                                                                      v-model="revision.CourtRegistration"
+                                                                      label="Съдебна регистрация"
+                                                                      readonly>
+                                                        </v-text-field>
+                                                    </v-col>
+                                                </v-row>
+                                                <v-row>
+                                                    <v-col cols="12" md="3" class="py-0">
+                                                        <v-text-field class="px-4 py-3"
+                                                                      v-model="revision.MinisterOrder"
+                                                                      label="Заповед на министър"
+                                                                      readonly>
+                                                        </v-text-field>
+                                                    </v-col>
+                                                </v-row>
+                                                <v-row>
+                                                    <v-col cols="12" md="3" sm="12" class="py-0">
+                                                        <v-text-field class="px-4 py-3"
+                                                                      v-model="revision.Contact.LandlinePhone"
+                                                                      label="Стационарен телефон"
+                                                                      readonly>
+                                                        </v-text-field>
+                                                    </v-col>
+                                                    <v-col cols="12" md="3" sm="12" class="py-0">
+                                                        <v-text-field class="px-4 py-3"
+                                                                      v-model="revision.Contact.MobilePhone"
+                                                                      label="Мобилен телефон"
+                                                                      readonly>
+                                                        </v-text-field>
+                                                    </v-col>
+                                                    <v-col cols="12" md="3" sm="12" class="py-0">
+                                                        <v-text-field class="px-4 py-3"
+                                                                      v-model="revision.Contact.Fax"
+                                                                      label="Факс"
+                                                                      readonly>
+                                                        </v-text-field>
+                                                    </v-col>
+                                                    <v-col cols="12" md="3" sm="12" class="py-0">
+                                                        <v-text-field class="px-4 py-3"
+                                                                      v-model="revision.Contact.Email"
+                                                                      label="Електронна поща"
+                                                                      readonly>
+                                                        </v-text-field>
+                                                    </v-col>
+                                                </v-row>
+                                            </v-card-text>
+                                        </v-card>
+                                        <template v-if="revision.Representatives">
+                                            <v-card flat class="mx-auto my-5">
+                                                <v-row>
+                                                    <v-col cols="12">
+                                                        <v-subheader class="subheader-border">
+                                                            Представител/и на организацията
+                                                        </v-subheader>
+                                                    </v-col>
+                                                </v-row>
+                                                <v-card-text>
+                                                    <template v-for="(representative, index) in revision.Representatives">
+                                                        <v-row :key="index">
+                                                            <v-col cols="12" md="4" sm="12" class="pt-4">
+                                                                <v-text-field class="px-4 py-2"
+                                                                              v-model="representative.FirstName"
+                                                                              label="Име"
+                                                                              color="success"
+                                                                              readonly>
+                                                                </v-text-field>
+                                                            </v-col>
+                                                            <v-col cols="12" md="4" sm="12" class="pt-4">
+                                                                <v-text-field class="px-4 py-2"
+                                                                              v-model="representative.MiddleName"
+                                                                              label="Презиме"
+                                                                              color="success"
+                                                                              readonly>
+                                                                </v-text-field>
+                                                            </v-col>
+                                                            <v-col cols="12" md="4" sm="12" class="pt-4">
+                                                                <v-text-field class="px-4 py-2"
+                                                                              v-model="representative.LastName"
+                                                                              label="Фамилия"
+                                                                              color="success"
+                                                                              readonly>
+                                                                </v-text-field>
+                                                            </v-col>
+                                                        </v-row>
+                                                        <hr class="d-flex d-sm-none" />
+                                                    </template>
+                                                </v-card-text>
+                                            </v-card>
+                                        </template>
+                                        <v-card v-if="revision.RegistrationAddress" flat class="mx-auto my-5">
+                                            <v-row>
+                                                <v-col cols="12">
+                                                    <v-subheader class="subheader-border">
+                                                        Адрес по регистрация
+                                                    </v-subheader>
+                                                </v-col>
+                                            </v-row>
+                                            <v-card-text>
+                                                <v-row>
+                                                    <v-col cols="12" md="3" class="py-0">
+                                                        <v-text-field class="px-4 py-3"
+                                                                      label="Държава"
+                                                                      :value="revision.RegistrationAddress.CountryName"
+                                                                      readonly>
+                                                        </v-text-field>
+                                                    </v-col>
+                                                    <v-col cols="12" md="3" class="py-0">
+                                                        <v-text-field class="px-4 py-3"
+                                                                      label="Област"
+                                                                      :value="revision.RegistrationAddress.DistrictName"
+                                                                      readonly>
+                                                        </v-text-field>
+                                                    </v-col>
+                                                    <v-col cols="12" md="3" class="py-0">
+                                                        <v-text-field class="px-4 py-3"
+                                                                      label="Община"
+                                                                      :value="revision.RegistrationAddress.MunicipalityName"
+                                                                      readonly>
+                                                        </v-text-field>
+                                                    </v-col>
+                                                    <v-col cols="12" md="3" class="py-0">
+                                                        <v-text-field class="px-4 py-3"
+                                                                      label="Населено място"
+                                                                      :value="revision.RegistrationAddress.SettlementName"
+                                                                      readonly>
+                                                        </v-text-field>
+                                                    </v-col>
+                                                    <v-col cols="12" class="py-0">
+                                                        <v-text-field class="px-4 py-3"
+                                                                      label="Адрес"
+                                                                      :value="revision.RegistrationAddress.Address"
+                                                                      readonly>
+                                                        </v-text-field>
+                                                    </v-col>
+                                                </v-row>
+                                            </v-card-text>
+                                        </v-card>
+                                        <v-card v-if="revision.MailingAddress" flat class="mx-auto my-5">
+                                            <v-row>
+                                                <v-col cols="12">
+                                                    <v-subheader class="subheader-border">
+                                                        Адрес на осъществяване на дейността
+                                                    </v-subheader>
+                                                </v-col>
+                                            </v-row>
+                                            <v-card-text>
+                                                <v-row>
+                                                    <v-col cols="12" md="3" class="py-0">
+                                                        <v-text-field class="px-4 py-3"
+                                                                      label="Държава"
+                                                                      :value="revision.MailingAddress.CountryName"
+                                                                      readonly>
+                                                        </v-text-field>
+                                                    </v-col>
+                                                    <v-col cols="12" md="3" class="py-0">
+                                                        <v-text-field class="px-4 py-3"
+                                                                      label="Област"
+                                                                      :value="revision.MailingAddress.DistrictName"
+                                                                      readonly>
+                                                        </v-text-field>
+                                                    </v-col>
+                                                    <v-col cols="12" md="3" class="py-0">
+                                                        <v-text-field class="px-4 py-3"
+                                                                      label="Община"
+                                                                      :value="revision.MailingAddress.MunicipalityName"
+                                                                      readonly>
+                                                        </v-text-field>
+                                                    </v-col>
+                                                    <v-col cols="12" md="3" class="py-0">
+                                                        <v-text-field class="px-4 py-3"
+                                                                      label="Населено място"
+                                                                      :value="revision.MailingAddress.SettlementName"
+                                                                      readonly>
+                                                        </v-text-field>
+                                                    </v-col>
+                                                    <v-col cols="12" class="py-0">
+                                                        <v-text-field class="px-4 py-3"
+                                                                      label="Адрес"
+                                                                      :value="revision.MailingAddress.Address"
+                                                                      readonly>
+                                                        </v-text-field>
+                                                    </v-col>
+                                                </v-row>
+                                            </v-card-text>
+                                        </v-card>
+                                        <v-row justify="center">
+                                            <template v-if="revision.BasedOnFormGUID">
+                                                <v-col cols="12" md="2">
+                                                    <v-btn color="primary"
+                                                           block
+                                                           target="_blank"
+                                                           :href="'/FormFiling/' + revision.FormType + '/Preview/' + revision.BasedOnFormGUID">
+                                                        <i class="fa fa-external-link"></i>&nbsp;
+                                                        Към заявление
+                                                    </v-btn>
+                                                </v-col>
+                                            </template>
+                                        </v-row>
+                                    </div>
+                                </v-tab-item>
+                            </v-tabs>
+                        </v-sheet>
+                    </v-col>
+                </v-row>
+            </v-container>
+        </template>
+    </full-details-organization>
+</v-app>
+
+
+
+@section Scripts {
+    <script>
+        const urlTrainingOrganization = "lqlqlq";
+    </script>
+    @* Models *@
+
+    @* Components *@
+    @Scripts.Render("~/Scripts/VueComponents/fullDetailsOrganization.js")
+}

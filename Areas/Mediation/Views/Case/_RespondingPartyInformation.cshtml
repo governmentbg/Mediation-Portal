@@ -1,0 +1,364 @@
+﻿<v-card hover outlined>
+    <v-row>
+        <v-col cols="12" md="6" sm="12">
+            <v-subheader class="subheader-border">Основна информация на СТРАНА 2</v-subheader>
+        </v-col>
+        <v-col cols="12" md="6" sm="12" class="text-right pa-6" v-if="showRespondingPartyCheckBtns">
+            <v-btn v-if="Form.RespondingPartyLegalEntity.EntityEIK"
+                   color="orange darken-3"
+                   dark
+                   @@click="GetBRRACheck(false)">Проверка Търговски Регистър</v-btn>
+            <v-btn color="orange darken-4" v-if="Form.RespondingPartyLegalEntity.EntityEIK || Form.RespondingPartyLegalEntity.EntityCourtRegistration"
+                   dark
+                   @@click="GetBulstatCheck(false)">Проверка БУЛСТАТ</v-btn>
+        </v-col>
+    </v-row>
+    <v-card-text>
+        <template v-if="showRespondingPartyCheckBtns && Regix.RespondingParty.Checked">
+            <v-row>
+                <v-col cols="12">
+                    <v-expansion-panels :value="0">
+                        <v-expansion-panel :key="0">
+                            <v-expansion-panel-header><v-subheader class="subheader-border">{{Regix.RespondingParty.Name}}</v-subheader></v-expansion-panel-header>
+                            <v-expansion-panel-content>
+                                <template v-if="Regix.RespondingParty.Data.Representatives && Regix.RespondingParty.Data.Representatives.length">
+                                    <v-card hover outlined style="border:none;">
+                                        <v-card-title>
+                                            Представители на организация&nbsp;
+                                            <span class="title font-weight-bold">{{Regix.RespondingParty.Data.Name}}</span>
+                                        </v-card-title>
+                                        <v-card-text>
+
+                                            <v-simple-table>
+                                                <template v-slot:default>
+                                                    <thead>
+                                                        <tr>
+                                                            <th class="text-left">Имена</th>
+                                                            <th class="text-left">ЕГН</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <tr v-for="person in Regix.RespondingParty.Data.Representatives" :key="person.EGN">
+                                                            <td>{{ person.FullName }}</td>
+                                                            <td>{{ person.EGN }}</td>
+                                                        </tr>
+                                                    </tbody>
+                                                </template>
+                                            </v-simple-table>
+                                        </v-card-text>
+                                    </v-card>
+                                </template>
+
+                                <template v-if="Regix.RespondingParty.Data.Owners && Regix.RespondingParty.Data.Owners.length">
+                                    <v-card hover outlined style="border:none;">
+                                        <v-card-title>
+                                            Мениджъри на организация&nbsp;
+                                            <span class="title font-weight-bold">{{Regix.RespondingParty.Data.Name}}</span>
+                                        </v-card-title>
+                                        <v-card-text>
+
+                                            <v-simple-table>
+                                                <template v-slot:default>
+                                                    <thead>
+                                                        <tr>
+                                                            <th class="text-left">Имена</th>
+                                                            <th class="text-left">ЕГН</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <tr v-for="person in Regix.RespondingParty.Data.Owners" :key="person.EGN">
+                                                            <td>{{ person.FullName }}</td>
+                                                            <td>{{ person.EGN }}</td>
+                                                        </tr>
+                                                    </tbody>
+                                                </template>
+                                            </v-simple-table>
+                                        </v-card-text>
+                                    </v-card>
+                                </template>
+                            </v-expansion-panel-content>
+                        </v-expansion-panel>
+                    </v-expansion-panels>
+                </v-col>
+            </v-row>
+        </template>
+        <template v-if="inCreateMode">
+            <v-row>
+                <v-col cols="12">
+                    <v-alert type="info"
+                             border="left"
+                             color="deep-orange lighten-2">
+                        Предоставянето на възможно най-много инфомрация за СТРАНА 2 ще увеличи шансовете на медиатора да се свърже с насрещната страна.
+                    </v-alert>
+                </v-col>
+            </v-row>
+        </template>
+        <v-row>
+            <v-col cols="12" md="12" sm="12">
+                <v-radio-group label=""
+                               :row="true"
+                               v-model="respondingPartyIsPerson"
+                               v-bind:readonly="inReadonlyMode"
+                               v-on:change="clearRespondingPartyData()">
+                    <v-radio label="Физическо лице" :value="true" color="primary"></v-radio>
+                    <v-radio label="Юридическо лице" :value="false" color="primary"></v-radio>
+                </v-radio-group>
+            </v-col>
+        </v-row>
+        <v-row>
+            <v-col cols="12" md="4" sm="12">
+                <v-text-field v-model="Form.RespondingPartyInfo.FirstName"
+                              label="Име"
+                              v-bind:clearable="!inReadonlyMode"
+                              v-bind:readonly="inReadonlyMode">
+                </v-text-field>
+            </v-col>
+            <v-col cols="12" md="4" sm="12">
+                <v-text-field v-model="Form.RespondingPartyInfo.MiddleName"
+                              label="Презиме"
+                              v-bind:clearable="!inReadonlyMode"
+                              v-bind:readonly="inReadonlyMode">
+                </v-text-field>
+            </v-col>
+            <v-col cols="12" md="4" sm="12">
+                <v-text-field v-model="Form.RespondingPartyInfo.LastName"
+                              label="Фамилия"
+                              v-bind:clearable="!inReadonlyMode"
+                              v-bind:readonly="inReadonlyMode">
+                </v-text-field>
+            </v-col>
+        </v-row>
+        <v-row>
+            <v-col cols="12" md="4" sm="12">
+                <v-text-field v-model="Form.RespondingPartyInfo.EGN"
+                              label="ЕГН"
+                              v-bind:clearable="!inReadonlyMode"
+                              v-bind:readonly="inReadonlyMode">
+                </v-text-field>
+            </v-col>
+            <v-col cols="12" md="8" sm="12">
+                <v-select v-model="Form.RespondingPartyCitizenships"
+                          v-bind:items="citizenships"
+                          item-text="Value"
+                          item-value="Key"
+                          label="Гражданство(ва)"
+                          color="primary"
+                          :menu-props="{ offsetY: true }"
+                          :no-data-text="noDataText.citizenships"
+                          multiple
+                          v-bind:clearable="!inReadonlyMode"
+                          v-bind:readonly="inReadonlyMode">
+                </v-select>
+            </v-col>
+        </v-row>
+        <v-row>
+            <v-col cols="12" md="3" sm="12">
+                <v-select v-model="Form.RespondingPartyMailingAddress.CountryGUID"
+                          v-bind:items="RespondingPartyMailingAddress.countries"
+                          item-text="Value"
+                          item-value="Key"
+                          label="Държава"
+                          color="primary"
+                          :menu-props="{ offsetY: true }"
+                          :no-data-text="noDataText.countries"
+                          v-bind:clearable="!inReadonlyMode"
+                          v-bind:readonly="inReadonlyMode"
+                          v-on:change="onCountryChange(Form.RespondingPartyMailingAddress, Form.RespondingPartyMailingAddress.CountryGUID, $event)"></v-select>
+            </v-col>
+            <v-col cols="12" md="3" sm="12">
+                <v-select v-model="Form.RespondingPartyMailingAddress.DistrictGUID"
+                          v-bind:items="RespondingPartyMailingAddress.districts"
+                          item-text="Value"
+                          item-value="Key"
+                          label="Област"
+                          color="primary"
+                          :menu-props="{ offsetY: true }"
+                          :no-data-text="noDataText.districts"
+                          v-bind:clearable="!inReadonlyMode"
+                          v-bind:readonly="inReadonlyMode"
+                          v-on:change="onDistrictChange(Form.RespondingPartyMailingAddress, RespondingPartyMailingAddress)"
+                          v-if="Form.RespondingPartyMailingAddress.CountryGUID == BG_GUID"></v-select>
+            </v-col>
+            <v-col cols="12" md="3" sm="12">
+                <v-select v-model="Form.RespondingPartyMailingAddress.MunicipalityGUID"
+                          v-bind:items="RespondingPartyMailingAddress.municipalities"
+                          item-text="Value"
+                          item-value="Key"
+                          label="Община"
+                          color="primary"
+                          :menu-props="{ offsetY: true }"
+                          :no-data-text="noDataText.municipalities"
+                          v-bind:clearable="!inReadonlyMode"
+                          v-bind:readonly="inReadonlyMode"
+                          v-on:change="onMunicipalityChange(Form.RespondingPartyMailingAddress, RespondingPartyMailingAddress)"
+                          v-if="Form.RespondingPartyMailingAddress.CountryGUID == BG_GUID"></v-select>
+            </v-col>
+            <v-col cols="12" md="3" sm="12">
+                <v-select v-model="Form.RespondingPartyMailingAddress.SettlementGUID"
+                          v-bind:items="RespondingPartyMailingAddress.settlements"
+                          item-text="Value"
+                          item-value="Key"
+                          label="Населено място"
+                          color="primary"
+                          :menu-props="{ offsetY: true }"
+                          :no-data-text="noDataText.settlements"
+                          v-bind:clearable="!inReadonlyMode"
+                          v-bind:readonly="inReadonlyMode"
+                          v-if="Form.RespondingPartyMailingAddress.CountryGUID == BG_GUID"></v-select>
+            </v-col>
+            <v-col cols="12">
+                <v-text-field v-model="Form.RespondingPartyMailingAddress.Address"
+                              label="Адрес"
+                              color="primary"
+                              v-bind:clearable="!inReadonlyMode"
+                              v-bind:readonly="inReadonlyMode">
+                </v-text-field>
+            </v-col>
+        </v-row>
+        <v-row>
+            <v-col cols="12" md="4" sm="12">
+                <v-text-field v-model="Form.RespondingPartyContactInfo.MobilePhone"
+                              label="Мобилен телефон"
+                              v-bind:clearable="!inReadonlyMode"
+                              v-bind:readonly="inReadonlyMode"
+                              color="primary">
+                </v-text-field>
+            </v-col>
+            <v-col cols="12" md="4" sm="12">
+                <v-text-field v-model="Form.RespondingPartyContactInfo.LandlinePhone"
+                              label="Стационарен телефон"
+                              v-bind:clearable="!inReadonlyMode"
+                              v-bind:readonly="inReadonlyMode"
+                              color="primary">
+                </v-text-field>
+            </v-col>
+            <v-col cols="12" md="4" sm="12">
+                <v-text-field v-model="Form.RespondingPartyContactInfo.Email"
+                              label="Електронна поща"
+                              color="primary"
+                              v-bind:clearable="!inReadonlyMode"
+                              v-bind:readonly="inReadonlyMode">
+                </v-text-field>
+            </v-col>
+        </v-row>
+        <template v-if="!respondingPartyIsPerson">
+            <hr />
+            <v-row>
+                <v-col cols="12" md="4" sm="12">
+                    <v-text-field v-model="Form.RespondingPartyLegalEntity.EntityName"
+                                  label="Име на юридическо лице"
+                                  v-bind:clearable="!inReadonlyMode"
+                                  v-bind:readonly="inReadonlyMode"
+                                  color="primary">
+                    </v-text-field>
+                </v-col>
+                <v-col cols="12" md="4" sm="12">
+                    <v-text-field v-model="Form.RespondingPartyLegalEntity.EntityEIK"
+                                  label="ЕИК"
+                                  v-bind:clearable="!inReadonlyMode"
+                                  v-bind:readonly="inReadonlyMode"
+                                  color="primary">
+                    </v-text-field>
+                </v-col>
+                <v-col cols="12" md="4" sm="12">
+                    <v-text-field v-model="Form.RespondingPartyLegalEntity.EntityCourtRegistration"
+                                  label="Съдебна регистрация"
+                                  color="primary"
+                                  v-bind:clearable="!inReadonlyMode"
+                                  v-bind:readonly="inReadonlyMode">
+                    </v-text-field>
+                </v-col>
+            </v-row>
+            <v-row>
+                <v-col cols="12" md="3" sm="12">
+                    <v-select v-model="Form.RespondingPartyLegalEntity.EntityAddress.CountryGUID"
+                              v-bind:items="RespondingPartyLegalEntityMailingAddress.countries"
+                              item-text="Value"
+                              item-value="Key"
+                              label="Държава"
+                              color="primary"
+                              :menu-props="{ offsetY: true }"
+                              :no-data-text="noDataText.countries"
+                              v-bind:clearable="!inReadonlyMode"
+                              v-bind:readonly="inReadonlyMode"
+                              v-on:change="onCountryChange(Form.RespondingPartyLegalEntity.EntityAddress, Form.RespondingPartyLegalEntity.EntityAddress.CountryGUID, $event)"></v-select>
+                </v-col>
+                <v-col cols="12" md="3" sm="12">
+                    <v-select v-model="Form.RespondingPartyLegalEntity.EntityAddress.DistrictGUID"
+                              v-bind:items="RespondingPartyLegalEntityMailingAddress.districts"
+                              item-text="Value"
+                              item-value="Key"
+                              label="Област"
+                              color="primary"
+                              :menu-props="{ offsetY: true }"
+                              :no-data-text="noDataText.districts"
+                              v-bind:clearable="!inReadonlyMode"
+                              v-bind:readonly="inReadonlyMode"
+                              v-on:change="onDistrictChange(Form.RespondingPartyLegalEntity.EntityAddress, RespondingPartyLegalEntityMailingAddress)"
+                              v-if="Form.RespondingPartyLegalEntity.EntityAddress.CountryGUID == BG_GUID"></v-select>
+                </v-col>
+                <v-col cols="12" md="3" sm="12">
+                    <v-select v-model="Form.RespondingPartyLegalEntity.EntityAddress.MunicipalityGUID"
+                              v-bind:items="RespondingPartyLegalEntityMailingAddress.municipalities"
+                              item-text="Value"
+                              item-value="Key"
+                              label="Община"
+                              color="primary"
+                              :menu-props="{ offsetY: true }"
+                              :no-data-text="noDataText.municipalities"
+                              v-bind:clearable="!inReadonlyMode"
+                              v-bind:readonly="inReadonlyMode"
+                              v-on:change="onMunicipalityChange(Form.RespondingPartyLegalEntity.EntityAddress, RespondingPartyLegalEntityMailingAddress)"
+                              v-if="Form.RespondingPartyLegalEntity.EntityAddress.CountryGUID == BG_GUID"></v-select>
+                </v-col>
+                <v-col cols="12" md="3" sm="12">
+                    <v-select v-model="Form.RespondingPartyLegalEntity.EntityAddress.SettlementGUID"
+                              v-bind:items="RespondingPartyLegalEntityMailingAddress.settlements"
+                              item-text="Value"
+                              item-value="Key"
+                              label="Населено място"
+                              color="primary"
+                              :menu-props="{ offsetY: true }"
+                              :no-data-text="noDataText.settlements"
+                              v-bind:clearable="!inReadonlyMode"
+                              v-bind:readonly="inReadonlyMode"
+                              v-if="Form.RespondingPartyLegalEntity.EntityAddress.CountryGUID == BG_GUID"></v-select>
+                </v-col>
+                <v-col cols="12">
+                    <v-text-field v-model="Form.RespondingPartyLegalEntity.EntityAddress.Address"
+                                  label="Адрес"
+                                  color="primary"
+                                  v-bind:clearable="!inReadonlyMode"
+                                  v-bind:readonly="inReadonlyMode">
+                    </v-text-field>
+                </v-col>
+            </v-row>
+            <v-row>
+                <v-col cols="12" md="4" sm="12">
+                    <v-text-field v-model="Form.RespondingPartyLegalEntity.EntityContactInfo.MobilePhone"
+                                  label="Мобилен телефон"
+                                  v-bind:clearable="!inReadonlyMode"
+                                  v-bind:readonly="inReadonlyMode"
+                                  color="primary">
+                    </v-text-field>
+                </v-col>
+                <v-col cols="12" md="4" sm="12">
+                    <v-text-field v-model="Form.RespondingPartyLegalEntity.EntityContactInfo.LandlinePhone"
+                                  label="Стационарен телефон"
+                                  v-bind:clearable="!inReadonlyMode"
+                                  v-bind:readonly="inReadonlyMode"
+                                  color="primary">
+                    </v-text-field>
+                </v-col>
+                <v-col cols="12" md="4" sm="12">
+                    <v-text-field v-model="Form.RespondingPartyLegalEntity.EntityContactInfo.Email"
+                                  label="Електронна поща"
+                                  color="primary"
+                                  v-bind:clearable="!inReadonlyMode"
+                                  v-bind:readonly="inReadonlyMode">
+                    </v-text-field>
+                </v-col>
+            </v-row>
+        </template>
+    </v-card-text>
+</v-card>

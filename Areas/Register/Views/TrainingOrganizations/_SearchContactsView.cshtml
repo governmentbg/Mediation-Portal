@@ -1,0 +1,62 @@
+﻿<v-container>
+    <v-row>
+        <v-col cols="12" md="5" sm="12">
+            <v-text-field class="pa-4"
+                          append-icon="search"
+                          label="Телефон(мобилен, стационарен) или факс"
+                          v-model="OrganizationFilters.OrganizationContacts"
+                          clearable
+                          color="primary">
+            </v-text-field>
+        </v-col>
+        <v-col cols="12" md="5" sm="12">
+            <v-text-field class="pa-4"
+                          append-icon="search"
+                          label="Електронна поща"
+                          v-model="OrganizationFilters.Email"
+                          clearable
+                          color="primary">
+            </v-text-field>
+        </v-col>
+    </v-row>
+    <v-row>
+        <v-col cols="12" md="5" sm="12">
+            <v-autocomplete class="pa-4"
+                            v-model="OrganizationFilters.OrgFullAddress.CountryGUID"
+                            label="Държава"
+                            color="primary"
+                            clearable
+                            v-bind:items="countries"
+                            no-data-text="Няма данни"
+                            item-text="Value"
+                            item-value="Key"
+                            placeholder="-- Избери --"
+                            v-on:change="onCountryChange(OrganizationFilters.OrgFullAddress, OrganizationFilters.OrgFullAddress.CountryGUID)">
+            </v-autocomplete>
+        </v-col>
+        <v-col cols="12" md="5" sm="12">
+            <v-autocomplete class="pa-4"
+                            label="Област"
+                            color="primary"
+                            clearable
+                            no-data-text="Няма данни"
+                            :items="districts"
+                            v-model="OrganizationFilters.OrgFullAddress.DistrictGUID"
+                            item-text="Value"
+                            item-value="Key"
+                            placeholder="-- Избери --"
+                            v-on:change="onDistrictChange(OrganizationFilters.OrgFullAddress)"
+                            v-if="OrganizationFilters.OrgFullAddress.CountryGUID == BG_GUID">
+            </v-autocomplete>
+        </v-col>
+    </v-row>
+    <v-row class="px-4">
+        <v-col cols="12">
+            <v-btn block color="primary"
+                   v-on:click="triggerSearch">
+                Търсене&nbsp;&nbsp;
+                <i class="fa fa-filter"></i>
+            </v-btn>
+        </v-col>
+    </v-row>
+</v-container>

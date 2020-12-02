@@ -1,0 +1,41 @@
+﻿<v-container>
+    <v-row>
+        <v-col cols="12" md="4">
+            <p>{{item.Name}}</p>
+        </v-col>
+        <v-col cols="12" md="2">
+            <p>{{item.Code}}</p>
+        </v-col>
+        <v-col cols="12" md="3">
+            Активност:
+            <v-icon color="success" v-if="item.IsActive">mdi-check-circle</v-icon>
+            <v-icon color="error" v-if="!item.IsActive">mdi-close-circle</v-icon>
+        </v-col>
+        <v-flex cols="12" md="2" class="text-right">
+            <v-tooltip bottom>
+                <template v-slot:activator="{ on }">
+                    <v-icon v-on="on"
+                            medium
+                            color="primary"
+                            class="mr-2"
+                            @@click="onEditNomenclature(item)">
+                        edit
+                    </v-icon>
+                </template>
+                <span>Редакция</span>
+            </v-tooltip>
+            @*<v-tooltip bottom>
+                <template v-slot:activator="{ on }">
+                    <v-icon v-on="on"
+                            medium
+                            color="primary"
+                            class="mr-2"
+                            @@click="onRemoveNomenclature(index)">
+                        delete
+                    </v-icon>
+                </template>
+                <span>Изтриване</span>
+            </v-tooltip>*@
+        </v-flex>
+    </v-row>
+</v-container>

@@ -1,0 +1,127 @@
+﻿<v-app data-app>
+    <details-training-organization inline-template ref="detailsTrainingOrganization">
+        <template v-if="loading">
+            <v-text-field loading
+                          label="Зареждане..."
+                          disabled>
+            </v-text-field>
+        </template>
+        <template v-else>
+            <div>
+                <v-card dark class="mt-10">
+                    <v-system-bar :color="Organization.IsActive ? 'success' : 'error'"
+                                  height="40"
+                                  rounded>
+                        <v-icon large>info</v-icon>
+                        <v-row auto class="text-center">
+                            <v-col cols="12">
+                                <h4>{{ (Organization.IsActive ? 'Организацията е активна. Статус - ' : 'Организацията не е активна. Статус - ') + Organization.StatusName}}</h4>
+                            </v-col>
+                        </v-row>
+                    </v-system-bar>
+                </v-card>
+                <v-card class="mx-auto my-10">
+                    <v-row>
+                        <v-col cols="12">
+                            <v-subheader class="subheader-border">Детайли за организация</v-subheader>
+                        </v-col>
+                    </v-row>
+                    <v-card-text>
+                        <v-row>
+                            <v-col cols="12" md="6" sm="12" class="py-0">
+                                <v-text-field class="px-4 py-3"
+                                              v-model="Organization.Name"
+                                              label="Име"
+                                              readonly>
+                                </v-text-field>
+                            </v-col>
+                            <v-col cols="12" md="3" class="py-0">
+                                <v-text-field class="px-4 py-3"
+                                              v-model="Organization.EIK"
+                                              label="ЕИК"
+                                              readonly>
+                                </v-text-field>
+                            </v-col>
+                            <v-col cols="12" md="3" class="py-0">
+                                <v-text-field class="px-4 py-3"
+                                              v-model="Organization.CourtRegistration"
+                                              label="Съдебна регистрация"
+                                              readonly>
+                                </v-text-field>
+                            </v-col>
+                        </v-row>
+                        <template v-if="false">
+                            <v-row>
+                                <v-col cols="12" md="3" class="py-0">
+                                    <v-text-field class="px-4 py-3"
+                                                  v-model="Organization.MinisterOrder"
+                                                  label="Заповед на министър"
+                                                  readonly>
+                                    </v-text-field>
+                                </v-col>
+                            </v-row>
+                        </template>
+                        <v-row>
+                            <v-col cols="12" md="3" sm="12" class="py-0">
+                                <v-text-field class="px-4 py-3"
+                                              v-model="Organization.Contact.LandlinePhone"
+                                              label="Стационарен телефон"
+                                              readonly>
+                                </v-text-field>
+                            </v-col>
+                            <v-col cols="12" md="3" sm="12" class="py-0">
+                                <v-text-field class="px-4 py-3"
+                                              v-model="Organization.Contact.MobilePhone"
+                                              label="Мобилен телефон"
+                                              readonly>
+                                </v-text-field>
+                            </v-col>
+                            <v-col cols="12" md="3" sm="12" class="py-0">
+                                <v-text-field class="px-4 py-3"
+                                              v-model="Organization.Contact.Fax"
+                                              label="Факс"
+                                              readonly>
+                                </v-text-field>
+                            </v-col>
+                            <v-col cols="12" md="3" sm="12" class="py-0">
+                                <v-text-field class="px-4 py-3"
+                                              v-model="Organization.Contact.Email"
+                                              label="Електронна поща"
+                                              readonly>
+                                </v-text-field>
+                            </v-col>
+                        </v-row>
+                        <v-row v-if="Organization.RegistrationAddress">
+                            <v-col cols="12" class="py-0">
+                                <v-text-field class="px-4 py-3"
+                                              label="Адрес на управление"
+                                              :value="fullAddress(addresses.registration)"
+                                              readonly>
+                                </v-text-field>
+                            </v-col>
+                        </v-row>
+                        <v-row v-if="Organization.MailingAddress">
+                            <v-col cols="12" class="py-0">
+                                <v-text-field class="px-4 py-3"
+                                              label="Адрес на осъществяване на дейността"
+                                              :value="fullAddress(addresses.mailing)"
+                                              readonly>
+                                </v-text-field>
+                            </v-col>
+                        </v-row>
+                    </v-card-text>
+                </v-card>
+            </div>
+        </template>
+    </details-training-organization>
+</v-app>
+
+@section Scripts {
+
+    @* Models *@
+    @*<script src="~/JSModels/FormFilingClasses/FullAddress.js"></script>*@
+
+    @* Components *@
+    @Scripts.Render("~/Scripts/VueComponents/detailsTrainingOrganization.js")
+
+}

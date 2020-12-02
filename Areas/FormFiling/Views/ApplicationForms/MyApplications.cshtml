@@ -1,0 +1,135 @@
+﻿ 
+<br />
+
+<my-applications inline-template ref="myApplications">
+    <template v-if="loading">
+        <v-text-field loading
+                        label="Зареждане..."
+                        disabled>
+        </v-text-field>
+    </template>
+    <template v-else>
+        <v-row id="myApplications" wrap>
+            <template v-if="!table.data.length">
+                <v-row>
+                    <v-col cols="12" class="text-center">
+                        <v-card hover>
+                            <v-card-text>
+                                <h3 class="text-uppercase">Няма намерени заявления</h3>
+                            </v-card-text>
+                        </v-card>
+                    </v-col>
+                </v-row>
+            </template>
+            <template v-else>
+                <v-card width="100%">
+                    <v-data-table id="myApplicationsTable"
+                                  :headers="table.headers"
+                                  :items="table.data"
+                                  item-key="GUID"
+                                  id="result-datatable"
+                                  class="elevation-1"
+                                  no-data-text="Няма намерени резултати"
+                                  :loading="table.loading"
+                                  loading-text="Зареждане на данни"
+                                  :footer-props="table.footer">
+                        <template v-slot:item="{ item, expand, isExpanded }">
+                            <tr class="cursor-pointer">
+                                <td>{{ item.FormTypeName }}</td>
+                                <td>{{ item.InternalNumber }}</td>
+                                <td>
+                                    {{ item.FormStatusName }}
+                                    <v-btn v-if="item.PendingPaymentOrganization"
+                                            x-small
+                                            text
+                                            color="warning"
+                                            :href="'/FormFiling/PaymentInstructions/RegisterTrainingOrganization/'+item.GUID"
+                                            class="pa-0">
+                                        <v-icon left small>mdi-information-outline</v-icon>
+                                        Плащане
+                                    <v-btn v-if="item.PendingPaymentMediator"
+                                            x-small
+                                            text
+                                            color="warning"
+                                            :href="'/FormFiling/PaymentInstructions/RegisterMediator/'+item.GUID"
+                                            class="pa-0">
+                                        Плащане
+                                    </v-btn>
+                                </td>
+                                <td>{{ item.DateLastModified }}</td>
+                                <td>{{ item.DateRegistered }}</td>
+                                <td>{{ item.DateCreated }}</td>
+                                <td class="pa-0">
+                                    <v-col cols="12" md="6" sm="12">
+                                        <v-btn small
+                                               color="primary"
+                                               :href="getUrlByApplicantionType(item.GUID, item.FormTypeGUID)">
+                                            Преглед
+                                        </v-btn>
+                                    </v-col>
+                                </td>
+                            </tr>
+                        </template>
+                    </v-data-table>
+                </v-card>
+                <template v-if="false" v-for="(application, index) in table.data">
+                    <v-col cols="12" md="4" auto class="pa-3">
+                        <v-card class="mx-auto mb-5"
+                                tile
+                                hover>
+                            <v-card-title class="primary darken-1 white--text" style="padding: 0px 18px 10px 18px;">
+                                <h4>
+                                    {{ application.FormTypeName }}
+                                    <br />
+                                </h4>
+                            </v-card-title>
+                            <v-card-subtitle class="py-1 px-2 brown lighten-3">
+                                <strong>Вътрешен номер:</strong> {{ application.InternalNumber || 'липсва'}}
+                            </v-card-subtitle>
+                            <v-card-text>
+                                <v-col cols="12 mt-3">
+                                    <v-card>
+                                        <v-card-subtitle>
+                                            <v-icon left>mdi-account-edit</v-icon><strong>Последна корекция:</strong> {{ application.DateLastModified }}
+                                        </v-card-subtitle>
+                                        <v-card-subtitle>
+                                            <v-icon left>mdi-clock-check-outline</v-icon><strong>Регистрирано:</strong> {{ application.DateRegistered }}
+                                        </v-card-subtitle>
+                                        <v-card-subtitle>
+                                            <v-icon left>mdi-account-clock-outline</v-icon><strong>Създадено:</strong> {{ application.DateCreated }}
+                                        </v-card-subtitle>
+                                    </v-card>
+                                </v-col>
+                                <v-col cols="12">
+                                    <v-card>
+                                        <v-card-subtitle>
+                                            <v-icon class="green--text text--darken-1" left>mdi-check-decagram</v-icon><strong>Статус:</strong> {{ application.FormStatusName }}
+                                        </v-card-subtitle>
+                                        <v-card-subtitle>
+                                            <v-icon left>mdi-reply</v-icon><strong>Входящ номер:</strong> {{ application.IncomingNumber || 'липсва'}}
+                                        </v-card-subtitle>
+                                    </v-card>
+                                </v-col>
+                            </v-card-text>
+                            <v-card-actions>
+                                <v-btn block
+                                       color="primary"
+                                       :href="getUrlByApplicantionType(application.GUID, application.FormTypeGUID)">Преглед</v-btn>
+                            </v-card-actions>
+                        </v-card>
+                        <div :key="index"></div>
+                    </v-col>
+                </template>
+            </template>
+        </v-row>
+    </template>
+</my-applications>
+
+@section Scripts {
+
+    @* Models *@
+
+    @* Components *@
+    @Scripts.Render("~/Scripts/VueComponents/myApplications.js")
+
+}

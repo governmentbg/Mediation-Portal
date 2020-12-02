@@ -1,0 +1,103 @@
+﻿@{
+    ViewBag.Title = "Темплейти на документи";
+}
+
+<h2>Темплейти на документи</h2>
+<br />
+
+
+<document-templates inline-template ref="documentTemplates">
+    <template v-if="loading">
+        <v-text-field color="primary"
+                      loading
+                      label="Зареждане..."
+                      disabled>
+        </v-text-field>
+    </template>
+    <template v-else>
+        <v-row>
+            <v-col cols="12">
+                <v-data-table :headers="table.tableHeader"
+                              :items="table.data"
+                              item-key="GUID"
+                              id="result-datatable"
+                              class="elevation-1"
+                              no-data-text="Няма намерени резултати"
+                              :loading="table.loading"
+                              loading-text="Зареждане на данни"
+                              :items-per-page="table.selectedItemsPerPage"
+                              hide-default-footer>
+                    <template v-slot:item="{ item }">
+                        <tr class="cursor-pointer">
+                            <td>{{ item.FileName }}</td>
+                            <td align="right">
+                                <v-btn :loading="table.loading"
+                                       color="blue-grey darken-1"
+                                       dark
+                                       small
+                                       target="_blank"
+                                       :href="'/AttachedDocument/DownloadFile/' + item.GUID">
+                                    <v-icon left>mdi-download</v-icon>
+                                    Свали&nbsp;
+                                </v-btn>
+                                <v-btn :loading="table.loading"
+                                       color="primary"
+                                       small
+                                       @@click="editTemplate(item.GUID)">
+                                    <v-icon left>mdi-file-document-edit-outline</v-icon>
+                                    Редакция&nbsp;
+                                </v-btn>
+                            </td>
+                        </tr>
+                    </template>
+                </v-data-table>
+                <v-dialog v-model="dialog.open" scrollable persistent max-width="50%">
+                    <v-card>
+                        <v-card-title class="headline primary" style="color: white">
+                            Редакция на темплейт "{{ dialog.title }}"
+                        </v-card-title>
+                        <v-card-text class="pa-8">
+                            <v-container>
+                                <v-col>
+                                    <v-col cols="12">
+                                        <v-file-input v-model="dialog.data.document"
+                                                      :label="'Прикачете темплейт за '+dialog.title"
+                                                      accept=".docx"
+                                                      show-size
+                                                      counter
+                                                      multiple>
+                                        </v-file-input>
+                                    </v-col>
+                                </v-col>
+                            </v-container>
+                        </v-card-text>
+                        <v-card-actions>
+                            <v-spacer></v-spacer>
+                            <v-btn :loading="this.dialog.loading"
+                                   dark
+                                   color="success darken-1"
+                                   @@click="doEdit">
+                                <v-icon left>mdi-check</v-icon>
+                                Запази
+                            </v-btn>
+                            <v-btn :loading="this.dialog.loading"
+                                   color="default darken-1"
+                                   @@click="dialog.open = !dialog.open">
+                                <v-icon left>mdi-close</v-icon>
+                                Затвори
+                            </v-btn>
+                        </v-card-actions>
+                    </v-card>
+                </v-dialog>
+            </v-col>
+        </v-row>
+    </template>
+</document-templates>
+
+@section Scripts {
+
+    @* Models *@
+
+    @* Components *@
+    @Scripts.Render("~/Scripts/VueComponents/documentTemplates.js")
+}

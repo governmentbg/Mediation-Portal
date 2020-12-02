@@ -1,0 +1,33 @@
+﻿<v-card hover>
+    <v-card-title>
+        <h1>{{ApplicationInformation.Name}}</h1>
+    </v-card-title>
+    <v-card-text class="mt-5">
+        <v-container id="scroll-target"
+                     style="max-height: 400px"
+                     class="overflow-y-auto"
+                     v-html="ApplicationInformation.HTMLContent">
+        </v-container>
+    </v-card-text>
+    <v-card-actions>
+        <v-row>
+            <v-col cols="12" md="2" offset-md="8" align="right" class="pr-6">
+                <v-btn color="primary" 
+                       block
+                       @@click="confirmApplication">
+                    <v-icon left>mdi-check</v-icon>
+                    Към заявление
+                </v-btn>
+            </v-col>
+            <v-col cols="12" md="2" align="right" class="pr-6">
+                <v-btn color="red darken-3"
+                       dark
+                       block
+                       @@click="refuseApplication">
+                    <v-icon left>mdi-close</v-icon>
+                    Отказвам
+                </v-btn>
+            </v-col>
+        </v-row>
+    </v-card-actions>
+</v-card>

@@ -1,0 +1,116 @@
+﻿<login-user-form inline-template>
+
+    <template v-if="loading">
+        <v-text-field color="primary"
+                      loading
+                      label="Зареждане..."
+                      readonly>
+        </v-text-field>
+    </template>
+
+    <template v-else>
+        <v-layout row
+                  justify-center>
+            <v-col cols="12" xl="4" md="6" sm="6">
+
+                <v-card>
+                    <v-toolbar dense flat>
+                        <v-toolbar-title>ВХОД В СИСТЕМАТА</v-toolbar-title>
+                        <template v-slot:extension>
+                            <v-tabs v-model="tabs"
+                                    fixed-tabs>
+                                <v-tabs-slider></v-tabs-slider>
+                                <v-tab href="#signature"
+                                       class="primary--text">
+                                    <v-icon>mdi-usb-flash-drive</v-icon>
+                                </v-tab>
+
+                                <v-tab href="#user"
+                                       class="primary--text">
+                                    <v-icon>mdi-account</v-icon>
+                                </v-tab>
+                            </v-tabs>
+                        </template>
+                    </v-toolbar>
+                    <v-tabs-items v-model="tabs">
+                        <v-tab-item key="signature"
+                                    value="signature">
+                            <v-card class="elevation-12">
+                                <v-card-text>
+                                    Моля включете електронния си подпис и натиснете бутона <strong>ВХОД</strong>. Браузъра Ви автоматично ще поиска да изберете коректният засечен подпис.
+                                </v-card-text>
+                                <v-card-actions>
+                                    <digitalsignature inline-template>
+                                        <v-btn color="primary"
+                                               block
+                                               v-on:click="clicked">
+                                            ВХОД
+                                        </v-btn>
+                                    </digitalsignature>
+                                </v-card-actions>
+                            </v-card>
+                        </v-tab-item>
+                        <v-tab-item key="user" value="user">
+                            <v-card class="elevation-12">
+                                <v-card-text>
+                                    <v-container>
+                                        <v-form ref="loginForm"
+                                                v-model="valid"
+                                                lazy-validation>
+                                            <v-text-field v-model="Form.UserName"
+                                                          :counter="20"
+                                                          label="Потребителско име"
+                                                          :rules="[validationRules.requiredField]"
+                                                          autocomplete="off"></v-text-field>
+
+                                            <v-text-field v-model="Form.Password"
+                                                          :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
+                                                          :type="showPassword ? 'text' : 'password'"
+                                                          label="Парола"
+                                                          counter
+                                                          :rules="[validationRules.requiredField, validationRules.minlenght]"
+                                                          autocomplete="off"
+                                                          @@click:append="showPassword = !showPassword"></v-text-field>
+                                            <v-checkbox v-model="Form.RememberMe"
+                                                        label="Запомни ме!"
+                                                        color="primary"></v-checkbox>
+                                            <br />
+                                        </v-form>
+                                    </v-container>
+                                </v-card-text>
+                                <v-card-actions>
+                                    <v-btn color="primary"
+                                           block
+                                           @@click="submitForm">
+                                        ВХОД
+                                    </v-btn>
+                                    <v-spacer></v-spacer>
+                                </v-card-actions>
+                            </v-card>
+                        </v-tab-item>
+                    </v-tabs-items>
+
+                    <form action="https://eauthn.egov.bg:9445/eAuthenticator/eAuthenticator.seam" method="post" class="hidden">
+                        <input type="hidden" name="SAMLRequest" value="" />
+                        <input type="hidden" name="RelayState" value="" />
+                        <input type="submit" id="submitSignLogin" />
+                    </form>
+                </v-card>
+            </v-col>
+        </v-layout>
+    </template>
+</login-user-form>
+
+@section Scripts{
+    @Scripts.Render("~/bundles/Vue")
+    <script src="~/JSModels/Account/Login.js"></script>
+
+
+    @* Scripts *@
+
+    @Scripts.Render("~/Scripts/VueComponents/digitalSignature.js")
+    @Scripts.Render("~/Scripts/scs/scs.js")
+    @Scripts.Render("~/Scripts/scs/scs.helpers.js")
+    @Scripts.Render("~/Scripts/VueComponents/loginUserForm.js")
+}
+

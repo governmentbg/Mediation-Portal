@@ -1,0 +1,130 @@
+﻿
+<br />
+
+<v-app data-app>
+    <all-applications inline-template ref="allApplications">
+        <template v-if="loading">
+            <v-text-field loading
+                          label="Зареждане..."
+                          disabled>
+            </v-text-field>
+        </template>
+        <template v-else>
+            <v-card>
+                <v-row>
+                    <v-col cols="12" md="3" sm="12">
+                        <v-autocomplete class="pa-4"
+                                        v-model="filters.statusGUID"
+                                        label="Статуси"
+                                        color="primary"
+                                        clearable
+                                        v-bind:items="statuses"
+                                        no-data-text="Няма данни"
+                                        item-text="Value"
+                                        item-value="Key"
+                                        placeholder="-- Избери --">
+                        </v-autocomplete>
+                    </v-col>
+                    <v-col cols="12" md="3" sm="12">
+                        <v-text-field class="pa-4"
+                                      label="Уникален номер"
+                                      v-model="filters.internalNumber"
+                                      clearable
+                                      color="primary">
+                        </v-text-field>
+                    </v-col>
+                    <v-col cols="12" md="3" sm="12">
+                        <v-text-field class="pa-4"
+                                      label="Входящ номер"
+                                      v-model="filters.incomingNumber"
+                                      clearable
+                                      color="primary">
+                        </v-text-field>
+                    </v-col>
+                    <v-col cols="12" md="3" sm="12">
+                        <v-text-field class="pa-4"
+                                      label="ЕГН или ЕИК"
+                                      v-model="filters.identityNumber"
+                                      clearable
+                                      color="primary">
+                        </v-text-field>
+                    </v-col>
+                </v-row>
+                <v-row class="px-4">
+                    <v-col cols="12">
+                        <v-btn block color="primary"
+                               v-on:click="filterApplications">
+                            Филтрирай&nbsp;&nbsp;
+                            <i class="fa fa-filter"></i>
+                        </v-btn>
+                    </v-col>
+                </v-row>
+                <v-divider></v-divider>
+                <v-data-table :headers="headers"
+                              :items="allApplications"
+                              item-key="GUID"
+                              id="result-datatable"
+                              class="elevation-1"
+                              no-data-text="Няма намерени резултати"
+                              :loading="loadingTableData"
+                              loading-text="Зареждане на данни"
+                              hide-default-footer
+                              :items-per-page="selectedItemsPerPage"
+                              @*:footer-props="footer"*@>
+                    <template v-slot:item="props">
+                        <tr class="cursor-pointer">
+                            <td @@click="props.expanded = !props.expanded">{{ props.item.ApplicantNameApplication }}</td>
+                            <td @@click="props.expanded = !props.expanded">{{ props.item.ApplicantName }}</td>
+                            <td @@click="props.expanded = !props.expanded">{{ props.item.FormTypeName }}</td>
+                            <td @@click="props.expanded = !props.expanded">{{ props.item.FormStatusName || '-' }}</td>
+                            <td @@click="props.expanded = !props.expanded">{{ props.item.DateCreated }}</td>
+                            <td align="right">
+                                <div class="my-2">
+                                    <v-btn color="primary"
+                                           dark
+                                           small
+                                           @@click="redirectToApplication(props.item.GUID, props.item.FormTypeGUID)">
+                                        Преглед
+                                    </v-btn>
+                                </div>
+                            </td>
+                        </tr>
+                    </template>
+                </v-data-table>
+                <v-footer style="background-color: white !important">
+                    <v-spacer></v-spacer>
+                    <v-col md="2">
+                        <v-select :items="itemsPerPage"
+                                  v-model="selectedItemsPerPage"
+                                  item-text="Value"
+                                  item-value="Key"
+                                  placeholder="-- Избери --"
+                                  label="Редове на страница"
+                                  color="primary"
+                                  @@change="setRows(selectedItemsPerPage)">
+                        </v-select>
+                    </v-col>
+                </v-footer>
+                <template>
+                    <div class="text-xs-center pa-4">
+                        <v-pagination v-model="pagination.page"
+                                      :length="pagination.totalPages"
+                                      total-visible="10"
+                                      color="primary"
+                                      @@input="next(pagination.page)">
+                        </v-pagination>
+                    </div>
+                </template>
+            </v-card>
+        </template>
+    </all-applications>
+</v-app>
+
+@section Scripts {
+
+    @* Models *@
+
+    @* Components *@
+    @Scripts.Render("~/Scripts/VueComponents/allApplications.js")
+
+}

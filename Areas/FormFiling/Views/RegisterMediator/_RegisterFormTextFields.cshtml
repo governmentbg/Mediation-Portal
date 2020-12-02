@@ -1,0 +1,69 @@
+﻿<template v-if="showEmployeeeApproveBtn">
+    <v-row>
+        <v-col>
+            <v-textarea v-model="actionMessage"
+                        label="Коментар / Нужни коригиращи действия"
+                        rows="1"
+                        outlined
+                        auto-grow>
+            </v-textarea>
+        </v-col>
+    </v-row>
+</template>
+<template v-if="showMinisterApproveBtn">
+    <v-row>
+        <v-col>
+            <v-textarea v-model="actionMessage"
+                        label="Номер на заповедта за вписване / Причина за отказ от вписване"
+                        rows="1"
+                        outlined
+                        auto-grow>
+            </v-textarea>
+        </v-col>
+    </v-row>
+</template>
+<template v-if="showApprovedByEmployeeWithModificationBtn">
+    <v-row>
+        <v-col>
+            <v-textarea v-model="actionMessage"
+                        label="Коментар"
+                        rows="1"
+                        outlined
+                        auto-grow>
+            </v-textarea>
+        </v-col>
+    </v-row>
+</template>
+<template v-if="showCancelProcedureBtn">
+    <v-row>
+        <v-col>
+            <v-textarea v-model="actionMessage"
+                        label="Причина за прекратяване на производство"
+                        rows="1"
+                        outlined
+                        auto-grow>
+            </v-textarea>
+        </v-col>
+    </v-row>
+</template>
+
+<template v-if="showEmployeeUploadCertificateField">
+    <v-row>
+        <v-col cols="12">
+            <v-file-input v-model="certificateFile"
+                          placeholder="Удостоверение*"
+                          label="Файл"
+                          prepend-icon="mdi-paperclip"
+                          @*v-on:change="onCertificateUpload($event)"*@
+                          class="px-4">
+                <template v-slot:selection="{ text }">
+                    <v-chip small
+                            label
+                            color="primary">
+                        {{ text }}
+                    </v-chip>
+                </template>
+            </v-file-input>
+        </v-col>
+    </v-row>
+</template>

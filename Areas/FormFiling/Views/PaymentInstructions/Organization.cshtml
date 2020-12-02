@@ -1,0 +1,182 @@
+﻿<payment-instructions-training-organization inline-template ref="paymentInstructionsTrainingOrganization">
+    <template v-if="loading">
+        <v-text-field color="primary"
+                      loading
+                      label="Зареждане..."
+                      readonly>
+        </v-text-field>
+    </template>
+    <template v-else>
+        <v-row>
+            <v-col cols="12">
+                <v-alert :type="Data.IsPaid ? 'success' : 'warning'">
+                    <template v-if="!Data.IsPaid">
+                        Вашето заявление е регистрирано под номер
+                        <strong>{{Data.InternalNumber}}</strong> и очаква заплащане.
+                    </template>
+                    <template v-if="Data.IsPaid">
+                        Вашето заявление е регистрирано под номер
+                        <strong>{{Data.InternalNumber}}</strong> и е заплатено успешно.
+                    </template>
+                </v-alert>
+            </v-col>
+            <template v-if="!Data.IsPaid">
+                <v-col cols="12">
+                    <v-card id="PaymentInfo" class="mb-5">
+                        <v-card-text class="pa-10">
+                            <h3 class="title text-center font-weight-bold mb-7">{{Data.Content.PaymentMediator.Name}}</h3>
+                            <div v-html="Data.Content.PaymentMediator.HTMLContent"></div>
+                        </v-card-text>
+                    </v-card>
+                </v-col>
+                <template>
+                    <template v-if="Data.Payment.vpos != null">
+                        <v-col cols="12" md="4" sm="12" class="mb-5">
+                            <form :action="epayURL+'/vpos/payment'" method="post" id="VposForm">
+                                <input type="hidden" id="clientId" name="clientId" v-model="Data.Payment.vpos.clientId">
+                                <input type="hidden" id="hmac" name="hmac" v-model="Data.Payment.vpos.hmac">
+                                <input type="hidden" id="data" name="data" v-model="Data.Payment.vpos.Data">
+
+                                <input type="submit" value="Плати с карта" class="v-btn v-btn--block v-btn--contained theme--light v-size--large primary" style="width: 262px; margin-right: 20px;">
+                            </form>
+                        </v-col>
+                    </template>
+                    <template v-if="Data.Payment.AccessCode">
+                        <v-col cols="12" md="4" sm="12" class="mb-5">
+                            <v-btn color="primary"
+                                   block
+                                   large
+                                   :href="epayURL+'/home/accessByCode?code='+Data.Payment.AccessCode">
+                                Плати с код
+                            </v-btn>
+                        </v-col>
+                    </template>
+                    <template v-if="Data.Payment.PaymentCode">
+                        <v-col cols="12" md="4" sm="12" class="mb-5">
+                            <form :action="epayURL+'/ais/paymentOrder'" method="post" id="platezhnoNarezhdane" target="paymentOrderIframe" v-on:submit="showPaymentOrder">
+                                <input type="hidden" id="clientId" name="clientId" v-model="Data.Payment.order.clientId">
+                                <input type="hidden" id="hmac" name="hmac" v-model="Data.Payment.order.hmac">
+                                <input type="hidden" id="data" name="data" v-model="Data.Payment.order.Data">
+
+                                <input type="submit" value="Платежно нареждане" class="v-btn v-btn--block v-btn--contained theme--light v-size--large primary" style="width: 262px; margin-right: 20px;">
+                            </form>
+                        </v-col>
+                    </template>
+                </template>
+                <template v-if="Data.Payment && Data.Payment.AccessCode">
+                    <v-col cols="12">
+                        <v-card id="PaymentCode" class="mb-10">
+                            <v-card-text class="pa-10">
+                                <h3 class="title text-center font-weight-bold mb-7">{{Data.Content.PaymentWithCode.Name}}</h3>
+                                <div v-html="Data.Content.PaymentWithCode.HTMLContent"></div>
+                                <div class="payment_details">
+                                    <table width="100%" cellpadding="0" cellspacing="0">
+                                        <tbody>
+                                            <tr><td style="text-align: center;"><strong>Код за плaщане</strong></td></tr>
+                                            <tr><td style="text-align: center;">{{Data.Payment.AccessCode}}</td></tr>
+                                            <tr><td><br></td></tr>
+                                            <tr><td style="text-align: center;"><strong>Хипервръзка за достъп с Код за плащане:</strong></td></tr>
+                                            <tr>
+                                                <td style="text-align: center;">
+                                                    <a color="primary"
+                                                       :href="epayURL+'/home/accessByCode?code='+Data.Payment.AccessCode"
+                                                       target="_blank">
+                                                        {{epayURL+'/home/accessByCode?code='+Data.Payment.AccessCode}}
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </v-card-text>
+                        </v-card>
+                    </v-col>
+                </template>
+                <v-col cols="12">
+                    <v-card id="BankInformation" class="mb-10">
+                        <v-card-text class="pa-10">
+                            <h3 class="title text-center font-weight-bold mb-7">{{Data.Content.PaymentBankInformation.Name}}</h3>
+                            <div v-html="Data.Content.PaymentBankInformation.HTMLContent"></div>
+                            <div class="payment_details">
+                                <table width="100%" cellpadding="0" cellspacing="0">
+                                    <tbody>
+                                        <tr><td colspan="3" style="text-align: center;"><strong>Данни за плащане</strong></td></tr>
+                                        <tr><td><br></td></tr>
+                                        <tr>
+                                            <td align="right"><strong>Име на получател:</strong></td>
+                                            <td width="10"></td>
+                                            <td>{{Data.Payment.ServiceProviderName}}</td>
+                                        </tr>
+                                        <tr>
+                                            <td align="right"><strong>Основание за плащане:</strong></td>
+                                            <td width="10"></td>
+                                            <td>{{Data.InternalNumber}}</td>
+                                        </tr>
+                                        <tr>
+                                            <td align="right"><strong>Задължено лице:</strong></td>
+                                            <td width="10"></td>
+                                            <td>{{Data.Name}}</td>
+                                        </tr>
+                                        <tr>
+                                            <td align="right"><strong>Булстат на задължено лице:</strong></td>
+                                            <td width="10"></td>
+                                            <td>{{Data.EIK}}</td>
+                                        </tr>
+                                        <tr>
+                                            <td align="right"><strong>Банка:</strong></td>
+                                            <td width="10"></td>
+                                            <td>{{Data.Payment.ServiceProviderBank}}</td>
+                                        </tr>
+                                        <tr>
+                                            <td align="right"><strong>IBAN:</strong></td>
+                                            <td width="10"></td>
+                                            <td>{{Data.Payment.ServiceProviderIBAN}}</td>
+                                        </tr>
+                                        <tr>
+                                            <td align="right"><strong>BIC:</strong></td>
+                                            <td width="10"></td>
+                                            <td>{{Data.Payment.ServiceProviderBIC}}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="clear"></div>
+                        </v-card-text>
+                    </v-card>
+
+                </v-col>
+                <v-dialog id="paymentOrderDialog" v-model="paymentOrderDialog.open"
+                          max-width="850px" height="880px" class="paymentOrderDialog">
+                    <v-card>
+                        <v-card-text class="pa-2">
+                            <iframe name="paymentOrderIframe" id="paymentOrderIframe" width="100%" height="885px"></iframe>
+                        </v-card-text>
+                        <v-card-actions>
+                            <v-row>
+                                <v-col cols="12" class="py-0 text-right">
+                                    <v-btn class="primary" @@click="paymentOrderDialog.open = !paymentOrderDialog.open">Затвори</v-btn>
+                                </v-col>
+                            </v-row>
+                        </v-card-actions>
+                    </v-card>
+                </v-dialog>
+            </template>
+        </v-row>
+    </template>
+</payment-instructions-training-organization>
+
+@section Scripts {
+
+    @* Models *@
+    @Scripts.Render("~/JSModels/FormFilingClasses/RegisterMediatorForm.js")
+    @Scripts.Render("~/JSModels/FormFilingClasses/Person.js")
+    @Scripts.Render("~/JSModels/FormFilingClasses/Education.js")
+    @Scripts.Render("~/JSModels/FormFilingClasses/Contact.js")
+    @Scripts.Render("~/JSModels/FormFilingClasses/AttachedDocument.js")
+    @Scripts.Render("~/JSModels/FormFilingClasses/FullAddress.js")
+
+
+
+    @* Scripts *@
+    @Scripts.Render("~/Scripts/VueComponents/paymentInstructionsTrainingOrganization.js")
+}
